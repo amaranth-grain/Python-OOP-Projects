@@ -1,10 +1,9 @@
 import math
 
-def CalculateHypotenuse(a, b):
-    return math.sqrt(a**2 + b**2)
-
 def main():
-    print(CalculateHypotenuse(3,4))
+    a = int(input("Triangle side 1: "))
+    b = int(input("Triangle side 2: "))
+    return print("Hypotenuse is " + str(math.sqrt(a**2 + b**2)))
 
 if __name__ == "__main__":
     main()

@@ -38,7 +38,7 @@ class Asteroid:
         self._timestamp = timestamp
         self._id = Asteroid.increment_id()
 
-    ''' Return Asteroid ID (lifetime of Asteroids created) as int'''
+    '''Return Asteroid ID (lifetime of Asteroids created) as int'''
     @classmethod
     def increment_id(cls):
         cls._id += 1
@@ -67,7 +67,7 @@ class Asteroid:
     def get_position(self):
         return self._position
 
-    ''' Return velocity as Vector in m/s '''
+    '''Return velocity as Vector in m/s'''
     def get_velocity(self):
         return self._velocity
 
@@ -93,49 +93,49 @@ class Asteroid:
         self._MIN_RADIUS = r
 
     '''
-        Set upper range for asteroid radius.
-        :param r: int
+    Set upper range for asteroid radius.
+    :param r: int
     '''
     def set_max_radius(self, r):
         self._MAX_RADIUS = r
 
     '''
-        Set lower range for asteroid position.
-        :param pos: int
+    Set lower range for asteroid position.
+    :param pos: int
     '''
     def set_min_pos(self, pos):
         self._MIN_POS = pos
 
     '''
-        Set upper range for asteroid position.
-        :param pos: int
+    Set upper range for asteroid position.
+    :param pos: int
     '''
     def set_max_pos(self, pos):
         self._MAX_POS = pos
 
     '''
-        Set lower range for asteroid velocity.
-        :param v: int
+    Set lower range for asteroid velocity.
+    :param v: int
     '''
     def set_min_velocity(self, v):
         self._MIN_VELOCITY = v
 
     '''
-        Set upper range for asteroid velocity.
-        :param v: int
+    Set upper range for asteroid velocity.
+    :param v: int
     '''
     def set_max_velocity(self, v):
         self._MAX_VELOCITY = v
 
     '''
-        Move Asteroid in 1 second increment based on current velocity.
-        Return position as Vector
+    Move Asteroid in 1 second increment based on current velocity.
+    Return position as Vector
     '''
     def move(self):
         self._position.add(self._velocity)
         return self._position
 
-    ''' Format Asteroid with unique ID, circumference, pos, velocity, and time created. '''
+    '''Format Asteroid with unique ID, circumference, pos, velocity, and time created.'''
     def __str__(self):
         return f"Asteroid ID: {self._id}" \
                f"\nCircumference: {self._circumference} " \
@@ -143,7 +143,7 @@ class Asteroid:
                f"\nVelocity: {self._velocity} " \
                f"\nTimestamp: {self._timestamp}"
 
-''' Drive the program. '''
+'''Drive the program.'''
 def main():
     pos = Vector(40, 40, 40)
     v1 = Vector(2, 2, 2)

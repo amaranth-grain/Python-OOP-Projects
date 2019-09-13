@@ -2,7 +2,7 @@ import time
 from datetime import datetime
 from asteroid import Asteroid
 
-''' Creates and tracks Asteroids in field. '''
+'''Create and track Asteroids in field.'''
 class Controller:
     # One second in microseconds
     _ONE_SECOND = 1000000
@@ -22,7 +22,7 @@ class Controller:
             self._ast_list.append(temp)
 
     ''' 
-    Simulate Asteroid movement in 1 second increments.
+    Simulate Asteroid movement in one second increments.
     :param seconds as int (Track Asteroids under Controller for that many seconds)
     '''
     def simulate(self, seconds):
@@ -37,9 +37,9 @@ class Controller:
                 print(ast)
                 time.sleep(1)
 
-''' Drive the program. '''
+'''Drive the program.'''
 def main():
-    con = Controller(2)
+    con = Controller(100)
     con.simulate(2)
 
 if __name__ == "__main__":

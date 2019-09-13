@@ -2,21 +2,21 @@
 '''Vector in 3D space.'''
 class Vector:
 
-    ''' Create Vector with x, y, and z (Unit: m/s)'''
+    '''Create Vector with x, y, and z (Unit: m/s)'''
     def __init__(self, x, y, z):
         self._x = x
         self._y = y
         self._z = y
 
-    ''' Return x co-ordinate. '''
+    '''Return x co-ordinate.'''
     def get_x(self):
         return self._x
 
-    ''' Return y co-ordinate. '''
+    '''Return y co-ordinate.'''
     def get_y(self):
         return self._y
 
-    ''' Return z co-ordinate. '''
+    '''Return z co-ordinate.'''
     def get_z(self):
         return self._z
 
@@ -29,16 +29,16 @@ class Vector:
         self._y += vector.get_y()
         self._z += vector.get_z()
 
-    ''' Return tuple of Vector. '''
+    '''Return tuple of Vector.'''
     def tuple(self):
         return self._x, self._y, self._z
 
-    ''' Format Vector as tuple. '''
+    '''Format Vector as tuple.'''
     def __str__(self):
         return f"{self.tuple()}"
 
 
-''' Drive the program. '''
+'''Drive the program.'''
 def main():
     vec = Vector(1, 2, 3)
     vec2 = Vector(3, 2, 1)

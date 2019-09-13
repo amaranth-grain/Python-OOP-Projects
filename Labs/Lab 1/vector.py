@@ -24,9 +24,14 @@ class Vector:
     def __str__(self):
         return f"{self.tuple()}"
 
-# vec = Vector(1, 2, 3)
-# vec2 = Vector(3, 2, 1)
-# print(f"Before: {vec}")
-# vec.add(vec2)
-# print(f"After: {vec}")
+def main():
+    vec = Vector(1, 2, 3)
+    vec2 = Vector(3, 2, 1)
+    print(f"Before: {vec}")
+    vec.add(vec2)
+    print(f"After: {vec}")
+
+if __name__ == "__main__":
+    main()
+
 

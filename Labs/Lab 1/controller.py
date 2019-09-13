@@ -1,37 +1,38 @@
-from random import randint
-from time import time
+import time
+from datetime import datetime
 from asteroid import Asteroid
 
 class Controller:
+    # One second in microseconds
+    _ONE_MICROSECOND = 0.000001
 
     def __init__(self, num):
         self._ast_list = []
         for i in range(num):
-            #def __init__(self, radius, position, velocity, timestamp):
-            temp = Asteroid(randint(1, 4),
-                            [randint(0, 100), randint(0, 100), randint(0, 100)],
-                            [randint(0, 100), randint(0, 100), randint(0, 100)],
-                            time())
+            # def __init__(self, radius, position, velocity, timestamp):
+            temp = Asteroid(Asteroid.rand_radius(),
+                            Asteroid.rand_pos(),
+                            Asteroid.rand_velocity(),
+                            time.time())
             self._ast_list.append(temp)
 
-def main():
-    con = Controller(3)
-    for i in con._ast_list:
-        print(f"{i}\n")
+    def simulate(self, seconds):
+        cur = datetime.now()
+        start = datetime(cur.year, cur.month, cur.day, cur.hour, cur.minute, cur.second + 1)
+        while datetime.now() < start:
+            time.sleep(Controller._ONE_MICROSECOND)
 
+        for i in range(seconds):
+            for ast in self._ast_list:
+                ast.move()
+                print(f"============== {datetime.now()} ==============")
+                print(ast)
+                time.sleep(1)
+
+
+def main():
+    con = Controller(2)
+    con.simulate(2)
 
 if __name__ == "__main__":
     main()
-
-
-
-# The __init__(self, ...) method must create some Asteroids and store
-# them in the list. Each Asteroid should be assigned a random
-# circumference, starting position and starting velocity. Let's make 100
-# Asteroids with circumferences in the range 1, 4, assuming that they are
-# starting in a cube that is 100 metres per side, and each asteroid should
-# have a velocity no greater than 5 metres per second in each direction.
-# Where should these methods go? In the controller? Or should some helper
-# COMP3522 Lab #1 Off With A Bang! 4
-# methods be added to the Asteroid (or Vector class if you have one)?
-# Consider encapsulation and information hiding.

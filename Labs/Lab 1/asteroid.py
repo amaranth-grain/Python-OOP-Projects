@@ -4,13 +4,12 @@ from datetime import datetime
 from vector import Vector
 
 '''
-Asteroid has circumference (calculated from radius) and timestamp on when it was
-created as attributes as records, but methods do not interact with these
-instance variables.
-Position and velocity are Vectors in 3D space and can be added.
+Asteroid position and velocity are Vectors in 3D space to keep track of movement.
+Methods do not interact with circumference or timestamp instance variables.
+Class variables are upper and lower bounds for randomly generated Asteroids.
 '''
 class Asteroid:
-    # Lifetime Asteroid ID of all Asteroids created
+    # Unique Asteroid ID tracking all Asteroids created
     _id = 0
     # Lower range for Asteroid radius
     _MIN_RADIUS = 1

@@ -13,6 +13,13 @@ class Library():
         """
         self._list = list
 
+    def get_cat(self):
+        """
+        Return Library Catalogue.
+        :return: Catalogue
+        """
+        return self._list
+
     def get_list(self):
         """
         Return Catalogue list of Items.
@@ -49,17 +56,28 @@ class Library():
         :param call_no: as String
         :return: a String message on result of checking out.
         """
-        lst = self.get_call_no_list()
-        if call_no in lst:
-            i = lst.index(call_no)
-            copies = self._list[i].get_copies()
+        cat = self._list.get_list()
+        if call_no in cat:
+            copies = cat[call_no].get_copies()
             if copies > 0:
-                self._list[i].set_copies(copies - 1)
-                return "The book has been checked out."
+                cat[call_no].set_copies(copies - 1)
+                return "\nItem has been checked out.\n"
             elif copies == 0:
-                return "No copies available at the moment."
+                return "\nNo copies available at this time.\n"
         else:
-            return "Book is not in catalogue."
+            return "\nYou cannot check out this item. No copies " \
+                   "available at this time.\n"
+        # lst = self.get_call_no_list()
+        # if call_no in lst:
+        #     i = lst.index(call_no)
+        #     copies = self._list[i].get_copies()
+        #     if copies > 0:
+        #         self._list[i].set_copies(copies - 1)
+        #         return "The book has been checked out."
+        #     elif copies == 0:
+        #         return "No copies available at the moment."
+        # else:
+        #     return "Book is not in catalogue."
 
     def return_item(self, call_no):
         """
@@ -71,10 +89,10 @@ class Library():
         if call_no in cat:
             copies = cat[call_no].get_copies()
             cat[call_no].set_copies(copies + 1)
-            return "Book has been returned."
+            return "\nItem has been returned.\n"
         else:
-            return "You cannot return this book. It is not in " \
-                   "the catalogue."
+            return "\nYou cannot return this item. It is not in " \
+                   "the catalogue.\n"
 
     def display_available_books(self):
         """

@@ -1,9 +1,21 @@
 from item import Item
 
 class Dvd(Item):
+    """
+    Represent a Dvd Item in Library Catalogue.
+    """
 
     def __init__(self, title, call_no, author, num_copies, release,
                  region):
+        """
+        Initialises a Dvd object.
+        :param title: as String
+        :param call_no: as String
+        :param author: as String
+        :param num_copies: as int
+        :param release: as String
+        :param region: as String
+        """
         self._release = release
         self._region = region
         super().__init__(title, call_no, author, num_copies)

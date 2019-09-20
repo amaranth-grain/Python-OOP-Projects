@@ -26,7 +26,7 @@ class Catalogue:
         Return list of Item titles in Catalogue
         :return: list of Strings
         """
-        return [item.get_title() for item in self._list]
+        return [v.get_title() for k, v in self._list.items()]
 
     def get_call_no_list(self):
         """
@@ -47,7 +47,7 @@ class Catalogue:
         elif len(close_matches) > 0:
             for title in close_matches:
                 temp = str(f"* {title}")
-            return temp
+            return f"\nClosest matches:\n {temp}\n"
         else:
             return "No matches found."
 
@@ -57,8 +57,9 @@ class Catalogue:
         collection.
         """
         item = LibraryItemGenerator.create_item()
-        if item.get_call_no() not in self._list.get_call_no_list():
-            self._list.append(item)
+        if item.get_call_no() not in self._list:
+            self._list[item.get_call_no()] = item
+            return "\nItem has been added.\n"
 
     def remove_item(self, call_no):
         """
@@ -67,10 +68,9 @@ class Catalogue:
         :param call_no: as String
         :return: as String
         """
-        if call_no in self.get_call_no_list():
-            i = self.get_call_no_list().index(call_no)
-            self._list.pop(i)
-            return "Book has been removed."
+        if call_no in self._list:
+            del self._list[call_no]
+            return "\nItem has been removed.\n"
         else:
-            return "This book is not currently in the catalogue. " \
+            return "\nThis item is not currently in the catalogue. " \
                    "Try again."

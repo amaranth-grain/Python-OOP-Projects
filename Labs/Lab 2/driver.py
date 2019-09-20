@@ -32,18 +32,18 @@ def main():
 
     while display_menu:
         print("What would you like to do?")
-        print("1. Find item by title")
+        print("1. Find item by title (String)")
         print("2. Add item to catalogue")
-        print("3. Remove item from catalogue")
-        print("4. Check out a copy")
-        print("5. Return your copy")
+        print("3. Remove item from catalogue (call no)")
+        print("4. Check out a copy (call no)")
+        print("5. Return your copy (call no)")
         print("6. Display library catalogue")
         print("7. Quit menu")
 
         choice = int(input("Select action: "))
 
         if choice == 2:
-            vpl.get_list().add_item()
+            vpl.get_cat().add_item()
         elif choice == 6:
             vpl.display_available_books()
         elif choice == 7:

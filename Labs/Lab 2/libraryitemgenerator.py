@@ -1,10 +1,19 @@
 from book import Book
+from dvd import Dvd
 from journal import Journal
 
 class LibraryItemGenerator:
+    """
+    Prompt for user to specify type of Library Item to generate.
+    Create Item based on user input.
+    """
 
     @staticmethod
-    def create_item(self):
+    def create_item():
+        """
+        Create Item based on user input.
+        :return: as Item
+        """
         print("What type of item would you like to add to"
               "the library catalogue?")
         print("1. Book")
@@ -13,7 +22,7 @@ class LibraryItemGenerator:
 
         choice = int(input("Select type of item: "))
 
-        title = input("Enter book title: ")
+        title = input("Enter title: ")
         call_no = input("Enter call number: ")
         author = input("Enter author name: ")
         num_copies = input("Enter the number of copies: ")
@@ -28,7 +37,8 @@ class LibraryItemGenerator:
                        region)
 
         if choice == 3:
+            name = input("Enter name of publication: ")
             issue = input("Enter issue number: ")
             publisher = input("Enter publisher: ")
-            return Journal(title, call_no, author, num_copies, issue,
-                           publisher)
+            return Journal(title, call_no, author, num_copies,
+                           name, issue, publisher)

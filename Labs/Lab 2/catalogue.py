@@ -33,7 +33,7 @@ class Catalogue:
         Return list of Item call numbers in Catalogue.
         :return: list of Strings
         """
-        return [item.get_call_no() for item in self._list]
+        return [item for item in self._list]
 
     def search(self, title):
         """
@@ -60,7 +60,7 @@ class Catalogue:
         if item.get_call_no() not in self._list.get_call_no_list():
             self._list.append(item)
 
-    def remove_book(self, call_no):
+    def remove_item(self, call_no):
         """
         Remove Item from Library's Catalogue by checking
         against call number.

@@ -1,97 +1,88 @@
-from difflib import get_close_matches
-
 from book import Book
 
 class Library():
     """
-        Initialise Library with list of books.
-        :param book_list as a list of Books
+        Library is responsible for checking out and returning
+        books.  Library has a Catalogue responsible for searching,
+        adding, and removing from Catalogue.
     """
-    def __init__(self, book_list):
-        self._book_list = book_list
+    def __init__(self, list):
+        """
+        Initialise Library with list of Items.
+        :param list: a Catalogue
+        """
+        self._list = list
 
-    '''
-        Return list of book titles in catalogue.
-    '''
+    def get_list(self):
+        """
+        Return Catalogue list of Items.
+        :return: a list of Items
+        """
+        return self._list.get_list()
+
     def get_title_list(self):
-        return [book.get_title() for book in self._book_list]
+        """
+        Return list of titles in Catalogue.
+        :return: list of Strings
+        """
+        return self._list.get_title_list()
 
     '''
-        Return list of call numbers in catalogue.
+        Return list of call numbers in Catalogue.
     '''
     def get_call_no_list(self):
-        return [book.get_call_no() for book in self._book_list]
+        return self._list.get_call_no_list()
 
-    '''
-        Find book in catalogue based on title.
-        :param title as String
-    '''
-    def find_books(self, title):
-        close_matches = get_close_matches(title, self.get_title_list())
-        if title in self.get_title_list():
-            return f"{title} is available in the library catalogoue."
-        elif len(close_matches) > 0:
-            for title in close_matches:
-                temp = str(f"* {title}")
-            return temp
-        else:
-            return "No matches found."
+    def search(self, title):
+        """
+        Search for Item in Catalogue
+        :param title: a String
+        :return: a String message on results of search
+        """
+        return self._list.search(title)
 
-    '''
-        Add book to catalogue if it's not already in the
-        collection.
-    '''
-    def add_book(self, book):
-        if book.get_call_no() not in self.get_call_no_list():
-            self._book_list.append(book)
-            return f"{book.get_title()} has been added to the " \
-                   "catalogue."
-        else:
-            return f"{book.get_title()} is already in the catalogue."
-
-    '''
-        Remove book from library catalogue by checking call number.    
-    '''
-    def remove_book(self, call_no):
-        if call_no in self.get_call_no_list():
-            i = self.get_call_no_list().index(call_no)
-            self._book_list.pop(i)
-            return "Book has been removed."
-        else:
-            return "This book is not currently in the catalogue. " \
-                   "Try again."
-
-    '''
-        Check out book in catalogue if there are copies available.
-    '''
     def check_out(self, call_no):
+        """
+        Check out an Item from Catalogue if
+        a) Item exists in Catalogue and
+        b) There is at least 1 copy available
+        :param call_no: as String
+        :return: a String message on result of checking out.
+        """
         lst = self.get_call_no_list()
         if call_no in lst:
             i = lst.index(call_no)
-            copies = self._book_list[i].get_copies()
+            copies = self._list[i].get_copies()
             if copies > 0:
-                self._book_list[i].set_copies(copies - 1)
+                self._list[i].set_copies(copies - 1)
                 return "The book has been checked out."
             elif copies == 0:
                 return "No copies available at the moment."
         else:
             return "Book is not in catalogue."
 
-    '''
-        If book is in the catalogue, return it to Library.
-    '''
-    def return_book(self, call_no):
-        if call_no in self.get_call_no_list():
-            i = self.get_call_no_list().index(call_no)
-            copies = self._book_list[i].get_copies()
-            self._book_list[i].set_copies(copies + 1)
+    def return_item(self, call_no):
+        """
+        Return Item to Library if Item is available in Catalogue.
+        :param call_no: as String
+        :return: a String message on the results of returning an Item
+        """
+        cat = self._list.get_list()
+        if call_no in cat:
+            copies = cat[call_no].get_copies()
+            cat[call_no].set_copies(copies + 1)
             return "Book has been returned."
         else:
             return "You cannot return this book. It is not in " \
                    "the catalogue."
 
     def display_available_books(self):
-        print(*self._book_list)
+        """
+        Display a formatted list of all Items in Catalogue
+        :return: a formatted String
+        """
+        for k, v in self._list.get_list().items():
+            print(v)
 
 
 def main():

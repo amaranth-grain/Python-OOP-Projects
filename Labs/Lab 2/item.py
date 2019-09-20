@@ -2,16 +2,10 @@ import abc
 
 class Item(abc.ABC):
     """
-    An Abstract Base Class that provides a simple interface that all
-    Library Items need to implement. Any class that inherits from this
-    class MUST implement all the @abstractmethods and
-    @abstractclassmethods.
+    Represents an Item that is stored in a Catalogue at the Library.
+    Any class that inherits from this class MUST implement all the
+    @abstractmethods and @abstractclassmethods.
     """
-
-    """
-        Represents an Item that is stored
-        in a Catalogue at the Library.
-        """
 
     def __init__(self, title, call_no, author, num_copies):
         """

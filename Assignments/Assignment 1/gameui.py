@@ -1,5 +1,5 @@
+from pokemon import PokemonCreator
 from pokemon import PokemonController
-
 
 class GameUI:
     """
@@ -20,7 +20,7 @@ class GameUI:
             user_input = int(input("\nSelect action: "))
 
             if user_input == 1:
-                PokemonController.hatch_pet()
+                pet = PokemonCreator.hatch_pet()
                 GameUI.display_pet_menu()
             else:
                 print("\nInvalid input. Try again.\n")

@@ -16,6 +16,11 @@ class Food(Consumable):
         return self._name
 
 
+class Medicine(Consumable):
+    def __init__(self, name="Cold Medicine", value="100"):
+        super().__init__(name, value)
+
+
 class Catalogue:
 
     food_items = {1: Food("Bloody Mary Drink"),

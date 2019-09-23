@@ -1,5 +1,6 @@
 from pokemon import PokemonCreator
 from pokemon import PokemonController
+from interaction import Catalogue
 
 class GameUI:
     """
@@ -20,7 +21,7 @@ class GameUI:
             user_input = int(input("\nSelect action: "))
 
             if user_input == 1:
-                pet = PokemonCreator.hatch_pet()
+                PokemonController.set_pet(PokemonCreator.hatch_pet())
                 GameUI.display_pet_menu()
             else:
                 print("\nInvalid input. Try again.\n")
@@ -32,7 +33,20 @@ class GameUI:
         Display list of available Food items.
         :return: None
         """
-        print("\nFood items go here.\n")
+        all_food = Catalogue.get_food_items()
+        all_food_list = Catalogue.food_items
+        disliked_food = PokemonController._pet._food_dislikes
+        liked_food = PokemonController._pet._food_likes
+        print("What do you want to feed your Pokemon?")
+        print(all_food)
+        user_input = int(input("Select item: "))
+        food_selected = all_food_list.get(user_input)
+        if food_selected in disliked_food:
+            print("Yuck!")
+        elif food_selected in liked_food:
+            print("Yum!")
+        else:
+            print("It\'s okay")
 
     # Consumable
     @staticmethod
@@ -76,9 +90,12 @@ class GameUI:
                              2: GameUI.display_give_item_menu,
                              3: GameUI.display_minigame_menu
                              }
+
             if user_input in range(1, 4):
-                pet_menu_dict.get(user_input, "\nInvalid input. Try "
-                                          "again.\n")()
+                print(pet_menu_dict.get(user_input)())
+                GameUI.display_pet_menu()
+            # print(f"More testing: "
+            #       f"{PokemonController.check_status()}")
 
     # Minigame
     @staticmethod

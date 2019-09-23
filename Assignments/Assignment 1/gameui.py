@@ -21,6 +21,7 @@ class GameUI:
             user_input = int(input("\nSelect action: "))
 
             if user_input == 1:
+                # PokemonController.set_pet(None)
                 PokemonController.set_pet(PokemonCreator.hatch_pet())
                 GameUI.display_pet_menu()
             else:
@@ -33,20 +34,24 @@ class GameUI:
         Display list of available Food items.
         :return: None
         """
-        all_food = Catalogue.get_food_items()
+        # all_food = Catalogue.get_food_items()
         all_food_list = Catalogue.food_items
         disliked_food = PokemonController._pet._food_dislikes
         liked_food = PokemonController._pet._food_likes
         print("What do you want to feed your Pokemon?")
-        print(all_food)
+        print(Catalogue.get_food_items())
         user_input = int(input("Select item: "))
         food_selected = all_food_list.get(user_input)
         if food_selected in disliked_food:
-            print("Yuck!")
+            print("\nYUCK! Your pet refuses to eat this.\n")
+            print(all_food)
         elif food_selected in liked_food:
-            print("Yum!")
+            print("\nYum! It's delicious!\n")
+            PokemonController.change_like_hunger(food_selected)
+
         else:
-            print("It\'s okay")
+            print("Mmm... it's okay.  Thanks.")
+            PokemonController.change_basic_hunger(food_selected)
 
     # Consumable
     @staticmethod
@@ -86,16 +91,22 @@ class GameUI:
             print("4. Quit game")
             user_input = int(input("\nSelect action: "))
 
-            pet_menu_dict = {1: PokemonController.check_status,
+            choices = {1: PokemonController.check_status,
                              2: GameUI.display_give_item_menu,
                              3: GameUI.display_minigame_menu
                              }
 
             if user_input in range(1, 4):
-                print(pet_menu_dict.get(user_input)())
-                GameUI.display_pet_menu()
-            # print(f"More testing: "
-            #       f"{PokemonController.check_status()}")
+                print(choices.get(user_input)())
+
+                if PokemonController._pet._is_alive:
+                    GameUI.display_pet_menu()
+                else:
+                    print(f"\n=========\n\n" \
+                          f"{PokemonController._pet._name} has died.\n"
+                          f"Would you like to start a new game?\n")
+                    GameUI.display_start_menu()
+
 
     # Minigame
     @staticmethod

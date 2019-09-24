@@ -1,5 +1,6 @@
 from datetime import datetime
 from peripherals import Catalogue
+from peripherals import Medicine
 from pokemon import PokemonCreator
 
 
@@ -44,16 +45,23 @@ class GameController:
             print(choices.get(user_input)())
 
     def display_item_menu(self):
-        print("\nWhich item would you like to give your pet?")
-        Catalogue.print_menu(Catalogue.item_menu)
-        user_input = int(input("Select action: "))
+        user_input = None
+        while user_input not in range(1, 4):
+            print("\nWhich item would you like to give your pet?")
+            Catalogue.print_menu(Catalogue.item_menu)
+            user_input = int(input("Select action: "))
 
-        # TODO 1: Medicine
-        choices = {1: self.display_food_menu,
-                   2: self.display_food_menu,
-                   3: self.display_pet_menu}
+            # TODO 1: Medicine
+            choices = {1: self.give_meds,
+                       2: self.display_food_menu,
+                       3: self.display_pet_menu}
 
-        choices.get(user_input)()
+            if user_input == 1:
+                choices.get(user_input)(Medicine())
+            elif user_input in range(2, 4):
+                choices.get(user_input)()
+            else:
+                print("\nInvalid input. Try again.\n")
 
     def display_food_menu(self):
         print("What do you want to feed your Pokemon?")
@@ -88,14 +96,14 @@ class GameController:
         self.change_bar(self.pet.happiness)
         self.change_bar(self.pet.hunger)
         self._timestamp = datetime.now()
-        self.get_sick()
+        self.check_sickness()
         if self.pet.health.curr > 0:
             return f"\n{self.pet}"
         else:
             print("Your pet has died :(\n"
                   "Create a new one now.")
             self.pet = None
-            PokemonCreator.hatch_pet()
+            self.pet = PokemonCreator.hatch_pet()
             # return f"\nYour pet has died. :(\n Create a new one " \
             #        f"now.\n" \
             #        f"{PokemonCreator.hatch_pet()}"
@@ -106,7 +114,12 @@ class GameController:
     def feed_neutral(self, food):
         self.pet.hunger.curr += food._value
 
-    def get_sick(self):
+    def give_meds(self, meds):
+        self.pet.health.curr += meds._value
+        print(f"\n{self.pet.name} took {meds._name} and feels a lot " \
+              f"better!\n")
+
+    def check_sickness(self):
         if self.pet.health.curr < self.pet.sick_threshold:
             self.pet._is_sick = True
 

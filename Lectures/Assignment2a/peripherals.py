@@ -18,7 +18,7 @@ class Food(Consumable):
 
 
 class Medicine(Consumable):
-    def __init__(self, name="Cold Medicine", value="100"):
+    def __init__(self, name="Cold Medicine", value=100):
         super().__init__(name, value)
 
 

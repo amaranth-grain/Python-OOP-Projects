@@ -21,13 +21,13 @@ class GameController:
 
             if user_input == 1:
                 self.pet = PokemonCreator.hatch_pet()
-                self.display_pet_menu()
+                self.pet_menu()
             elif user_input == 2:
                 print("\nThanks for playing.\n")
             else:
                 print("\nInvalid input. Try again.\n")
 
-    def display_pet_menu(self):
+    def pet_menu(self):
         """
         Display list of possible pet interactions.
         :return: None
@@ -39,22 +39,26 @@ class GameController:
 
             # TODO 3: minigame
             choices = {1: self.check_status,
-                       2: self.display_item_menu,
-                       3: self.display_item_menu}
+                       2: self.item_menu,
+                       3: self.item_menu}
 
-            print(choices.get(user_input)())
+            if user_input in range(1, 4):
+                print(choices.get(user_input)())
+            elif user_input == 4:
+                print("\nThanks for playing.\n")
+            else:
+                print("\nInvalid input. Try again.\n")
 
-    def display_item_menu(self):
+    def item_menu(self):
         user_input = None
         while user_input not in range(1, 4):
             print("\nWhich item would you like to give your pet?")
             Catalogue.print_menu(Catalogue.item_menu)
             user_input = int(input("Select action: "))
 
-            # TODO 1: Medicine
             choices = {1: self.give_meds,
-                       2: self.display_food_menu,
-                       3: self.display_pet_menu}
+                       2: self.food_menu,
+                       3: self.pet_menu}
 
             if user_input == 1:
                 choices.get(user_input)(Medicine())
@@ -63,7 +67,7 @@ class GameController:
             else:
                 print("\nInvalid input. Try again.\n")
 
-    def display_food_menu(self):
+    def food_menu(self):
         print("What do you want to feed your Pokemon?")
         Catalogue.print_food()
 
@@ -97,6 +101,11 @@ class GameController:
         self.change_bar(self.pet.hunger)
         self._timestamp = datetime.now()
         self.check_sickness()
+
+        if self.pet.hunger.curr > 99:
+            self.pet.health.rate *= 2
+            print("\nI'm so hungry...\n")
+
         if self.pet.health.curr > 0:
             return f"\n{self.pet}"
         else:
@@ -115,9 +124,13 @@ class GameController:
         self.pet.hunger.curr += food._value
 
     def give_meds(self, meds):
-        self.pet.health.curr += meds._value
-        print(f"\n{self.pet.name} took {meds._name} and feels a lot " \
-              f"better!\n")
+        if self.pet._is_sick:
+            self.pet.health.curr += meds._value
+            self.pet._is_sick = False
+            print(f"\n{self.pet.name} took {meds._name} and feels a lot " \
+                  f"better!\n")
+        else:
+            print(f"YUCK! I'm not sick. I don't want any {meds._name}.")
 
     def check_sickness(self):
         if self.pet.health.curr < self.pet.sick_threshold:

@@ -12,7 +12,8 @@ class Food(Consumable):
         super().__init__(name, value)
         self._like_multiplier = like_multiplier
 
-    def get_name(self):
+    @property
+    def name(self):
         return self._name
 
 
@@ -32,6 +33,7 @@ class StatusBar():
         self.max = max
         self.multiplier = multiplier
 
+
 class Catalogue:
     """
     Store catalogue of information used in Tamagotchi simulation.
@@ -49,8 +51,8 @@ class Catalogue:
                      2: "Water, Fire, Grass",
                      3: "Whack-a-Drilbur"}
 
-    items_menu = {1: "Food",
-                  2: "Medicine",
+    item_menu = {1: "Medicine",
+                  2: "Food",
                   3: "Back"}
 
     food_items = {1: Food("Bloody Mary Drink"),
@@ -129,7 +131,7 @@ class Catalogue:
         output = ""
         count = 1
         for k, v in cls.food_items.items():
-            output += f"{k}. {v.get_name()}\t\t"
+            output += f"{k}. {v.name}\t\t"
             if count % 6 == 0:
                 output += "\n"
             count += 1

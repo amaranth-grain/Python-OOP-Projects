@@ -4,6 +4,7 @@ from datetime import datetime
 from peripherals import StatusBar
 from peripherals import Catalogue
 
+
 class Pokemon(ABC):
 
     def __init__(self, name, species, health, happiness, hunger):
@@ -69,9 +70,9 @@ class Scorbunny(Pokemon):
                  health=StatusBar(-1),
                  happiness=StatusBar(-1.5),
                  hunger=StatusBar(2.1, 0),
-                 food_likes = Catalogue.scorbunny_likes,
-                 food_dislikes = Catalogue.scorbunny_dislikes,
-                 moods = Catalogue.scorbunny_moods):
+                 food_likes=Catalogue.scorbunny_likes,
+                 food_dislikes=Catalogue.scorbunny_dislikes,
+                 moods=Catalogue.scorbunny_moods):
         super().__init__(name, species, health, happiness, hunger)
         self._species = species
         self._health = health
@@ -102,9 +103,9 @@ class Crobat(Pokemon):
                  health=StatusBar(-1.8),
                  happiness=StatusBar(-1.2),
                  hunger=StatusBar(1.5, 0),
-                 food_likes = Catalogue.crobat_likes,
-                 food_dislikes = Catalogue.crobat_dislikes,
-                 moods = Catalogue.crobat_moods):
+                 food_likes=Catalogue.crobat_likes,
+                 food_dislikes=Catalogue.crobat_dislikes,
+                 moods=Catalogue.crobat_moods):
         super().__init__(name, species, health, happiness, hunger)
         self._species = species
         self._health = health
@@ -137,9 +138,9 @@ class Sirfetchd(Pokemon):
                  health=StatusBar(-0.8),
                  happiness=StatusBar(-1.7),
                  hunger=StatusBar(1.1, 0),
-                 food_likes = Catalogue.sirfetchd_likes,
-                 food_dislikes = Catalogue.sirfetchd_dislikes,
-                 moods = Catalogue.sirfetchd_moods):
+                 food_likes=Catalogue.sirfetchd_likes,
+                 food_dislikes=Catalogue.sirfetchd_dislikes,
+                 moods=Catalogue.sirfetchd_moods):
         super().__init__(name, species, health, happiness, hunger)
         self._species = species
         self._health = health
@@ -198,6 +199,7 @@ def main():
 
     duck = Sirfetchd("Ducky")
     print(duck)
+
 
 if __name__ == "__main__":
     main()

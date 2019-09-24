@@ -7,14 +7,15 @@ from peripherals import Catalogue
 
 class Pokemon(ABC):
 
-    def __init__(self, name, species, health, happiness, hunger):
+    def __init__(self, name, species, health, happiness, hunger,
+                 sick_threshold, is_sick=False):
         self._name = name
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
-        self._is_alive = True
-        self._is_sick = False
+        self._sick_threshold = sick_threshold
+        self._is_sick = is_sick
         self._timestamp = datetime.now()
 
     @property
@@ -36,6 +37,10 @@ class Pokemon(ABC):
     @property
     def hunger(self):
         return self._hunger
+
+    @property
+    def sick_threshold(self):
+        return self._sick_threshold
 
     def die(self):
         self._is_alive = False
@@ -70,14 +75,18 @@ class Scorbunny(Pokemon):
                  health=StatusBar(-1),
                  happiness=StatusBar(-1.5),
                  hunger=StatusBar(2.1, 0),
+                 is_sick=False,
+                 sick_threshold=85,
                  food_likes=Catalogue.scorbunny_likes,
                  food_dislikes=Catalogue.scorbunny_dislikes,
                  moods=Catalogue.scorbunny_moods):
-        super().__init__(name, species, health, happiness, hunger)
+        super().__init__(name, species, health, happiness, hunger,
+                         sick_threshold, is_sick)
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
+        self._sick_threshold = sick_threshold
         self._food_likes = food_likes
         self._food_dislikes = food_dislikes
         self._moods = moods
@@ -103,14 +112,18 @@ class Crobat(Pokemon):
                  health=StatusBar(-1.8),
                  happiness=StatusBar(-1.2),
                  hunger=StatusBar(1.5, 0),
+                 is_sick=False,
+                 sick_threshold=80,
                  food_likes=Catalogue.crobat_likes,
                  food_dislikes=Catalogue.crobat_dislikes,
                  moods=Catalogue.crobat_moods):
-        super().__init__(name, species, health, happiness, hunger)
+        super().__init__(name, species, health, happiness, hunger,
+                         sick_threshold, is_sick)
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
+        self._sick_threshold = sick_threshold
         self._food_likes = food_likes
         self._food_dislikes = food_dislikes
         self._moods = moods
@@ -127,7 +140,7 @@ class Crobat(Pokemon):
                f"{Catalogue.str_preferences(Catalogue.crobat_likes)} " \
                f"\n" \
                f"== Food Disikes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.crobat_likes)} " \
+               f"{Catalogue.str_preferences(Catalogue.crobat_dislikes)} " \
                f"\n" \
                f"Timestamp: {self._timestamp}\n"
 
@@ -138,14 +151,18 @@ class Sirfetchd(Pokemon):
                  health=StatusBar(-0.8),
                  happiness=StatusBar(-1.7),
                  hunger=StatusBar(1.1, 0),
+                 is_sick=False,
+                 sick_threshold=90,
                  food_likes=Catalogue.sirfetchd_likes,
                  food_dislikes=Catalogue.sirfetchd_dislikes,
                  moods=Catalogue.sirfetchd_moods):
-        super().__init__(name, species, health, happiness, hunger)
+        super().__init__(name, species, health, happiness, hunger,
+                         sick_threshold, is_sick)
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
+        self._sick_threshold = self._sick_threshold
         self._food_likes = food_likes
         self._food_dislikes = food_dislikes
         self._moods = moods
@@ -162,7 +179,7 @@ class Sirfetchd(Pokemon):
                f"{Catalogue.str_preferences(Catalogue.sirfetchd_likes)} " \
                f"\n" \
                f"== Food Disikes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.sirfetchd_likes)} " \
+               f"{Catalogue.str_preferences(Catalogue.sirfetchd_dislikes)} " \
                f"\n" \
                f"Timestamp: {self._timestamp}\n"
 
@@ -188,6 +205,11 @@ class PokemonCreator:
         pet = pokemon(name)
 
         return pet
+
+    @classmethod
+    def hatch_again(cls):
+        print("Your pet has died. :(\n")
+
 
 
 def main():

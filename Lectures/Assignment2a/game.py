@@ -8,6 +8,7 @@ class GameController:
         self.pet = None
 
     def start(self):
+
         """
         Display start menu (with no Pokemon hatched).
         :return: None
@@ -87,11 +88,17 @@ class GameController:
         self.change_bar(self.pet.happiness)
         self.change_bar(self.pet.hunger)
         self._timestamp = datetime.now()
-
+        self.get_sick()
         if self.pet.health.curr > 0:
             return f"\n{self.pet}"
         else:
-            return f"\nYour pet has died. :("
+            print("Your pet has died :(\n"
+                  "Create a new one now.")
+            self.pet = None
+            PokemonCreator.hatch_pet()
+            # return f"\nYour pet has died. :(\n Create a new one " \
+            #        f"now.\n" \
+            #        f"{PokemonCreator.hatch_pet()}"
 
     def feed_like(self, food):
         self.pet.hunger.curr += food._value * food._like_multiplier
@@ -99,7 +106,9 @@ class GameController:
     def feed_neutral(self, food):
         self.pet.hunger.curr += food._value
 
-
+    def get_sick(self):
+        if self.pet.health.curr < self.pet.sick_threshold:
+            self.pet._is_sick = True
 
 
 def main():

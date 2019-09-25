@@ -4,16 +4,8 @@ import random
 
 class Consumable(ABC):
     def __init__(self, name, value):
-        self._name = name
-        self._value = value
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def value(self):
-        return self._value
+        self.name = name
+        self.value = value
 
 
 class Food(Consumable):
@@ -25,10 +17,6 @@ class Food(Consumable):
     def __init__(self, name, value=-40, like_multiplier=1.1):
         super().__init__(name, value)
         self.like_multiplier = like_multiplier
-
-    @property
-    def name(self):
-        return self._name
 
 
 class Medicine(Consumable):
@@ -55,6 +43,7 @@ class StatusBar:
 
 
 class Minigame:
+
     @classmethod
     def guess(cls, guess):
         answer = random.choice(Catalogue.starters)

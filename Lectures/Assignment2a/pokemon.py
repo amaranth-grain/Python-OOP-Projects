@@ -7,64 +7,24 @@ from peripherals import Catalogue
 
 class Pokemon(ABC):
 
-    def __init__(self, name, species, health, happiness, hunger,
-                 sick_threshold, is_sick=False,
-                 timestamp=datetime.now()):
-        self._name = name
-        self._species = species
-        self._health = health
-        self._happiness = happiness
-        self._hunger = hunger
-        self._sick_threshold = sick_threshold
-        self._is_sick = is_sick
-        self._timestamp = timestamp
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def species(self):
-        return self._species
-
-    @property
-    def health(self):
-        return self._health
-
-    @property
-    def happiness(self):
-        return self._happiness
-
-    @property
-    def hunger(self):
-        return self._hunger
-
-    @property
-    def is_sick(self):
-        return self._is_sick
-
-    @property
-    def sick_threshold(self):
-        return self._sick_threshold
-
-    @property
-    def timestamp(self):
-        return self._timestamp
-
-    @timestamp.setter
-    def timestamp(self, ts):
-        self._timestamp = ts
-
-    def die(self):
-        self._is_alive = False
+    def __init__(self, name):
+        self.name = name
+        self.timestamp = datetime.now()
+        self.species = None
+        self.game_happiness = None
+        self.health = None
+        self.happiness = None
+        self.hunger = None
+        self.sick_threshold = None
+        self.is_sick = False
 
     def __str__(self):
         """
         Format string for displaying Pokemon status.
         :return: as String
         """
-        feel = "Sick" if self._is_sick else "Healthy"
-        kaomoji = self._moods.get(random.choice(list(self._moods)))
+        feel = "Sick" if self.is_sick else "Healthy"
+        kaomoji = self.moods.get(random.choice(list(self.moods)))
 
         return f"== {self.name} the {self.species}'s Stats ===\n" \
                f"Health rate: \t {self.health.rate} / s\n" \
@@ -83,128 +43,116 @@ class Pokemon(ABC):
 
 
 class Scorbunny(Pokemon):
-    def __init__(self, name,
-                 species="Scorbunny",
-                 health=StatusBar(-1),
-                 happiness=StatusBar(-1.5),
-                 hunger=StatusBar(2.1, 0),
-                 is_sick=False,
-                 sick_threshold=85,
-                 food_likes=Catalogue.scorbunny_likes,
-                 food_dislikes=Catalogue.scorbunny_dislikes,
-                 moods=Catalogue.scorbunny_moods,
-                 timestamp=datetime.now()):
-        super().__init__(name, species, health, happiness, hunger,
-                         sick_threshold, is_sick, timestamp)
-        self._species = species
-        self._health = health
-        self._happiness = happiness
-        self._hunger = hunger
-        self._sick_threshold = sick_threshold
-        self.food_likes = food_likes
-        self.food_dislikes = food_dislikes
-        self._moods = moods
+    GAME_HAPPINESS = 50
+    HEALTH_RATE = -1
+    HAPPINESS_RATE = -1.5
+    HUNGER_RATE = 2.1
+    HUNGER_START_VAL = 0
+    SICK_THRESHOLD = 85
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.species = "Scorbunny"
+        self.game_happiness = Scorbunny.GAME_HAPPINESS
+        self.health = StatusBar(Scorbunny.HEALTH_RATE)
+        self.happiness = StatusBar(Scorbunny.HAPPINESS_RATE)
+        self.hunger = StatusBar(Scorbunny.HUNGER_RATE,
+                                Scorbunny.HUNGER_START_VAL)
+        self.sick_threshold = Scorbunny.SICK_THRESHOLD
+        self.is_sick = False
+        self.food_likes = Catalogue.scorbunny_likes
+        self.food_dislikes = Catalogue.scorbunny_dislikes
+        self.moods = Catalogue.scorbunny_moods
 
     def __str__(self):
         """
         Format string for displaying Pokemon status.
         :return: as String
         """
-        feel = "Sick" if self._is_sick else "Healthy"
-
-        return f"{super().__str__()}" \
+        return f"{super().__str__()}\n" \
                f"=== Food Likes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.scorbunny_likes)} \n" \
+               f"{Catalogue.str_preferences(self.food_likes)} \n" \
                f"== Food Disikes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.scorbunny_dislikes)} \n" \
-               f"Timestamp: {self._timestamp}\n"
+               f"{Catalogue.str_preferences(self.food_dislikes)} \n" \
+
 
 
 class Crobat(Pokemon):
-    def __init__(self, name,
-                 species="Crobat",
-                 health=StatusBar(-1.8),
-                 happiness=StatusBar(-1.2),
-                 hunger=StatusBar(1.5, 0),
-                 is_sick=False,
-                 sick_threshold=80,
-                 food_likes=Catalogue.crobat_likes,
-                 food_dislikes=Catalogue.crobat_dislikes,
-                 moods=Catalogue.crobat_moods,
-                 timestamp=datetime.now()):
-        super().__init__(name, species, health, happiness, hunger,
-                         sick_threshold, is_sick, timestamp)
-        self._species = species
-        self._health = health
-        self._happiness = happiness
-        self._hunger = hunger
-        self._sick_threshold = sick_threshold
-        self.food_likes = food_likes
-        self.food_dislikes = food_dislikes
-        self._moods = moods
+    GAME_HAPPINESS = 60
+    HEALTH_RATE = -1.1
+    HAPPINESS_RATE = -1.2
+    HUNGER_RATE = 1.3
+    HUNGER_START_VAL = 0
+    SICK_THRESHOLD = 78
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.species = "Crobat"
+        self.game_happiness = Crobat.GAME_HAPPINESS
+        self.health = StatusBar(Crobat.HEALTH_RATE)
+        self.happiness = StatusBar(Crobat.HAPPINESS_RATE)
+        self.hunger = StatusBar(Crobat.HUNGER_RATE,
+                                Crobat.HUNGER_START_VAL)
+        self.sick_threshold = Crobat.SICK_THRESHOLD
+        self.is_sick = False
+        self.food_likes = Catalogue.crobat_likes
+        self.food_dislikes = Catalogue.crobat_dislikes
+        self.moods = Catalogue.crobat_moods
 
     def __str__(self):
         """
         Format string for displaying Pokemon status.
         :return: as String
         """
-        feel = "Sick" if self._is_sick else "Healthy"
-
         return f"{super().__str__()}" \
                f"=== Food Likes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.crobat_likes)} " \
+               f"{Catalogue.str_preferences(self.food_likes)} " \
                f"\n" \
                f"== Food Disikes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.crobat_dislikes)} " \
-               f"\n" \
-               f"Timestamp: {self._timestamp}\n"
+               f"{Catalogue.str_preferences(self.food_dislikes)} " \
+               f"\n"
 
 
 class Sirfetchd(Pokemon):
-    def __init__(self, name,
-                 species="Sirfetchd",
-                 health=StatusBar(-0.8),
-                 happiness=StatusBar(-1.7),
-                 hunger=StatusBar(1.1, 0),
-                 is_sick=False,
-                 sick_threshold=90,
-                 food_likes=Catalogue.sirfetchd_likes,
-                 food_dislikes=Catalogue.sirfetchd_dislikes,
-                 moods=Catalogue.sirfetchd_moods,
-                 timestamp=datetime.now()):
-        super().__init__(name, species, health, happiness, hunger,
-                         sick_threshold, is_sick, timestamp)
-        self._species = species
-        self._health = health
-        self._happiness = happiness
-        self._hunger = hunger
-        self._sick_threshold = self._sick_threshold
-        self.food_likes = food_likes
-        self.food_dislikes = food_dislikes
-        self._moods = moods
+    GAME_HAPPINESS = 62
+    HEALTH_RATE = -1.2
+    HAPPINESS_RATE = -1.3
+    HUNGER_RATE = 1.4
+    HUNGER_START_VAL = 0
+    SICK_THRESHOLD = 76
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.species = "Sirfetchd"
+        self.game_happiness = Sirfetchd.GAME_HAPPINESS
+        self.health = StatusBar(Sirfetchd.HEALTH_RATE)
+        self.happiness = StatusBar(Sirfetchd.HAPPINESS_RATE)
+        self.hunger = StatusBar(Sirfetchd.HUNGER_RATE,
+                                Sirfetchd.HUNGER_START_VAL)
+        self.sick_threshold = Sirfetchd.SICK_THRESHOLD
+        self.is_sick = False
+        self.food_likes = Catalogue.sirfetchd_likes
+        self.food_dislikes = Catalogue.sirfetchd_dislikes
+        self.moods = Catalogue.sirfetchd_moods
 
     def __str__(self):
         """
         Format string for displaying Pokemon status.
         :return: as String
         """
-        feel = "Sick" if self._is_sick else "Healthy"
-
         return f"{super().__str__()}" \
                f"=== Food Likes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.sirfetchd_likes)} " \
+               f"{Catalogue.str_preferences(self.food_likes)} " \
                f"\n" \
                f"== Food Disikes ===\n" \
-               f"{Catalogue.str_preferences(Catalogue.sirfetchd_dislikes)} " \
-               f"\n" \
-               f"Timestamp: {self._timestamp}\n"
+               f"{Catalogue.str_preferences(self.food_dislikes)} " \
+               f"\n"
 
 
 class PokemonCreator:
     pets = {1: Scorbunny,
-            2: Crobat,
-            3: Sirfetchd}
-
+               2: Crobat,
+               3: Sirfetchd}
     """
     Create a random Pokemon.
     """
@@ -216,7 +164,7 @@ class PokemonCreator:
         :return: as Pokemon
         """
         name = input("\nGive a name to your Pokemon: ")
-
+        # print(list(cls.pets.items()))  # TODO : Make sure this works
         pokemon = cls.pets.get(random.choice(list(cls.pets)))
         pet = pokemon(name)
 
@@ -225,7 +173,6 @@ class PokemonCreator:
     @classmethod
     def hatch_again(cls):
         print("Your pet has died. :(\n")
-
 
 
 def main():

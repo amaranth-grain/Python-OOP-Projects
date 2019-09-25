@@ -1,4 +1,5 @@
 from abc import ABC
+import random
 
 
 class Consumable(ABC):
@@ -6,11 +7,24 @@ class Consumable(ABC):
         self._name = name
         self._value = value
 
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def value(self):
+        return self._value
+
 
 class Food(Consumable):
+    """
+    Represent Food object that Pokemon can interact with.
+    Like multiplier is used on the Food's base value when
+    the Food is one that the Pokemon likes (food_likes attr)
+    """
     def __init__(self, name, value=-40, like_multiplier=1.1):
         super().__init__(name, value)
-        self._like_multiplier = like_multiplier
+        self.like_multiplier = like_multiplier
 
     @property
     def name(self):
@@ -18,20 +32,55 @@ class Food(Consumable):
 
 
 class Medicine(Consumable):
+    """
+    Represent Medicine object that Pokemon can interact with.
+    Medicine is seperate from Consumable class in anticipation
+    of future expansion (e.g. Drink class).
+    """
     def __init__(self, name="Cold Medicine", value=100):
         super().__init__(name, value)
 
 
-class StatusBar():
+class StatusBar:
     """
     Represent a Pokemon status with ongoing changing values.
     """
     def __init__(self, rate=-1.0, curr=100, max=100,
-                 multiplier=1.0):
+                 original_rate=1.0, multiplier=2.0):
         self.rate = rate
         self.curr = int(curr)
         self.max = max
+        self.original_rate = original_rate
         self.multiplier = multiplier
+
+
+class Minigame:
+    @classmethod
+    def guess(cls, guess):
+        answer = random.choice(Catalogue.starters)
+        output = f"\nYou guessed {guess}.\n"
+        if answer == guess:
+            output += "You got it right! Wowza!\n" \
+                      "Your pet thinks this is really exciting!\n"
+        else:
+            output += f"The answer was actually {answer}!\n" \
+                      f"Your pet seems happy you guessed it wrong.\n"
+        return output
+
+    @classmethod
+    def guess2(cls, guess):
+        return f"\nYou guess {guess}! You got it wrong, but \n" \
+               f"your pet seems to be having fun.\n"
+
+    @classmethod
+    def elements(cls, el1, el2):
+        return f"\nYou pick {el1}. Your pet picks {el2}.\n" \
+               f"This is really fun!\n"
+
+    @classmethod
+    def whack(cls, num):
+        return f"\nYou whacked {num} Drilburs!\n" \
+               f"Whack, whack, whack!\n"
 
 
 class Catalogue:
@@ -49,11 +98,24 @@ class Catalogue:
 
     minigame_menu = {1: "Guess that Pokemon!",
                      2: "Water, Fire, Grass",
-                     3: "Whack-a-Drilbur"}
+                     3: "Whack-a-Drilbur",
+                     4: "Back"}
+
+    elements = ["Water", "Fire", "Grass"]
+
+    starters = ["Bulbasaur", "Charmander", "Squirtle",
+                "Pikachu", "Eevee",
+                "Chikorita", "Cyndaquil", "Totodile",
+                "Treecko", "Torchic", "Mudkip",
+                "Turtwig", "Chimchar", "Piplup",
+                "Snivy", "Tepig", "Oshawott",
+                "Chespin", "Fennekin", "Froakie",
+                "Rowlet", "Litten", "Popplio",
+                "Grookey", "Scorbunny", "Sobble"]
 
     item_menu = {1: "Medicine",
-                  2: "Food",
-                  3: "Back"}
+                 2: "Food",
+                 3: "Back"}
 
     food_items = {1: Food("Bloody Mary Drink"),
                   2: Food("Buttered Leeks"),

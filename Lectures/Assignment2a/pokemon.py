@@ -8,7 +8,8 @@ from peripherals import Catalogue
 class Pokemon(ABC):
 
     def __init__(self, name, species, health, happiness, hunger,
-                 sick_threshold, is_sick=False):
+                 sick_threshold, is_sick=False,
+                 timestamp=datetime.now()):
         self._name = name
         self._species = species
         self._health = health
@@ -16,7 +17,7 @@ class Pokemon(ABC):
         self._hunger = hunger
         self._sick_threshold = sick_threshold
         self._is_sick = is_sick
-        self._timestamp = datetime.now()
+        self._timestamp = timestamp
 
     @property
     def name(self):
@@ -39,8 +40,20 @@ class Pokemon(ABC):
         return self._hunger
 
     @property
+    def is_sick(self):
+        return self._is_sick
+
+    @property
     def sick_threshold(self):
         return self._sick_threshold
+
+    @property
+    def timestamp(self):
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, ts):
+        self._timestamp = ts
 
     def die(self):
         self._is_alive = False
@@ -79,16 +92,17 @@ class Scorbunny(Pokemon):
                  sick_threshold=85,
                  food_likes=Catalogue.scorbunny_likes,
                  food_dislikes=Catalogue.scorbunny_dislikes,
-                 moods=Catalogue.scorbunny_moods):
+                 moods=Catalogue.scorbunny_moods,
+                 timestamp=datetime.now()):
         super().__init__(name, species, health, happiness, hunger,
-                         sick_threshold, is_sick)
+                         sick_threshold, is_sick, timestamp)
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
         self._sick_threshold = sick_threshold
-        self._food_likes = food_likes
-        self._food_dislikes = food_dislikes
+        self.food_likes = food_likes
+        self.food_dislikes = food_dislikes
         self._moods = moods
 
     def __str__(self):
@@ -116,16 +130,17 @@ class Crobat(Pokemon):
                  sick_threshold=80,
                  food_likes=Catalogue.crobat_likes,
                  food_dislikes=Catalogue.crobat_dislikes,
-                 moods=Catalogue.crobat_moods):
+                 moods=Catalogue.crobat_moods,
+                 timestamp=datetime.now()):
         super().__init__(name, species, health, happiness, hunger,
-                         sick_threshold, is_sick)
+                         sick_threshold, is_sick, timestamp)
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
         self._sick_threshold = sick_threshold
-        self._food_likes = food_likes
-        self._food_dislikes = food_dislikes
+        self.food_likes = food_likes
+        self.food_dislikes = food_dislikes
         self._moods = moods
 
     def __str__(self):
@@ -155,16 +170,17 @@ class Sirfetchd(Pokemon):
                  sick_threshold=90,
                  food_likes=Catalogue.sirfetchd_likes,
                  food_dislikes=Catalogue.sirfetchd_dislikes,
-                 moods=Catalogue.sirfetchd_moods):
+                 moods=Catalogue.sirfetchd_moods,
+                 timestamp=datetime.now()):
         super().__init__(name, species, health, happiness, hunger,
-                         sick_threshold, is_sick)
+                         sick_threshold, is_sick, timestamp)
         self._species = species
         self._health = health
         self._happiness = happiness
         self._hunger = hunger
         self._sick_threshold = self._sick_threshold
-        self._food_likes = food_likes
-        self._food_dislikes = food_dislikes
+        self.food_likes = food_likes
+        self.food_dislikes = food_dislikes
         self._moods = moods
 
     def __str__(self):

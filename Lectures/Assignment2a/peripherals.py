@@ -43,9 +43,16 @@ class StatusBar:
 
 
 class Minigame:
-
+    """
+    Print messages associated with each Minigame.
+    """
     @classmethod
     def guess(cls, guess):
+        """
+        Guess that Pokemon game.
+        :param guess: as String
+        :return: String
+        """
         answer = random.choice(Catalogue.starters)
         output = f"\nYou guessed {guess}.\n"
         if answer == guess:
@@ -56,18 +63,25 @@ class Minigame:
                       f"Your pet seems happy you guessed it wrong.\n"
         return output
 
-    @classmethod
-    def guess2(cls, guess):
-        return f"\nYou guess {guess}! You got it wrong, but \n" \
-               f"your pet seems to be having fun.\n"
 
     @classmethod
     def elements(cls, el1, el2):
+        """
+        Pokemon version of Rock, Paper, Scissors.
+        :param el1: as Catalogue.elements element
+        :param el2: as Catalogue.elements element
+        :return: String
+        """
         return f"\nYou pick {el1}. Your pet picks {el2}.\n" \
                f"This is really fun!\n"
 
     @classmethod
     def whack(cls, num):
+        """
+        Simulates a Whack-a-Drilbur
+        :param num: as int
+        :return: String
+        """
         return f"\nYou whacked {num} Drilburs!\n" \
                f"Whack, whack, whack!\n"
 
@@ -162,13 +176,6 @@ class Catalogue:
                        "frustrated": "frustrated\n(⊙ө⊙)",
                        "neutral": "neutral\n( ˘⊖˘)",
                        "angry": "angry\n(｀Θ´)"}
-
-    @classmethod
-    def str_preferences(cls, menu):
-        output = ""
-        for item in menu:
-            output += f"* {item} \n"
-        return output
 
     @classmethod
     def print_menu(cls, menu):

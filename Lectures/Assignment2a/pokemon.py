@@ -6,6 +6,9 @@ from peripherals import Catalogue
 
 
 class Pokemon(ABC):
+    """
+    Skeleton for individual subclass Pokemon species.
+    """
 
     def __init__(self, name):
         self.name = name
@@ -43,6 +46,11 @@ class Pokemon(ABC):
 
 
 class Scorbunny(Pokemon):
+    """
+    All Scorbunnies have the same traits.
+    To add variance, set class variables with a range using
+    random.randint() instead of specific values.
+    """
     GAME_HAPPINESS = 50
     HEALTH_RATE = -1
     HAPPINESS_RATE = -1.5
@@ -73,11 +81,15 @@ class Scorbunny(Pokemon):
                f"=== Food Likes ===\n" \
                f"{Catalogue.str_preferences(self.food_likes)} \n" \
                f"== Food Disikes ===\n" \
-               f"{Catalogue.str_preferences(self.food_dislikes)} \n" \
-
+               f"{Catalogue.str_preferences(self.food_dislikes)} \n"
 
 
 class Crobat(Pokemon):
+    """
+    All Crobats have the same traits.
+    To add variance, set class variables with a range using
+    random.randint() instead of specific values.
+    """
     GAME_HAPPINESS = 60
     HEALTH_RATE = -1.1
     HAPPINESS_RATE = -1.2
@@ -114,6 +126,11 @@ class Crobat(Pokemon):
 
 
 class Sirfetchd(Pokemon):
+    """
+    All Sirfetchd have the same traits.
+    To add variance, set class variables with a range using
+    random.randint() instead of specific values.
+    """
     GAME_HAPPINESS = 62
     HEALTH_RATE = -1.2
     HAPPINESS_RATE = -1.3
@@ -150,12 +167,12 @@ class Sirfetchd(Pokemon):
 
 
 class PokemonCreator:
+    """
+    Create a new Pokemon object randomly based on class variable pets.
+    """
     pets = {1: Scorbunny,
-               2: Crobat,
-               3: Sirfetchd}
-    """
-    Create a random Pokemon.
-    """
+            2: Crobat,
+            3: Sirfetchd}
 
     @classmethod
     def hatch_pet(cls):
@@ -164,24 +181,13 @@ class PokemonCreator:
         :return: as Pokemon
         """
         name = input("\nGive a name to your Pokemon: ")
-        # print(list(cls.pets.items()))  # TODO : Make sure this works
         pokemon = cls.pets.get(random.choice(list(cls.pets)))
         pet = pokemon(name)
 
         return pet
 
-    @classmethod
-    def hatch_again(cls):
-        print("Your pet has died. :(\n")
-
 
 def main():
-    # bun = Scorbunny("Bunny")
-    # print(bun)
-
-    # bat = Crobat("Batty")
-    # print(bat)
-
     duck = Sirfetchd("Ducky")
     print(duck)
 

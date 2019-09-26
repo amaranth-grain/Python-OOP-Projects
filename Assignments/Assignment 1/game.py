@@ -193,7 +193,8 @@ class GameController:
         Calculate the time difference between now and last
         status check, and modifies the value of the given
         StatusBar (bar) based on an inherent bar rate.
-        :param bar: as StatusBar
+        :param bar: as StatusBar, through instance variable "pet"
+        (type Pokemon)
         :return: None
         """
         curr_time = datetime.now()

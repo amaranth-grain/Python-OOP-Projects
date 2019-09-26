@@ -1,27 +1,4 @@
-<!--
-*** Thanks for checking out this README Template. If you have a suggestion that would
-*** make this better, please fork the repo and create a pull request or simply open
-*** an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** github_username, repo, twitter_handle, email
--->
 
-
-
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 
   <h3 align="center">Assignment 1</h3>
 
@@ -29,9 +6,6 @@
     COMP 3522 Assignment 1 - Tamagotchi Simulator
     <br />
 
-
-
-<!-- GETTING STARTED -->
 
 ## Getting Started
 
@@ -52,7 +26,7 @@ Simulate a Tamagotchi by playing with Pokemon pets.
 
 Upon starting the game, a Scorbunny, Crobat, or Sirfetch'd will automatically hatch:
 
-![Pokemon Tamagotchi](./Tamagotchi.png)
+![Pokemon Tamagotchi](./img/Tamagotchi.png)
 
 
 
@@ -82,15 +56,15 @@ Some highlighted features:
 
 Pokemon in this game are a bit moody and whimsical.  They're not afraid to tell you how they feel!
 
-View the game on UTF-8 encoding for the best gaming experience.  
+View the game on UTF-8 encoding for the best gaming experience.  Moods are randomly pulled from a list specific to each pet (stored in Catalogue).
 
-​                  ![Pokemon Tamagotchi](./pet_mood.png)            
+​                  ![Pokemon Tamagotchi](./img/pet_mood.png)            
 
 #### **Food**
 
 There are many food choices for your pet.
 
-![Food menu in Tamagotchi game](./food_menu.png)                          
+![Food menu in Tamagotchi game](./img/food_menu.png)                          
 
 Depending on what you feed your pet, they may entirely refuse to eat it!
 
@@ -98,18 +72,18 @@ Play around to learn what they like.
 
 #### Minigames
 
-1. Guess that Pokemon!
+1. **Guess that Pokemon!** --
    Type in the name of a starter Pokemon from any generation, and see if you guessed correctly.
-2. Water, Fire, Grass
+2. **Water, Fire, Grass** --
    The Pokemon version of Rock, Paper, Scissors is every bit as fun as the original.
-3. Whack-a-Drilbur
+3. **Whack-a-Drilbur** --
    How many Drilburs can you whack?
 
 
 
 ## Limitations
 
-- Because pet status isn't checked in real time, the game may print alternative results even after a pet has died (its health has reached 0 Health)
+- Because pet status isn't checked in real time, the game may print alternative results even after a pet has died (it has reached 0 Health)
 - "Invalid input. Try again." message only prints if you enter a non-integer.
   If the menu has three choices, and you enter an integer outside of 1, 2, 3, it will print the menu again but will not notify you that it is an invalid input.
 

@@ -33,13 +33,11 @@ class StatusBar:
     """
     Represent a Pokemon status with ongoing changing values.
     """
-    def __init__(self, rate=-1.0, curr=100, max=100,
-                 original_rate=1.0, multiplier=2.0):
+    def __init__(self, rate=-1.0, curr=100, max_val=100):
         self.rate = rate
         self.curr = int(curr)
-        self.max = max
-        self.original_rate = original_rate
-        self.multiplier = multiplier
+        self.max = max_val
+
 
 
 class Minigame:

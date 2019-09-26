@@ -53,6 +53,7 @@ class Scorbunny(Pokemon):
     """
     GAME_HAPPINESS = 50
     HEALTH_RATE = -1
+    HUNGRY_HEALTH_RATE = HEALTH_RATE * 2
     HAPPINESS_RATE = -1.5
     HUNGER_RATE = 2.1
     HUNGER_START_VAL = 0
@@ -92,6 +93,7 @@ class Crobat(Pokemon):
     """
     GAME_HAPPINESS = 60
     HEALTH_RATE = -1.1
+    HUNGRY_HEALTH_RATE = HEALTH_RATE * 2
     HAPPINESS_RATE = -1.2
     HUNGER_RATE = 1.3
     HUNGER_START_VAL = 0
@@ -133,6 +135,7 @@ class Sirfetchd(Pokemon):
     """
     GAME_HAPPINESS = 62
     HEALTH_RATE = -1.2
+    HUNGRY_HEALTH_RATE = HEALTH_RATE * 2
     HAPPINESS_RATE = -1.3
     HUNGER_RATE = 1.4
     HUNGER_START_VAL = 0

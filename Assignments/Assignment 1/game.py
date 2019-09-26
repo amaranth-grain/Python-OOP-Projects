@@ -235,10 +235,9 @@ class GameController:
         self.pet.timestamp = curr_time
 
         if self.pet.hunger.curr > 99:
-            self.pet.health.rate *= self.pet.health.multiplier
-            print("\nI'm so hungry... Please feed me.\n")
+            self.pet.health.rate = self.pet.HUNGRY_HEALTH_RATE
         else:
-            self.pet.health.rate = self.pet.health.original_rate
+            self.pet.health.rate = self.pet.HEALTH_RATE
 
         if self.pet.health.curr > 0:
             print(f"\n{self.pet}")

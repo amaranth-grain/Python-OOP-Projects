@@ -29,6 +29,11 @@ class SmurfParade:
             curr = curr.next
         return count
 
+    def append(self, smurf):
+        curr = self._leader
+        while curr.next is not None:
+            curr = curr.next
+        curr.next = smurf
 
     # contains(self, item)
     # iter(self)
@@ -42,6 +47,8 @@ def main():
     turq = Smurf("Turquoise")
     cerry = Smurf("Cerulean")
     parade = SmurfParade(blue)
+    parade.append(turq)
+    parade.append(cerry)
     print(len(parade))
 
 if __name__ == "__main__":

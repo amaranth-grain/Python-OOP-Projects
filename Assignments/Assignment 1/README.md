@@ -86,6 +86,7 @@ Play around to learn what they like.
 - Because pet status isn't checked in real time, the game may print alternative results even after a pet has died (it has reached 0 Health)
 - "Invalid input. Try again." message only prints if you enter a non-integer.
   If the menu has three choices, and you enter an integer outside of 1, 2, 3, it will print the menu again but will not notify you that it is an invalid input.
+- The GameController class directly uses Food and Medicine instead of accepting all Consumables as the behaviour for Food and Medicine is different.  I think that could be implemented better if I had more time.
 
 
 

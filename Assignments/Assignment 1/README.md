@@ -94,5 +94,6 @@ Play around to learn what they like.
 - I learnt a lot about the Single Responsibility Principle through this assignment.  After a certain point, my game became untenable and difficult to maintain as any changes would require modifications in several places as well as a lot of debugging.
 - I had trouble wrapping my mind around polymorphism in a dynamically typed language.  I don't think I understand it completely, but I know it's a lot easier to separate different responsibilities to different classes and have smaller classes than to deal with one that is large and difficult to read.
 - Creating a Catalogue class which acts as a database full of items I can draw from (with methods to print out items after they are stored) helped immensely with trimming down unnecessary lines in other classes.
+- I looked up whether instance variables in Python should be public or private, and it said that in accordance with the Uniform Access Principle, they recommend making things private unless @property or @x.setter is necessary.  I followed that method as property definitions took up a lot of space and felt like they didn't add a lot when semi-private and private attributes could be modified anyway.
 
 

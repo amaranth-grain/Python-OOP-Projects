@@ -1,3 +1,7 @@
+""" Represent Node and LinkedList as Smurfs and SmurfParade
+through Pythonic sequence protocol implementation. """
+
+
 class Smurf:
     """
     Represent a single Smurf.
@@ -32,6 +36,10 @@ class SmurfParade:
         self._leader = leader
 
     def __len__(self):
+        """
+        Return the number of Smurfs in the parade.
+        :return: int
+        """
         curr = self._leader
         count = 0
         while curr is not None:
@@ -40,12 +48,22 @@ class SmurfParade:
         return count
 
     def append(self, smurf):
+        """
+        Add a Smurf at the end of the parade.
+        :param smurf: Smurf
+        :return: None
+        """
         curr = self._leader
         while curr.next is not None:
             curr = curr.next
         curr.next = smurf
 
     def __contains__(self, smurf_name):
+        """
+        Return whether there is at least 1 Smurf with the given name.
+        :param smurf_name: String
+        :return: boolean
+        """
         curr = self._leader
         while curr.next is not None:
             if smurf_name == curr.name:
@@ -54,6 +72,12 @@ class SmurfParade:
         return False
 
     def __getitem__(self, num):
+        """
+        Allows retrieval of Smurf based on bracket notation
+        e.g. parade[0] returns the parade leader.
+        :param num:
+        :return:
+        """
         curr = self._leader
         while num > 0:
             curr = curr.next
@@ -61,6 +85,11 @@ class SmurfParade:
         return curr
 
     def count(self, smurf_name):
+        """
+        Count the number of Smurfs with the given name.
+        :param smurf_name: String
+        :return: int
+        """
         curr = self._leader
         count = 0
         while curr.next is not None:
@@ -70,6 +99,11 @@ class SmurfParade:
         return count
 
     def index(self, smurf_name):
+        """
+        Return the index of the first Smurf that has the given name.
+        :param smurf_name: String
+        :return: int
+        """
         curr = self._leader
         i = 0
         while curr.next is not None:
@@ -82,22 +116,19 @@ class SmurfParade:
     def __reversed__(self):
         rev = list()
         curr = self._leader
-        while curr.next is not None:
-            rev.append(curr)
+        while curr is not None:
+            rev.append(curr.name)
             curr = curr.next
-        return iter(rev)
-        # prev = None
-        # curr = self._leader
-        # while curr is not None:
-        #     temp = curr.next
-        #     curr.next = prev
-        #     prev = curr
-        #     curr = temp
-        # self._leader = prev
+        return reversed(rev)
 
     def __iter__(self):
+        """
+        Allow SmurfParade to be iterated over.
+        e.g. for smurf in parade:
+                print(smurf)
+        """
         curr = self._leader
-        while curr.next is not None:
+        while curr is not None:
             yield curr.name
             curr = curr.next
 
@@ -115,29 +146,29 @@ def main():
     print("\n\nLet's check out the SmurfParade!\n")
     print("Leader: Blue -> Member: Turquoise -> Member: Cerulean"
           "-> Member: Turquoise\n")
-    print("*" * 30)
+
     print(f"len(parade): {len(parade)}\n")
-    print("*" * 30)
+
     print(f"Is Cerulean in the parade?")
     print("Cerulean" in parade)
     print("*" * 30)
-    print(f"parade[1]: {parade[1]}\n")
+
+    print(f"\nparade[1]: {parade[1]}\n")
     print("*" * 30)
-    print(f"parade.count('Turquoise'): {parade.count('Turquoise')}\n")
+    print(f"\nparade.count('Turquoise'): {parade.count('Turquoise')}\n")
     print("*" * 30)
-    print(f"reversed(parade): {reversed(parade)}")
-    print("REVERSED PARADE\n")
+    # print(f"\nreversed(parade):\n {reversed(parade)}")
     for smurf in reversed(parade):
         print(smurf)
-    print("Original parade: ")
-    for smurf in parade:
-        print(smurf)
-    print("*" * 30)
-    print(f"parade.index('Cerulean'): {parade.index('Cerulean')}\n")
-    print("*" * 30)
-    for smurf in parade:
-        print(smurf)
 
+    print()
+    print("*" * 30)
+
+    print(f"parade.index('Cerulean'): {parade.index('Cerulean')}\n")
+
+    print("*" * 30)
+    for smurf in parade:
+        print(smurf)
 
 
 if __name__ == "__main__":

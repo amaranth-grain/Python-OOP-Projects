@@ -131,5 +131,6 @@ def main():
     print()
     print(reversed(blues))
 
+
 if __name__ == "__main__":
     main()

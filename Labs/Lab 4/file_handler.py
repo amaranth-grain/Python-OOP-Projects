@@ -4,7 +4,6 @@ writing files for dictionary program.
 """
 from enum import Enum
 import json
-# library
 
 
 class FileExtensions(Enum):
@@ -25,7 +24,9 @@ class InvalidFileTypeError:
 
 
 class FileHandler:
-    # open(filename, mode)
+    """
+    Handle all file reading and file writing functions.
+    """
 
     @staticmethod
     def load_data(path, file_extension):
@@ -36,8 +37,16 @@ class FileHandler:
         :param file_extension: FileExtensions
         :return: None
         """
-
-
+        ext = FileExtensions(file_extension)
+        if isinstance(ext, FileExtensions):
+            with open(path, 'r+') as data_file, open('./output.txt',
+                                                     'r+') as output_file:
+                data = data_file.read()
+                return json.loads(data)
+                # decoded = json.loads(data)
+                # output_file.write(json.dumps(decoded))
+        else:
+            print("Incorrect file type D:")
 
     @staticmethod
     def write_lines(path, lines):

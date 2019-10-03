@@ -31,7 +31,6 @@ class Dictionary:
         :return: None
         """
         name, ext = os.path.splitext(filepath)
-        print(f"File Extension: {ext}")
         self._data = FileHandler.load_data(filepath, ext)
 
     def query_definition(self, word):
@@ -40,12 +39,22 @@ class Dictionary:
         :param word: String
         :return: String
         """
-        return
+        if word in self._data:
+            print("Ya i'm here")
+        else:
+            print("sorry bruh")
+
+
+class Controller:
+    def __init__(self, dictionary):
+        self.dictionary = dictionary
 
 
 def main():
     dictionary = Dictionary()
-    dictionary.load_dictionary("./test.json")
+    dictionary.load_dictionary("./data.json")
+    dictionary.query_definition("accumulatorz")
+    # print(f"Dictionary data after loading: {dictionary._data}")
 
 
 if __name__ == "__main__":

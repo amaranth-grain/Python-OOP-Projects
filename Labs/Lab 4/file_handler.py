@@ -2,8 +2,10 @@
 FileHandler class responsible for classes related to reading and / or
 writing files for dictionary program.
 """
+import os
 from enum import Enum
 import json
+from pathlib import Path
 
 
 class FileExtensions(Enum):
@@ -14,13 +16,12 @@ class FileExtensions(Enum):
     JSON = ".json"
 
 
-class InvalidFileTypeError:
+class InvalidFileTypeError(Exception):
     """
     Exception that is raised if user attempts to load a file that is
-    not an accepted format (see FileExtensions).
+    not an accepted format (see FileExtensions for accepted formats).
     """
-    def __init__(self):
-        return
+    pass
 
 
 class FileHandler:
@@ -37,16 +38,18 @@ class FileHandler:
         :param file_extension: FileExtensions
         :return: None
         """
-        ext = FileExtensions(file_extension)
-        if isinstance(ext, FileExtensions):
-            with open(path, 'r+') as data_file, open('./output.txt',
-                                                     'r+') as output_file:
-                data = data_file.read()
-                return json.loads(data)
-                # decoded = json.loads(data)
-                # output_file.write(json.dumps(decoded))
-        else:
-            print("Incorrect file type D:")
+        if not Path(path).exists():
+            raise FileNotFoundError("Error: File was not found.")
+
+        values = set(file_type.value for file_type in FileExtensions)
+
+        if file_extension not in values:
+            raise InvalidFileTypeError("Error: Invalid file extension. Only "
+                                       ".json and .txt are accepted.")
+
+        with open(path, 'r+') as data_file:
+            data = data_file.read()
+            return json.loads(data)
 
     @staticmethod
     def write_lines(path, lines):
@@ -56,5 +59,18 @@ class FileHandler:
         :param lines: ???
         :return: None
         """
-        return
+        if not Path(path).exists():
+            raise FileNotFoundError("Error: File was not found.")
+
+        values = set(file_type.value for file_type in FileExtensions)
+
+        name, ext = os.path.splitext(path)
+
+        if ext not in values:
+            raise InvalidFileTypeError("Error: Invalid file extension. Only "
+                                       ".json and .txt are accepted.")
+
+        with open(path, mode='a') as output:
+            for line in lines:
+                output.write(line)
 

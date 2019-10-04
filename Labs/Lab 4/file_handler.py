@@ -5,6 +5,7 @@ writing files for dictionary program.
 import os
 from enum import Enum
 import json
+from json import JSONDecodeError
 from pathlib import Path
 
 
@@ -47,30 +48,35 @@ class FileHandler:
             raise InvalidFileTypeError("Error: Invalid file extension. Only "
                                        ".json and .txt are accepted.")
 
-        with open(path, 'r+') as data_file:
-            data = data_file.read()
-            return json.loads(data)
+        # with open(path, mode='r+', encoding="utf-8") as data_file:
+        #     data = data_file.read()
+        #     return data
+        #      # return json.loads(data)
+
+        file = open(path, mode="r", encoding="utf-8")
+        data = file.read()
+        file.close()
+        return data
+
+
+        # with open(path, mode='r+', encoding="utf-8") as data_file:
+        #     data = data_file.read()
+        #     json_data = None
+        #     try:
+        #         json_data = json.loads(data)
+        #     except JSONDecodeError as e:
+        #         print(e)
+        #     return json_data
 
     @staticmethod
     def write_lines(path, lines):
         """
-        Write queried lines to text file by appending.
+        Write queried lines to text file by appending to output file.
         :param path: String
-        :param lines: ???
+        :param lines: String
         :return: None
         """
-        if not Path(path).exists():
-            raise FileNotFoundError("Error: File was not found.")
-
-        values = set(file_type.value for file_type in FileExtensions)
-
-        name, ext = os.path.splitext(path)
-
-        if ext not in values:
-            raise InvalidFileTypeError("Error: Invalid file extension. Only "
-                                       ".json and .txt are accepted.")
-
-        with open(path, mode='a') as output:
+        with open(path, mode='a', encoding="utf-8") as output:
             for line in lines:
                 output.write(line)
 

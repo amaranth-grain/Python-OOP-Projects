@@ -4,8 +4,6 @@ writing files for dictionary program.
 """
 import os
 from enum import Enum
-import json
-from json import JSONDecodeError
 from pathlib import Path
 
 
@@ -48,25 +46,16 @@ class FileHandler:
             raise InvalidFileTypeError("Error: Invalid file extension. Only "
                                        ".json and .txt are accepted.")
 
-        # with open(path, mode='r+', encoding="utf-8") as data_file:
-        #     data = data_file.read()
-        #     return data
-        #      # return json.loads(data)
+        name, ext = os.path.splitext(path)
+
+        if file_extension != ext:
+            raise ValueError("File extension does not match path's file "
+                             "extension.")
 
         file = open(path, mode="r", encoding="utf-8")
         data = file.read()
         file.close()
         return data
-
-
-        # with open(path, mode='r+', encoding="utf-8") as data_file:
-        #     data = data_file.read()
-        #     json_data = None
-        #     try:
-        #         json_data = json.loads(data)
-        #     except JSONDecodeError as e:
-        #         print(e)
-        #     return json_data
 
     @staticmethod
     def write_lines(path, lines):

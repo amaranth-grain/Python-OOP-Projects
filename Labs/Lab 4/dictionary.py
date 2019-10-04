@@ -27,7 +27,7 @@ class Dictionary:
         history is written to.
         """
         self._data = None
-        self._output = "./output.txt"
+        self._output = "./output.html"
 
     @property
     def output(self):
@@ -141,7 +141,7 @@ class Controller:
 
 def main():
     dictionary = Dictionary()
-    dictionary.load_dictionary("./test.json")
+    dictionary.load_dictionary("./data.json")
     controller = Controller(dictionary)
     # print(controller.dictionary._data)
     controller.search()

@@ -36,7 +36,7 @@ class Dictionary:
     def is_data_loaded(self):
         """
         Track whether dictionary has been loaded with data or not.
-        :return:
+        :return: boolean
         """
         return self._data is not None
 

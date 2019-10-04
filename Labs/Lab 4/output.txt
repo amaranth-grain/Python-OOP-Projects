@@ -1,66 +1,21 @@
+﻿
+== poke ==
+To touch something lightly with a narrow pointed object, like a finger or a stick.
+To strike hard with the hand, fist, or some heavy instrument, usually repeatedly.
+To search or inquire intrusively.
+To poke or thrust abruptly.
 
-== feathers ==
-The light horny waterproof structure forming the external covering of birds.
+== Mon ==
+ISO 639-6 entity
+ISO 639-6 entity
 
-== rain ==
-Precipitation in the form of liquid water drops with diameters greater than 0.5 millimetres.
-To fall from the clouds in drops of water.
+== sword ==
+A long-bladed weapon that has a handle (and sometimes a hilt) and is designed to stab, cut or slash.
 
-== father ==
-A male parent.
-A person that has founded or originated, as in ''the father of our country''
-The head of an organized crime family.
+== in ==
+Contained or encased by.
+Place in which.
+Before the end of a time period.
 
-== Father ==
-The Superior Being, the Creator, the Spirit because of which and in whom everything is, as He is being named by monotheists, mostly Jews and Christians.
-
-== father ==
-A male parent.
-A person that has founded or originated, as in ''the father of our country''
-The head of an organized crime family.
-
-== Father ==
-The Superior Being, the Creator, the Spirit because of which and in whom everything is, as He is being named by monotheists, mostly Jews and Christians.
-
-== sadly ==
-In an unfortunate manner.
-With sadness.
-
-== Idesa ==
-A language of Nigeria.
-
-== dorsal ==
-On or relating to the back or outer surface of an organ.
-
-== cat ==
-A common four-legged animal (Felis silvestris) that is often kept as a household pet.
-
-== cat ==
-A common four-legged animal (Felis silvestris) that is often kept as a household pet.
-
-== father ==
-A male parent.
-A person that has founded or originated, as in ''the father of our country''
-The head of an organized crime family.
-
-== Father ==
-The Superior Being, the Creator, the Spirit because of which and in whom everything is, as He is being named by monotheists, mostly Jews and Christians.
-
-== ass ==
-A domesticated animal, Equus asinus.
-A strongly disliked person who behaves disgustingly, underhandedly, or nastily, etc.
-The fleshy part of the human body that one sits on.
-
-== ass ==
-A domesticated animal, Equus asinus.
-A strongly disliked person who behaves disgustingly, underhandedly, or nastily, etc.
-The fleshy part of the human body that one sits on.
-
-== father ==
-A male parent.
-A person that has founded or originated, as in ''the father of our country''
-The head of an organized crime family.
-
-== sadly ==
-In an unfortunate manner.
-With sadness.
+== November ==
+The eleventh month of the Gregorian calendar, having 30 days.

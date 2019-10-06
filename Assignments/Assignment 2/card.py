@@ -29,6 +29,9 @@ class Address:
 
 
 class Card(ABC):
+
+    _card_system_no = 1
+
     """
     Basic information for company-issued cards.
     """
@@ -43,6 +46,11 @@ class Card(ABC):
     @company_data.setter
     def company_data(self, data):
         self._company_data = data
+
+    @classmethod
+    def increment_id(cls):
+        cls._card_system_no += 1
+        return cls._card_system_no
 
     def format_json_card(self):
         return

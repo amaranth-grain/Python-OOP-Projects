@@ -33,13 +33,3 @@ class UserInterface:
     def display_start_menu():
         return
 
-
-class FileHandler:
-
-    @staticmethod
-    def import_data():
-        return
-
-    @staticmethod
-    def export_data():
-        return

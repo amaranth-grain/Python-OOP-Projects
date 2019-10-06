@@ -1,0 +1,44 @@
+[{"company_address": 
+	{"street": "15 Pulawska Street",
+	"postal_code": "00-975",
+	"city": "Warsaw",
+	"province": "",
+	"country": "Poland"},
+"company_data": 
+	{"name": "PKO Bank Polski",
+	"phone": "(+48) 81 535-6060",
+	"site": "www.pkobp.pl"},
+"card_no": "34 5722 11366 780",
+"expiry_date": "datetime(2020, 5)"
+},
+{"company_address":
+	{"street": "555 Seymour St",
+	"postal_code": "V6B 3H6",
+	"city": "Vancouver",
+	"province": "BC",
+	"country": "Canada"
+	},
+"company_data":
+	{"name": "BCIT Downtown Campus",
+	"phone": "604-434-5734",
+	"site": "www.bcit.ca"},
+"first_name": "Rahul",
+"last_name": "Kukreja",
+"title": "Mr",
+"job_title": "Programming Instructor",
+"email": "rkukreja@bcit.ca",
+"phone": "604-555-3261"
+}
+]
+
+
+
+
+
+
+
+
+
+
+
+

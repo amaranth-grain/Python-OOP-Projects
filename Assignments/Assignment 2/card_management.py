@@ -10,7 +10,7 @@ class CardManager:
     # def __init__(self, card_list):
     #     self._card_list = card_list
         with open("./sample_card_data.txt", "r") as data_file:
-            self._card_list = json.load(data_file)
+            self._card_list = json.loads(data_file.read())
 
     def start(self):
         output = UserInterface.welcome()
@@ -71,9 +71,7 @@ class Catalogue:
 
 def main():
     manager = CardManager()
-    # card_list = []
-    # for card in manager._card_list:
-    #     card_list.append(Card(**card))
+    print(manager._card_list[0])
 
 
 if __name__ == "__main__":

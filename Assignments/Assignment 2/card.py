@@ -3,7 +3,6 @@ Module captures and represents most common card types for card management
 system.
 """
 import json
-from datetime import datetime
 from abc import ABC
 from enum import Enum
 
@@ -12,8 +11,9 @@ class Address:
     """
     Represent mailing address.
     """
-
-    def __init__(self, street, postal_code, city, province, country):
+    def __init__(self, company_name, street, postal_code, city, province,
+                 country):
+        self.company_name = company_name
         self.street = street
         self.postal_code = postal_code
         self.city = city
@@ -21,222 +21,196 @@ class Address:
         self.country = country
 
     def __str__(self):
-        return f"{self.street}\n" \
+        return f"{self.company_name}\n" \
+               f"{self.street}\n" \
                f"{self.postal_code}\n" \
                f"{self.city} {self.province} {self.country}"
 
 
-class CardType(Enum):
-    """
-    Accepted money card types.
-    """
-    DEBIT = 1
-    VISA = 2
-    MASTERCARD = 3
-    AMEX = 4
-
-
 class Card(ABC):
     """
-    Basic information for company-issued cards.
+    Represent basic card information issued by companies.
     """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address):
-        """
-        Initialise Card with basic company information
-        :param name: String
-        :param phone: String
-        :param site: String
-        :param company_address: Address
-        """
-        self._company_name = company_name
-        self._company_phone = company_phone
-        self._company_site = company_site
-        self._company_address = company_address
+    def __init__(self, address):
+        self._address = address
 
     def jsonfy(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                           indent=4)
 
     def __str__(self):
-        return f"* {self._company_name.upper()} *\n" \
-               f"{self._company_address}\n" \
-               f"Tel: {self._company_phone}\n" \
-               f"Website: {self._company_site}"
+        return f"{self._address}\n"
 
 
-class BusinessCard(Card):
-    """
-    An individual's business card.
-    """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, fname, lname, title,
-                 job_title, email, phone):
-        super().__init__(company_name, company_phone, company_site,
-                         company_address)
-        self._fname = fname
-        self._lname = lname
-        self._title = title
-        self._job_title = job_title
-        self._email = email
-        self._phone = phone
-
-    def format_json_card(self):
-        return
+class LoyaltyCard(Card):
+    def __init__(self, points, rewards, address):
+        super().__init__(address)
+        self._points = points
+        self._rewards = rewards
 
     def __str__(self):
-        return f"===== {self._fname} {self._lname}, {self._title} =====\n" \
-               f"{self._job_title}\n" \
-               f"E-mail: {self._email}\n" \
-               f"Tel: {self._phone}\n" \
-               f"{super().__str__()}\n" \
-               f"============================="
-
-
-class TicketCard(Card):
-    """
-    Novelty ticket cards issued by companies.
-    """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, event_date, event_time, dress_code):
-        super().__init__(company_name, company_phone, company_site,
-                         company_address)
-        self._event_date = event_date
-        self._event_time = event_time
-        self._dress_code = dress_code
-
-    def format_json_card(self):
-        return
-
-    def __str__(self):
-        return f"\n======== TICKET ========\n" \
-               f"EVENT: {self._event_date} @ {self._event_time}\n" \
-               f"DRESS CODE: {self._dress_code}\n" \
-               f"{super().__str__()}\n" \
-               f"============================"
-
-
-class RewardCard(Card):
-    """
-    Reward card where rewards are redeemed through a type of points system
-    or are of the "Buy X get Y free" stamp card format.
-    """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, curr_points,
-                 reward_list):
-        super().__init__(company_name, company_phone, company_site,
-                         company_address)
-        self._curr_points = curr_points
-        self._reward_list = reward_list
-
-    def format_json_card(self):
-        return
-
-    def __str__(self):
-        return
+        rewards = ""
+        for reward, points in self._rewards.items():
+            rewards += f"{reward} >>> {points} PTS\n"
+        return f"====== {self._address.company_name.upper()} LOYALTY CARD ======\n" \
+               f"Current Points: {self._points}\n" \
+               f"Redeemable Rewards\n" \
+               f"{rewards}"
 
 
 class BalanceCard(Card):
     """
-    For any low-security card that involves a balance, such as gift
-    card or transit fare card.
+    Represent a card with a balance that can be used at a specific company.
+    e.g. gift card, transit fare card
     """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, card_no, curr_balance):
-        super().__init__(company_name, company_phone, company_site,
-                         company_address)
+    def __init__(self, card_no, balance, address):
+        super().__init__(address)
         self._card_no = card_no
-        self._curr_balance = curr_balance
-
-    def format_json_card(self):
-        return
+        self._balance = balance
 
     def __str__(self):
-        return
+        return f"====== {self._address.company_name.upper()} CARD ======\n" \
+               f"Barcode: {self._card_no}\n" \
+               f"{'${:,.2f}'.format(self._balance)} credit left\n"
 
 
-class MemberCard(Card):
+class IDCard(Card):
     """
-    Any card that is primarily used by issuing a member ID to cardholder.
-    Encompasses bank cards, SIN cards, student cards, etc.
+    Represent identification card.
     """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, card_no, expiry_date):
-        super().__init__(company_name, company_phone, company_site,
-                         company_address)
+    def __init__(self, name, card_no, expiry_date, address):
+        """
+        Initialise IDCard.
+        :param name: as tuple (title, fullname)
+        :param card_no: String
+        :param expiry_date: Date
+        :param address: Address
+        """
+        super().__init__(address)
+        self._name = name
         self._card_no = card_no
         self._expiry_date = expiry_date
 
-    def format_json_card(self):
-        return
+    def __str__(self):
+        expiry = ""
+        if self._expiry_date is not None:
+            expiry = f"Expires on {self._expiry_date}\n"
+        return f"====== {self._address.company_name.upper()} ID CARD ======\n" \
+               f"{self._name[1]}\n" \
+               f"{self._card_no}\n" \
+               f"{expiry}"
+
+
+class AccessCard(Card):
+    def __init__(self, card_no, expiry_date, detail, address):
+        """
+        Initialise a card that grants access.
+        If card does not expire, set expiry_date to None
+        e.g. novelty ticket, library card, gym membership
+        :param card_no: String
+        :param expiry_date: Date
+        :param detail: String
+        :param address: Address
+        """
+        super().__init__(address)
+        self._card_no = card_no
+        self._expiry_date = expiry_date
+        self._detail = detail
 
     def __str__(self):
-        return
+        expiry = ""
+        if self._expiry_date is not None:
+            expiry = f"Expires on {self._expiry_date}\n"
+        return f"======{self._address.company_name.upper()} ACCESS CARD " \
+               f"======\n" \
+               f"{self._card_no}\n" \
+               f"{expiry}" \
+               f"{self._detail}"
 
 
-class MoneyCard(MemberCard):
-    """
-    For debit and credit cards.
-    """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, card_no, expiry_date,
-                 csv, card_type, chip_enabled, billing_address):
-        super().__init__(company_name, company_phone, company_site,
-                         company_address, card_no, expiry_date)
+class MoneyCard(IDCard):
+    def __init__(self, csv, card_type, name, card_no, expiry_date, address):
+        super().__init__(name, card_no, expiry_date, address)
         self._csv = csv
         self._card_type = card_type
-        self._chip_enabled = chip_enabled
-        self._billing_address = billing_address
-
-    def format_json_card(self):
-        return
 
     def __str__(self):
-        return
+        expiry = ""
+        if self._expiry_date is not None:
+            expiry = f"Expires on {self._expiry_date}\n"
+        return f"====== {self._card_type.upper()} CARD ======\n" \
+               f"{self._name[1]}\n" \
+               f"{self._card_no}\n" \
+               f"{expiry}" \
+               f"CSV: {self._csv}\n"
 
 
-class MemberRewardCard(RewardCard, MemberCard):
-    """
-    For more complex reward systems that issue membership IDs to cardholders.
-    Includes cards such as Air Miles or Scene cards.
-    """
-
-    def __init__(self, company_name, company_phone, company_site,
-                 company_address, curr_points,
-                 reward_list, card_no, expiry_date):
-        RewardCard.__init__(curr_points, reward_list)
-        MemberCard.__init__(company_name, company_phone, company_site,
-                            company_address, card_no, expiry_date)
-
-    def format_json_card(self):
-        return
+class GovernmentIDCard(IDCard):
+    def __init__(self, dob, weight, height, sex, eyes, hair, home_address,
+                 name, card_no, expiry_date, address):
+        super().__init__(name, card_no, expiry_date, address)
+        self._dob = dob
+        self._weight = weight
+        self._height = height
+        self._sex = sex
+        self._eyes = eyes
+        self._hair = hair
+        self._home_address = home_address
 
     def __str__(self):
-        return
+        return f"====== {self._address.company_name.upper()} CARD ======\n" \
+               f"{self._name[0]} {self._name[1]}\n" \
+               f"{self._card_no}\n" \
+               f"Wt: {self._weight} kg\tHt: {self._height} cm\n" \
+               f"Sex: {self._sex.upper()} \tEyes: {self._eyes.upper()}\tHair" \
+               f":{self._hair.upper()}\n" \
+               f"{self._home_address}\n"
 
 
 def main():
-    add = Address("555 Seymour Street", "V3K 2H1", "Vancouver", "BC", "Canada")
-    add_ghib = Address("1 Chome-1-83 Shimorenjaku", "181-0013",
-                       "Mitaka", "Tokyo", "Japan")
-    # card = Card("BCIT Downtown Campus", "604-555-2143", "www.bcit.ca", add)
-    # business_card = BusinessCard("BCIT Downtown Campus", "604-555-7890",
-    #                              "www.bcit.ca", add, "Rahul", "Kukreja",
-    #                              "Mr", "Programming Instructor",
-    #                              "rkukreja@bcit.ca", "778-555-8989")
-    ticket = TicketCard("Ghibli Museum, Mitaka", "81 570-055-777",
-                        "www.ghibli-museum.jp", add_ghib,
-                        "5/24/2020",
-                        "11:00 AM", "Casual")
-    print(ticket.jsonfy())
-    print(ticket)
+    address = Address("BCIT", "555 Seymour Street", "V2F 9K1", "Vancouver",
+                      "BC", "Canada")
+
+    g_address = Address("Ghibli Museum", "1 Chome-1-83 Shimorenjaku", "181-0013",
+                        "Mitaka", "Tokyo", "Japan")
+
+    h_address = Address("Home address", "123 Main Street", "V8K 1P3",
+                        "Vancouver",
+                        "BC", "Canada")
+
+    i_address = Address("ICBC", "999 Robson Street", "V2B 2N9", "Vancouver",
+                        "BC", "Canada")
+    # CARD
+    # card = Card(address)
+
+    # LOYALTY CARD
+    # rewards = {"Bubble Waffles" : 5, "Brown Sugar BBT": 10}
+    # card = LoyaltyCard(9, rewards, address)
+
+    # BALANCE CARD
+    # card = BalanceCard("2383 1239 9101", 438.2, address)
+
+    # ID Card
+    # card = IDCard(("Ms", "Christy C Yau"), "3492 9384 2342", "10/22", address)
+
+    # Access Card
+    # card = AccessCard("3428 2398 3021", None, "Ghibili Museum Ticket",
+    #                   g_address)
+
+    # Money Card
+    # card = MoneyCard("281", CardType.VISA, ("Ms", "Christy C Yau"),
+    #                  "3249 9845 2911", "01/22", address)
+    # card = MoneyCard("564", "VISA", ("Ms", "Christy C Yau"),
+    #                  "8673 1214 6563", "02/22", address)
+
+    # Government ID Card
+    # card = GovernmentIDCard("10/09/1989", 61.1, 164, "F", "Brown", "Brown",
+    #                         h_address, ("Ms", "Christy C Yau"), "2847 6951 3241",
+    #                         "12/23", i_address)
+
+    # print(card.jsonfy())
+    # print(card)
+
 
 if __name__ == "__main__":
     main()

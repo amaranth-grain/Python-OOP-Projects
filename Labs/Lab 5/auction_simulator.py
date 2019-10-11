@@ -49,16 +49,10 @@ class Auction:
         :param auctioneer: Auctioneer
         :return: None
         """
-        print(f"Auctioning {self.item} starting at"
+        print(f"\nAuctioning {self.item} starting at"
               f" {'${:,.2f}'.format(self.starting_price)}")
         self.register_bidders(auctioneer)
         auctioneer.start_bid(self._starting_price)
-
-
-        # start = Bidder("Starting price", 0, 0, 0, 0)
-        # auctioneer._highest_current_bid = self._starting_price
-        # auctioneer._highest_current_bidder = "Starting price"
-        # auctioneer.inform_bidders()
 
 
 class Auctioneer:
@@ -71,16 +65,6 @@ class Auctioneer:
         self._bidders = bidders
         self._highest_current_bid = highest_current_bid
         self._highest_current_bidder = highest_current_bidder
-    #
-    # @traffic_light.setter
-    # def traffic_light(self, value):
-    #     """
-    #     Allows the system to assign a new state to the traffic light
-    #     state. This will cause all the observers to be called.
-    #     :param value: TrafficLightState enum.
-    #     """
-    #     self._light = value
-    #     self.execute_callbacks()]
 
     @property
     def highest_current_bid(self):
@@ -92,12 +76,16 @@ class Auctioneer:
         self.inform_bidders()
 
     @property
+    def bidders(self):
+        return self._bidders
+
+    @property
     def highest_current_bidder(self):
         return self._highest_current_bidder
 
     def start_bid(self, price):
-        self.highest_current_bid = price
         self._highest_current_bidder = "Starting price"
+        self.highest_current_bid = price
 
     def add(self, callback):
         """
@@ -109,12 +97,36 @@ class Auctioneer:
         """
         self._bidders.append(callback)
 
+    def accept_bid(self, name, price):
+        if price > self.highest_current_bid:
+            print(f"{name} bid {'${:,.2f}'.format(price)} in response to "
+                  f"{self._highest_current_bidder}'s bid of "
+                  f"{'${:,.2f}'.format(self._highest_current_bid)}!")
+            self._highest_current_bidder = name
+            self.highest_current_bid = price
+
     def inform_bidders(self):
         """
         Notifies all the bidders of the current highest bid.
         """
         for bidder in self._bidders:
             bidder(self)
+
+    def announce_winner(self):
+        if self.highest_current_bidder is not "Starting price":
+            print(f"\nThe winner of this auction is: "
+                  f"{self.highest_current_bidder} at"
+                  f" {'${:,.2f}'.format(self._highest_current_bid)}!\n")
+        else:
+            print(f"No one made any bids!")
+
+    def announce_highest_bids(self):
+        highest_bids = {bidder.name: bidder.highest_bid for bidder in
+                        self.bidders}
+        print("====== Highest Bids per Bidder ======")
+        for bidder, bid in highest_bids.items():
+            print(f"Bidder: {bidder} Highest bid:"
+                  f" {'${:,.2f}'.format(bid)}")
 
 
 class Bidder:
@@ -139,12 +151,28 @@ class Bidder:
         if self._bid_probability is None:
             self._bid_probability = random()
 
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def bid_probability(self):
+        return self._bid_probability
+
+    @property
+    def highest_bid(self):
+        return self._highest_bid
+
     def _check_bidder(self, auctioneer):
         return auctioneer.highest_current_bidder is not self._name
 
-    def _check_budget(self, auctioneer):
+    def _check_bid(self, auctioneer):
         bid = auctioneer.highest_current_bid * self._bid_increase_perc
-        return self._budget > bid
+        return self._budget > bid > auctioneer.highest_current_bid
+
+    def make_bid(self, auctioneer):
+        bid = auctioneer.highest_current_bid * self._bid_increase_perc
+        self._highest_bid = bid
 
     def _check_desire(self):
         likelihood_to_bid = random()
@@ -156,19 +184,13 @@ class Bidder:
         :param auctioneer: Auctioneer
         :return: None
         """
-        if self._check_bidder(auctioneer) and self._check_budget(auctioneer) \
+        if self._check_bidder(auctioneer) and self._check_bid(auctioneer) \
                 and self._check_desire():
-            print(f"{self._name} would like to place a bid")
-            # auctioneer.accept_bid()
+            self.make_bid(auctioneer)
+            auctioneer.accept_bid(self._name, self._highest_bid)
 
 
 def main():
-    item_name = ""
-    starting_price = 0
-    num_of_bidders = 0
-    name = ""
-    budget = 0
-    inc_per = 1
 
     while True:
         try:
@@ -176,108 +198,37 @@ def main():
             starting_price = float(input("Starting price: "))
             num_of_bidders = int(input("Number of bidders: "))
         except ValueError as e:
-            print(e)
+            print(f"Invalid input -- {e}")
         else:
             break
 
     auction = Auction(item_name, starting_price)
 
     for i in range(num_of_bidders):
-        try:
-            name = input(f"Enter bidder #{num_of_bidders}'s name: ")
-            budget = float(input("Budget: "))
-            inc_perc = float(input("Bid increase %: "))
-        except ValueError as e:
-            print(e)
-        auction.add(Bidder(name, budget, inc_per))
-        print(f"Bidder {name} added")
+        while True:
+            try:
+                name = input(f"Enter bidder #{i + 1}'s name: ").capitalize()
+                budget = float(input("Budget: "))
+                inc_perc = float(input("Bid increase factor: "))
+                if inc_perc <= 1:
+                    raise ValueError("Value must be greater "
+                                     "than 1.")
+            except ValueError as e:
+                print(e)
+            else:
+                auction.add(Bidder(name, budget, inc_perc))
+                print(f"Bidder {name} added")
+                break
 
     auctioneer = Auctioneer()
-    print(auction.start(auctioneer))
-
-    print(f"Auctioneer highest current bidder:"
-          f" {auctioneer._highest_current_bidder}")
-    print(f"Auctioneer starting price: {auctioneer._highest_current_bid}")
-
-
-    # while num_of_bidders > 0:
-    #     name = input(f"Enter bidder #{num_of_bidders}'s name: ")
-    #     budget = 0
-    #     inc_per = 1
-    #     while True:
-    #         try:
-    #             budget = float(input("Budget: "))
-    #         except ValueError as e:
-    #             print(f"Input is not a float. Try again.")
-    #             continue
-    #         else:
-    #             break
-    #     while True:
-    #         try:
-    #             inc_perc = float(input("Bid increase %: "))
-    #         except ValueError as e:
-    #             print(f"Input is not a float. Try again.")
-    #             continue
-    #         else:
-    #             break
-    #     auction.add(Bidder(name, budget, inc_per))
-    #     print(f"Bidder {name} added")
-    #     num_of_bidders -= 1
-
-    # item_name = input("Name of item being auctioned: ")
-    # starting_price = 0
-    #
-    # while True:
-    #     try:
-    #         starting_price = float(input("Starting price: "))
-    #     except ValueError as e:
-    #         print(f"Input is not a float. Try again.")
-    #         continue
-    #     else:
-    #         break
-    #
-    # auction = Auction(item_name, starting_price)
-    #
-    # num_of_bidders = 0
-    #
-    # while True:
-    #     try:
-    #         num_of_bidders = int(input("Number of bidders: "))
-    #     except ValueError as e:
-    #         print(f"Input is not an integer. Try again.")
-    #         continue
-    #     else:
-    #         break
-    #
-    # while num_of_bidders > 0:
-    #     name = input(f"Enter bidder #{num_of_bidders}'s name: ")
-    #     budget = 0
-    #     inc_per = 1
-    #     while True:
-    #         try:
-    #             budget = float(input("Budget: "))
-    #         except ValueError as e:
-    #             print(f"Input is not a float. Try again.")
-    #             continue
-    #         else:
-    #             break
-    #     while True:
-    #         try:
-    #             inc_perc = float(input("Bid increase %: "))
-    #         except ValueError as e:
-    #             print(f"Input is not a float. Try again.")
-    #             continue
-    #         else:
-    #             break
-    #     auction.add(Bidder(name, budget, inc_per))
-    #     print(f"Bidder {name} added")
-    #     num_of_bidders -= 1
-    #
-    # auctioneer = Auctioneer()
-    # # auction.register_bidders(auctioneer)
-    # print(f"Bidders registered to auctioneer.")
-    #
-    # print(auction.start(auctioneer))
+    auction.start(auctioneer)
+    auctioneer.announce_winner()
+    auctioneer.announce_highest_bids()
+    # For demo purposes, show bidders' bid probability
+    print()
+    for bidder in auctioneer.bidders:
+        print(f"{bidder.name}'s bid prob: "
+              f"{'{:,.2f}'.format(bidder.bid_probability)}")
 
 
 if __name__ == "__main__":

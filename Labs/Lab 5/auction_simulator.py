@@ -5,6 +5,10 @@ from random import random
 
 
 class Auction:
+    """
+    Controller that initialises auction by registering bidders
+    and assigning them to an auctioneer.
+    """
     def __init__(self, item, starting_price, bidders=None):
         """
         Initialise Auction object responsible for setting up auction.
@@ -53,6 +57,8 @@ class Auction:
               f" {'${:,.2f}'.format(self.starting_price)}")
         self.register_bidders(auctioneer)
         auctioneer.start_bid(self._starting_price)
+        auctioneer.announce_winner()
+        auctioneer.announce_highest_bids()
 
 
 class Auctioneer:
@@ -98,6 +104,13 @@ class Auctioneer:
         self._bidders.append(callback)
 
     def accept_bid(self, name, price):
+        """
+        Accept the bidder's bid if it exceeds the current highest
+        bid for the item.
+        :param name: String (Bidder name)
+        :param price: float (Bidder's offering price)
+        :return: None
+        """
         if price > self.highest_current_bid:
             print(f"{name} bid {'${:,.2f}'.format(price)} in response to "
                   f"{self._highest_current_bidder}'s bid of "
@@ -113,14 +126,22 @@ class Auctioneer:
             bidder(self)
 
     def announce_winner(self):
+        """
+        Announce the winner of the auctioned item.
+        :return: None
+        """
         if self.highest_current_bidder is not "Starting price":
-            print(f"\nThe winner of this auction is: "
+            print(f"\nThe winner of this auction is "
                   f"{self.highest_current_bidder} at"
                   f" {'${:,.2f}'.format(self._highest_current_bid)}!\n")
         else:
             print(f"No one made any bids!")
 
     def announce_highest_bids(self):
+        """
+        Dictionary comprehension for summarising highest bids made by bidders.
+        :return: None
+        """
         highest_bids = {bidder.name: bidder.highest_bid for bidder in
                         self.bidders}
         print("====== Highest Bids per Bidder ======")
@@ -132,6 +153,7 @@ class Auctioneer:
 class Bidder:
     """
     Represent bidder as callable object.
+    Observer for Auctioneer core object.
     """
     def __init__(self, name, budget, bid_increase_perc, bid_probability=None,
                  highest_bid=0):
@@ -164,17 +186,38 @@ class Bidder:
         return self._highest_bid
 
     def _check_bidder(self, auctioneer):
+        """
+        Perform check to see if highest bid was made by oneself.
+        :param auctioneer: Auctioneer
+        :return: boolean
+        """
         return auctioneer.highest_current_bidder is not self._name
 
     def _check_bid(self, auctioneer):
+        """
+        Check if bid is...
+        a. within budget
+        b. higher than current highest bid
+        :param auctioneer: Auctioneer
+        :return: boolean
+        """
         bid = auctioneer.highest_current_bid * self._bid_increase_perc
         return self._budget > bid > auctioneer.highest_current_bid
 
     def make_bid(self, auctioneer):
+        """
+        Make offering bid to auctioneer.
+        :param auctioneer: Auctioneer
+        :return: None
+        """
         bid = auctioneer.highest_current_bid * self._bid_increase_perc
         self._highest_bid = bid
 
     def _check_desire(self):
+        """
+        Check whether one wants to bid this round or not.
+        :return: boolean
+        """
         likelihood_to_bid = random()
         return self._bid_probability >= likelihood_to_bid
 
@@ -192,6 +235,7 @@ class Bidder:
 
 def main():
 
+    # Set up auction by specifying item that is to be sold.
     while True:
         try:
             item_name = input("Name of item being auctioned: ")
@@ -204,6 +248,7 @@ def main():
 
     auction = Auction(item_name, starting_price)
 
+    # Create bidders based on user input
     for i in range(num_of_bidders):
         while True:
             try:
@@ -222,8 +267,7 @@ def main():
 
     auctioneer = Auctioneer()
     auction.start(auctioneer)
-    auctioneer.announce_winner()
-    auctioneer.announce_highest_bids()
+
     # For demo purposes, show bidders' bid probability
     print()
     for bidder in auctioneer.bidders:

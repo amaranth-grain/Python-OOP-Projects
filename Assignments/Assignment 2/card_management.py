@@ -13,13 +13,11 @@ from card import Address, Card, LoyaltyCard, BalanceCard, IDCard, MoneyCard, \
 class CardManager:
     def __init__(self):
         self._card_list = []
+        self._card_list_json = ""
 
     @property
     def card_list(self):
         return self._card_list
-
-    #     with open("./sample_card_data.txt", "r") as data_file:
-    #         self._card_list = json.loads(data_file.read())
 
     def start(self):
         UserInterface.welcome()
@@ -29,7 +27,7 @@ class CardManager:
         output = ""
         for card in self._card_list:
             output += f"{card}\n"
-        return output
+        print(output)
 
     def view_cards_by_type(self):
         UserInterface.display_view_cards_by_type(self)
@@ -53,7 +51,7 @@ class CardManager:
                 for card in self._card_list:
                     if card.id == card_id:
                         self._card_list.remove(card)
-                        print("\nYour card was deleted.")
+                        print("\nYour card was deleted successfully.")
             except ValueError as e:
                 print(f"Invalid input. {str(e).capitalize()}")
 
@@ -84,7 +82,17 @@ class CardManager:
         return cards
 
     def backup_data(self):
-        return
+        json_list = []
+        json = "{\n\t"
+        for card in self._card_list:
+            json_list.append(card.jsonfy())
+        json += ",\n".join(json_list)
+        json += "\n}"
+        self._card_list_json = json
+
+        with open("./backup.txt", mode="w", encoding="utf-8") as backup:
+            backup.write(self._card_list_json)
+        print("Backed up data successfully.")
 
 
 class UserInterface:
@@ -123,10 +131,7 @@ class UserInterface:
                     7: sys.exit
                 }
 
-                if user_input == 1:
-                    print(choices.get(user_input)())
-
-                if 1 < user_input < 8:
+                if 0 < user_input < 8:
                     choices.get(user_input)()
 
     @staticmethod
@@ -202,7 +207,7 @@ class Catalogue:
         3: "Add a card",
         4: "Search for a card",
         5: "Delete a card",
-        6: "Export card data",
+        6: "Back-up card data",
         7: "Close program"
     }
 

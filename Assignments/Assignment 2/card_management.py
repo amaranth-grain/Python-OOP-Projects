@@ -2,10 +2,8 @@
 Management side of card management system.  Includes data import / export
 and the ability for users to interact with the system.
 """
-import json
 import sys
-
-import card
+from card_creator import CardCreator
 
 
 class CardManager:
@@ -20,34 +18,20 @@ class CardManager:
     #         self._card_list = json.loads(data_file.read())
 
     def start(self):
+        UserInterface.welcome()
         UserInterface.display_start_menu(self)
 
     def view_all_cards(self):
         output = ""
         for card in self._card_list:
-            output += f"* {card}\n"
+            output += f"{card}\n"
         return output
 
     def view_cards_by_type(self):
         UserInterface.display_view_cards_by_type(self)
 
     def add_card(self):
-        print("\nWhich type of card would you like to add?\n")
-        print(Catalogue.get_menu(Catalogue.card_type_menu))
-        val = True
-        while val:
-            try:
-                user_input = int(input("Enter selection: "))
-                if user_input > len(Catalogue.card_type_menu):
-                    raise ValueError
-            except ValueError as e:
-                print("Invalid input. Enter the number of your selected "
-                      "action.")
-            else:
-                val = False
-                # choice = Catalogue.card_types.get(user_input)
-                card = Catalogue.create_menu.get(user_input)()
-                self._card_list.append(card)
+        UserInterface.display_add_card(self)
 
     def delete_card(self):
         return
@@ -71,11 +55,12 @@ class UserInterface:
 
     @staticmethod
     def display_start_menu(manager):
-        output = UserInterface.welcome()
-        output += Catalogue.get_menu(Catalogue.start_menu)
-        print(output)
-        user_input = 0
-        while user_input > 6 or user_input < 1:
+        # output = UserInterface.welcome()
+        # user_input = 0
+        # while user_input > 6 or user_input < 1:
+        while True:
+            output = Catalogue.get_menu(Catalogue.start_menu)
+            print(output)
             try:
                 user_input = int(input("Enter selection: "))
                 if user_input > len(Catalogue.start_menu):
@@ -93,7 +78,11 @@ class UserInterface:
                     6: sys.exit
                 }
 
-                choices.get(user_input)()
+                if user_input == 1:
+                    print(choices.get(user_input)())
+
+                if user_input == 3 or user_input == 2:
+                    choices.get(user_input)()
 
     @staticmethod
     def display_view_cards_by_type(manager):
@@ -111,76 +100,37 @@ class UserInterface:
                 print("Invalid input. Enter the number of your selected "
                       "action.")
             else:
+                count = 0
                 ctype = Catalogue.card_types.get(user_input)
+                user_card_type = Catalogue.user_card_types.get(user_input)
                 for card in manager.card_list:
                     if card.__class__.__name__ is ctype:
                         print(card)
+                        count += 1
 
-
-class CardCreator:
-    """
-    Create card of specific subtype for card management system.
-    """
+                if count == 0:
+                    print(f"No {user_card_type} cards are stored in One-der "
+                          f"Card currently.")
 
     @staticmethod
-    def create_loyalty_card():
-        reward_list = []
-        reward_dict = {}
+    def display_add_card(manager):
+        print("\nWhich type of card would you like to add?\n")
+        print(Catalogue.get_menu(Catalogue.card_type_menu))
         val = True
         while val:
             try:
-                points = int(input("Enter current loyalty points earned: "))
-                num_of_rewards = int(input("Enter number of redeemable rewards: "))
-
-                for i in range(num_of_rewards):
-                    reward = input(f"Enter reward #{i + 1}: ")
-                    reward_list.append(reward)
-
-                for reward in reward_list:
-                    points = int(input(f"Enter points value for {reward}: "))
-                    reward_dict[reward] = points
+                user_input = int(input("Enter selection: "))
+                if user_input > len(Catalogue.card_type_menu):
+                    raise ValueError
             except ValueError as e:
-                print("Invalid input. Try again.")
+                print("Invalid input. Enter the number of your selected "
+                      "action.")
             else:
                 val = False
-                address = CardCreator.prompt_address()
-                return card.LoyaltyCard(points, reward_dict, address)
-
-    @staticmethod
-    def prompt_address():
-        try:
-            name = input("Enter issuer name: ")
-            street = input("Enter street address: ")
-            postal = input("Enter postal code: ")
-            if len(postal) < 5 or len(postal) > 7:
-                raise ValueError("Invalid postal code. Try again.")
-            city = input("Enter city: ")
-            province = input("Enter province: ")
-            country = input("Enter country: ")
-        except ValueError as e:
-            print(e)
-        else:
-            return card.Address(name, street, postal, city, province, country)
-
-    @staticmethod
-    def create_balance_card(card_no, balance, address):
-        return card.BalanceCard(card_no, balance, address)
-
-    @staticmethod
-    def create_id_card(name, card_no, expiry_date, address):
-        return card.IDCard(name, card_no, expiry_date, address)
-
-    @staticmethod
-    def create_money_card(csv, card_type, name, card_no, expiry_date, address):
-        return card.MoneyCard(csv, card_type, name, card_no, expiry_date,
-                              address)
-
-    @staticmethod
-    def create_gov_card(dob, weight, height, sex, eyes, hair, home_address,
-                        name, card_no, expiry_date, address):
-        return card.GovernmentIDCard(dob, weight, height, sex, eyes, hair,
-                                     home_address, name, card_no,
-                                     expiry_date, address)
+                # choice = Catalogue.card_types.get(user_input)
+                card = Catalogue.create_menu.get(user_input)()
+                manager._card_list.append(card)
+                # UserInterface.display_start_menu(self)
 
 
 class Catalogue:
@@ -196,7 +146,7 @@ class Catalogue:
     card_type_menu = {
         1: "Loyalty cards (e.g. stamp cards)",
         2: "Cards with balances (e.g. transit fare, gift card)",
-        3: "All ID cards",
+        3: "Basic ID cards",
         4: "Credit / debit cards",
         5: "Government ID cards",
         6: "Basic membership cards (e.g. library or gym card)",
@@ -213,8 +163,23 @@ class Catalogue:
         6: "AccessCard"
     }
 
+    # For end user
+    user_card_types = {
+        1: "loyalty",
+        2: "gift / transit fare",
+        3: "ID",
+        4: "credit or debit",
+        5: "government ID",
+        6: "basic membership"
+    }
+
     create_menu = {
-        1: CardCreator.create_loyalty_card
+        1: CardCreator.create_loyalty_card,
+        2: CardCreator.create_balance_card,
+        3: CardCreator.create_id_card,
+        4: CardCreator.create_money_card,
+        5: CardCreator.create_gov_card,
+        6: CardCreator.create_access_card
     }
 
     @classmethod

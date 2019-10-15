@@ -54,7 +54,8 @@ class LoyaltyCard(Card):
         return f"====== {self._address.company_name.upper()} LOYALTY CARD ======\n" \
                f"Current Points: {self._points}\n" \
                f"Redeemable Rewards\n" \
-               f"{rewards}"
+               f"{rewards}\n" \
+               f"{super().__str__()}"
 
 
 class BalanceCard(Card):
@@ -70,7 +71,8 @@ class BalanceCard(Card):
     def __str__(self):
         return f"====== {self._address.company_name.upper()} CARD ======\n" \
                f"Barcode: {self._card_no}\n" \
-               f"{'${:,.2f}'.format(self._balance)} credit left\n"
+               f"{'${:,.2f}'.format(self._balance)} credit left\n" \
+               f"{super().__str__()}"
 
 
 class IDCard(Card):
@@ -80,7 +82,7 @@ class IDCard(Card):
     def __init__(self, name, card_no, expiry_date, address):
         """
         Initialise IDCard.
-        :param name: as tuple (title, fullname)
+        :param name: String
         :param card_no: String
         :param expiry_date: Date
         :param address: Address
@@ -93,11 +95,12 @@ class IDCard(Card):
     def __str__(self):
         expiry = ""
         if self._expiry_date is not None:
-            expiry = f"Expires on {self._expiry_date}\n"
+            expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
         return f"====== {self._address.company_name.upper()} ID CARD ======\n" \
-               f"{self._name[1]}\n" \
+               f"{self._name}\n" \
                f"{self._card_no}\n" \
-               f"{expiry}"
+               f"{expiry}\n" \
+               f"{super().__str__()}"
 
 
 class AccessCard(Card):
@@ -119,12 +122,13 @@ class AccessCard(Card):
     def __str__(self):
         expiry = ""
         if self._expiry_date is not None:
-            expiry = f"Expires on {self._expiry_date}\n"
+            expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
         return f"======{self._address.company_name.upper()} ACCESS CARD " \
                f"======\n" \
                f"{self._card_no}\n" \
                f"{expiry}" \
-               f"{self._detail}"
+               f"{'' if self._detail is None else self._detail}\n" \
+               f"{self._address}"
 
 
 class MoneyCard(IDCard):
@@ -136,12 +140,13 @@ class MoneyCard(IDCard):
     def __str__(self):
         expiry = ""
         if self._expiry_date is not None:
-            expiry = f"Expires on {self._expiry_date}\n"
+            expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
         return f"====== {self._card_type.upper()} CARD ======\n" \
-               f"{self._name[1]}\n" \
+               f"{self._name}\n" \
                f"{self._card_no}\n" \
+               f"CSV: {self._csv}\n" \
                f"{expiry}" \
-               f"CSV: {self._csv}\n"
+                f"{self._address}"
 
 
 class GovernmentIDCard(IDCard):
@@ -158,12 +163,14 @@ class GovernmentIDCard(IDCard):
 
     def __str__(self):
         return f"====== {self._address.company_name.upper()} CARD ======\n" \
-               f"{self._name[0]} {self._name[1]}\n" \
-               f"{self._card_no}\n" \
+               f"{self._name}\n" \
+               f"ID: {self._card_no}\n" \
                f"Wt: {self._weight} kg\tHt: {self._height} cm\n" \
-               f"Sex: {self._sex.upper()} \tEyes: {self._eyes.upper()}\tHair" \
+               f"Sex: {self._sex.upper()} \tEyes: " \
+               f"{self._eyes.upper()}\tHair: " \
                f":{self._hair.upper()}\n" \
-               f"{self._home_address}\n"
+               f"{self._home_address}\n" \
+               f"{self._address}"
 
 
 def main():

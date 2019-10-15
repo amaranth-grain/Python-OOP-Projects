@@ -27,11 +27,28 @@ class Address:
 
 
 class Card(ABC):
+    # Unique internal Card ID to track all cards created in system
+    _id = 0
+
     """
     Represent basic card information issued by companies.
     """
     def __init__(self, address):
         self._address = address
+        self._id = Card.increment_id()
+
+    @property
+    def address(self):
+        return self._address
+
+    @property
+    def id(self):
+        return self._id
+
+    @classmethod
+    def increment_id(cls):
+        cls._id += 1
+        return cls._id
 
     def jsonfy(self):
         return json.dumps(self, default=lambda o: o.__dict__,
@@ -55,7 +72,7 @@ class LoyaltyCard(Card):
                f"Current Points: {self._points}\n" \
                f"Redeemable Rewards\n" \
                f"{rewards}\n" \
-               f"{super().__str__()}"
+               f"{super().__str__()}\n"
 
 
 class BalanceCard(Card):
@@ -94,12 +111,15 @@ class IDCard(Card):
 
     def __str__(self):
         expiry = ""
+        card_no = ""
         if self._expiry_date is not None:
             expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
-        return f"====== {self._address.company_name.upper()} ID CARD ======\n" \
+        if self._card_no is not None:
+            card_no = f"{self._card_no}\n"
+        return f"====== {self._address.company_name.upper()} CARD ======\n" \
                f"{self._name}\n" \
-               f"{self._card_no}\n" \
-               f"{expiry}\n" \
+               f"{card_no}" \
+               f"{expiry}" \
                f"{super().__str__()}"
 
 

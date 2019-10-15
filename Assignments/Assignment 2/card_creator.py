@@ -63,23 +63,27 @@ class CardCreator:
 
     @staticmethod
     def create_id_card():
+        card_no = None
+        expiry_date = None
+        address = None
         try:
             name = input("Enter your full name: ")
-            card_no = input("Enter card number: ")
-            expiry_list = input("Enter expiry date as dd/mm/yy: ")
-            expiry_list = expiry_list.split("/")
-            if len(expiry_list) is not 3:
-                raise ValueError("Date was not formatted properly.")
-            expiry_date = datetime(int(expiry_list[2]), int(expiry_list[1]),
-                                   int(expiry_list[0]))
-            # month = int(input("Enter expiry month: "))
-            # year = int(input("Enter expiry year (yyyy): "))
-            # day = int(input("Enter expiry day: "))
-            # expiry_date = datetime(year, month, day)
+            ans = input("Are you adding a business card? (Y/N) ")
+            if ans.upper() == "N":
+                card_no = input("Enter card number: ")
+                expiry_list = input("Enter expiry date as dd/mm/yy: ")
+                expiry_list = expiry_list.split("/")
+                if len(expiry_list) is not 3:
+                    raise ValueError("Date was not formatted properly.")
+                expiry_date = datetime(int(expiry_list[2]), int(expiry_list[1]),
+                                       int(expiry_list[0]))
+                address = CardCreator.prompt_address("issuer")
+            elif ans.upper() == "Y":
+                address = CardCreator.prompt_address("business")
         except ValueError as e:
             print(f"Invalid input. {str(e).capitalize()}")
         else:
-            address = CardCreator.prompt_address("issuer")
+
             return card.IDCard(name, card_no, expiry_date, address)
 
     @staticmethod

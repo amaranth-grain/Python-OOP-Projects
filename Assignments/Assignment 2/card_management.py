@@ -222,14 +222,24 @@ class Catalogue:
     }
 
     # For internal use
-    card_types = {
-        1: "LoyaltyCard",
-        2: "BalanceCard",
-        3: "IDCard",
-        4: "MoneyCard",
-        5: "GovernmentIDCard",
-        6: "AccessCard"
-    }
+    # card_types = {
+    #     1: "LoyaltyCard",
+    #     2: "BalanceCard",
+    #     3: "IDCard",
+    #     4: "MoneyCard",
+    #     5: "GovernmentIDCard",
+    #     6: "AccessCard"
+    # }
+    card_types = {}
+    card_type_list = []
+    for child in Card.__subclasses__():
+        card_type_list.append(child.__name__)
+        for grandchild in child.__subclasses__():
+            card_type_list.append(grandchild.__name__)
+    i = 1
+    for ctype in card_type_list:
+        card_types[i] = ctype
+        i += 1
 
     # For end user
     user_card_types = {
@@ -310,6 +320,7 @@ def main():
                                    "2847 6951 3241",
                                    expiry_date, i_address)
 
+    # Manually pre-loading with cards
     manager.card_list.append(loyalty_card)
     manager.card_list.append(balance_card)
     manager.card_list.append(id_card)
@@ -317,6 +328,18 @@ def main():
     manager.card_list.append(credit_card)
     manager.card_list.append(driver_card)
     # CAN BE DELETED IF YOU WOULD PREFER TO ADD ALL CARDS YOURSELF
+
+    print("*" * 40)
+    # print([cls.__name__ for cls in Card.__subclasses__()])
+
+    output = []
+    for child in Card.__subclasses__():
+        output.append(child.__name__)
+        for grandchild in child.__subclasses__():
+            output.append(grandchild.__name__)
+
+    for subclass in output:
+        print(subclass)
 
     manager.start()
 

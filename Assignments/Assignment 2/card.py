@@ -4,7 +4,6 @@ system.
 """
 import json
 from abc import ABC
-from enum import Enum
 
 
 class Address:
@@ -204,13 +203,13 @@ def main():
     #                  "8673 1214 6563", "02/22", address)
 
     # Government ID Card
-    # card = GovernmentIDCard("10/09/1989", 61.1, 164, "F", "Brown", "Brown",
-    #                         h_address, ("Ms", "Christy C Yau"), "2847 6951 3241",
-    #                         "12/23", i_address)
+    card = GovernmentIDCard("10/09/1989", 61.1, 164, "F", "Brown", "Brown",
+                            h_address, ("Ms", "Christy C Yau"), "2847 6951 3241",
+                            "12/23", i_address)
 
     # print(card.jsonfy())
     # print(card)
-
+    print(card.__class__.__name__)
 
 if __name__ == "__main__":
     main()

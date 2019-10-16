@@ -77,7 +77,8 @@ class CardManager:
                 for card in cards:
                     output += f"{i + 1}.\n {card}"
                 delete_index = int(
-                    input("\nWhich card would you like to delete? "))
+                    input("\nWhich card would you like to delete?\n"
+                          "Enter X for Card #X: "))
                 card_to_delete = cards[delete_index - 1]
                 card_id = card_to_delete.id
 
@@ -97,7 +98,8 @@ class CardManager:
         user_input = UserInterface.display_search_menu()
         choices = {
             1: self.search_by_issuer,
-            2: sys.exit
+            2: self.search_by_id,
+            3: sys.exit
         }
         choices.get(user_input)()
 
@@ -118,10 +120,28 @@ class CardManager:
             output = ""
             i = 1
             for card in cards:
-                output += f"\n#{i}.\n{card}"
+                output += f"\n*********** CARD #{i} ***********{card}"
                 i += 1
             print(output)
         return cards
+
+    def search_by_id(self):
+        """
+        Prompts user for ID of card they want to search.
+        :return: None
+        """
+        try:
+            card_id = int(input("Enter internal card id: "))
+        except ValueError as e:
+            print(f"Invalid input. {str(e).capitalize()}")
+        else:
+            found = False
+            for card in self._card_list:
+                if card.id == card_id:
+                    found = True
+                    print(card)
+            if not found:
+                print(f"No card with ID #{card_id} was found in the system.")
 
     def backup_data(self):
         """
@@ -329,7 +349,8 @@ class Catalogue:
 
     search_menu = {
         1: "Search by issuer",
-        2: "Close program"
+        2: "Search by ID",
+        3: "Close program"
     }
 
     create_menu = {

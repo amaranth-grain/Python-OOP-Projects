@@ -1,3 +1,7 @@
+"""
+Module for creating all card types.
+"""
+
 from datetime import datetime
 import card
 
@@ -17,14 +21,17 @@ class CardCreator:
                 points = int(input("Enter current loyalty points earned: "))
                 num_of_rewards = int(
                     input("Enter number of redeemable rewards: "))
-
+                reward = ""
                 for i in range(num_of_rewards):
                     reward = input(f"Enter reward #{i + 1}: ")
+                    if len(reward.strip()) == 0:
+                        raise ValueError("No fields can be left blank.")
                     reward_list.append(reward)
 
                 for reward in reward_list:
                     points = int(input(f"Enter points value for {reward}: "))
                     reward_dict[reward] = points
+                    raise ValueError("No fields can be left blank.")
             except ValueError as e:
                 print("Invalid input. Try again.")
             else:
@@ -167,6 +174,8 @@ class CardCreator:
                         "like to record? (Y/N) ")
             if ans.upper() == "Y":
                 detail = input("Enter card details: ")
+            if len(card_no.strip()) == 0:
+                raise ValueError("No fields can be left blank.")
         except ValueError as e:
             print(f"Invalid input. {str(e).capitalize()}")
         else:

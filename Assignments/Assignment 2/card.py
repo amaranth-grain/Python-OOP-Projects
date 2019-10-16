@@ -111,7 +111,8 @@ class LoyaltyCard(Card):
         rewards = ""
         for reward, points in self._rewards.items():
             rewards += f"{reward} >>> {points} PTS\n"
-        return f"====== {self._address.company_name.upper()} LOYALTY CARD ======\n" \
+        return f"====== {self._address.company_name.upper()} LOYALTY CARD " \
+               f"(ID {self.id})======\n" \
                f"Current Points: {self._points}\n" \
                f"Redeemable Rewards\n" \
                f"{rewards}\n" \
@@ -140,7 +141,8 @@ class BalanceCard(Card):
         Format how BalanceCards are displayed.
         :return: String
         """
-        return f"====== {self._address.company_name.upper()} CARD ======\n" \
+        return f"====== {self._address.company_name.upper()} CARD " \
+               f"(ID {self.id})======\n" \
                f"Barcode: {self._card_no}\n" \
                f"{'${:,.2f}'.format(self._balance)} credit left\n" \
                f"{super().__str__()}"
@@ -175,7 +177,8 @@ class IDCard(Card):
             expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
         if self._card_no is not None:
             card_no = f"{self._card_no}\n"
-        return f"====== {self._address.company_name.upper()} CARD ======\n" \
+        return f"====== {self._address.company_name.upper()} CARD " \
+               f"(ID {self.id})======\n" \
                f"{self._name}\n" \
                f"{card_no}" \
                f"{expiry}" \
@@ -213,7 +216,7 @@ class AccessCard(Card):
         if self._expiry_date is not None:
             expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
         return f"======{self._address.company_name.upper()} ACCESS CARD " \
-               f"======\n" \
+               f"(ID {self.id})======\n" \
                f"{self._card_no}\n" \
                f"{expiry}" \
                f"{'' if self._detail is None else self._detail}\n" \
@@ -247,7 +250,8 @@ class MoneyCard(IDCard):
         expiry = ""
         if self._expiry_date is not None:
             expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
-        return f"====== {self._card_type.upper()} CARD ======\n" \
+        return f"\n====== {self._card_type.upper()} CARD " \
+               f"(ID {self.id})======\n" \
                f"{self._name}\n" \
                f"{self._card_no}\n" \
                f"CSV: {self._csv}\n" \
@@ -289,7 +293,8 @@ class GovernmentIDCard(IDCard):
         Format how GovernmentIDCards are displayed.
         :return: String
         """
-        return f"====== {self._address.company_name.upper()} CARD ======\n" \
+        return f"\n====== {self._address.company_name.upper()} CARD " \
+               f"(ID {self.id})======\n" \
                f"{self._name}\n" \
                f"ID: {self._card_no}\n" \
                f"Wt: {self._weight} kg\tHt: {self._height} cm\n" \
@@ -314,6 +319,7 @@ def main():
 
     i_address = Address("ICBC", "999 Robson Street", "V2B 2N9", "Vancouver",
                         "BC", "Canada")
+
     # CARD
     # card = Card(address)
 

@@ -1,28 +1,21 @@
-import os
-from enum import Enum
+"""
+Handles data and file inputs / outputs from app.
+"""
+
 from datetime import datetime
-from pathlib import Path
-
-
-class FileExtensions(Enum):
-    """
-    Specifies accepted file extensions for dictionary program.
-    """
-    TXT = ".txt"
-    JSON = ".json"
-
-
-class InvalidFileTypeError(Exception):
-    """
-    Exception that is raised if user attempts to load a file that is
-    not an accepted format (see FileExtensions for accepted formats).
-    """
-    pass
 
 
 class DataHandler:
+    """
+    Handle app data.
+    """
     @staticmethod
     def backup_data(manager):
+        """
+        Export card list in CardManager in JSON format to txt file.
+        :param manager: CardManager
+        :return: None
+        """
         time = datetime.now().strftime("%m%d%Y_%H%M")
         path = f"./OnederCard_Export_{time}.txt"
         with open(path, mode="w", encoding="utf-8") as backup:

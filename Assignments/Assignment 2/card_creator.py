@@ -21,7 +21,6 @@ class CardCreator:
                 points = int(input("Enter current loyalty points earned: "))
                 num_of_rewards = int(
                     input("Enter number of redeemable rewards: "))
-                reward = ""
                 for i in range(num_of_rewards):
                     reward = input(f"Enter reward #{i + 1}: ")
                     if len(reward.strip()) == 0:
@@ -50,6 +49,12 @@ class CardCreator:
             city = input("Enter city: ")
             province = input("Enter province: ")
             country = input("Enter country: ")
+            if len(name.strip()) == 0 or \
+                    len(street.strip()) == 0 or \
+                    len(city.strip()) == 0 or \
+                    len(province.strip()) == 0 or \
+                    len(country.strip()) == 0:
+                raise ValueError("No fields can be left blank.")
         except ValueError as e:
             print(e)
         else:
@@ -60,6 +65,8 @@ class CardCreator:
         try:
             card_no = input("Enter card number: ")
             balance = float(input("Enter card balance: "))
+            if len(card_no.strip()) == 0:
+                raise ValueError("No fields can be left blank.")
             if not isinstance(balance, float):
                 raise ValueError
             address = CardCreator.prompt_address("issuer")
@@ -87,10 +94,13 @@ class CardCreator:
                 address = CardCreator.prompt_address("issuer")
             elif ans.upper() == "Y":
                 address = CardCreator.prompt_address("business")
+            else:
+                raise ValueError("Invalid input. Enter Y or N.")
+            if len(name.strip()) == 0:
+                raise ValueError("No fields can be left blank.")
         except ValueError as e:
             print(f"Invalid input. {str(e).capitalize()}")
         else:
-
             return card.IDCard(name, card_no, expiry_date, address)
 
     @staticmethod
@@ -149,6 +159,13 @@ class CardCreator:
                 raise ValueError("Date was not formatted properly.")
             expiry_date = datetime(int(expiry_list[2]), int(expiry_list[1]),
                                    int(expiry_list[0]))
+            if len(eyes.strip()) == 0 or \
+                    len(hair.strip()) == 0 or \
+                    len(full_name.strip()) == 0 or \
+                    len(card_no.strip()) == 0:
+                raise ValueError("No fields can be left blank.")
+            if weight < 0 or height < 0:
+                raise ValueError("Weight and height cannot be negative.")
         except ValueError as e:
             print(f"Invalid input. {str(e).capitalize()}")
         except IndexError as e:

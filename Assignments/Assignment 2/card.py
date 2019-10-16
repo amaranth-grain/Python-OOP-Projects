@@ -11,6 +11,7 @@ class Address:
     """
     Represent mailing address.
     """
+
     def __init__(self, company_name, street, postal_code, city, province,
                  country):
         self.company_name = company_name
@@ -28,13 +29,18 @@ class Address:
 
 
 class Card(ABC):
+    """
+    Represent basic card that all Card subclasses inherit.
+    """
     # Unique internal Card ID to track all cards created in system
     _id = 0
 
-    """
-    Represent basic card information issued by companies.
-    """
     def __init__(self, address):
+        """
+        Initialises Card template ABC with an associated address.
+        All cards are automatically assigned a unique internal ID.
+        :param address: Address
+        """
         self._address = address
         self._id = Card.increment_id()
 
@@ -53,26 +59,55 @@ class Card(ABC):
 
     @staticmethod
     def json_default(value):
+        """
+        Function that determines how json.dumps() should treat attributes
+        when converting from Python object to JSON.
+        :param value:
+        :return:
+        """
         if isinstance(value, date):
             return dict(year=value.year, month=value.month, day=value.day)
         else:
             return value.__dict__
 
     def jsonfy(self):
+        """
+        Turn object into JSON format.
+        :return: String
+        """
         return json.dumps(self, default=(lambda o: Card.json_default(o)),
                           indent=4)
 
     def __str__(self):
+        """
+        Format how Card attributes display.
+        :return: String
+        """
         return f"{self._address}\n"
 
 
 class LoyaltyCard(Card):
+    """
+    Represent basic cards that reward users for loyalty to the brand.
+    Includes restaurant stamp cards and "buy X get Y free" cards.
+    """
+
     def __init__(self, points, rewards, address):
+        """
+        Initialise LoyaltyCard.
+        :param points: int
+        :param rewards: {reward (String): point value (int)}
+        :param address: Address
+        """
         super().__init__(address)
         self._points = points
         self._rewards = rewards
 
     def __str__(self):
+        """
+        Format how LoyaltyCards are displayed.
+        :return: String
+        """
         rewards = ""
         for reward, points in self._rewards.items():
             rewards += f"{reward} >>> {points} PTS\n"
@@ -88,12 +123,23 @@ class BalanceCard(Card):
     Represent a card with a balance that can be used at a specific company.
     e.g. gift card, transit fare card
     """
+
     def __init__(self, card_no, balance, address):
+        """
+        Initialise BalanceCard
+        :param card_no:
+        :param balance:
+        :param address:
+        """
         super().__init__(address)
         self._card_no = card_no
         self._balance = balance
 
     def __str__(self):
+        """
+        Format how BalanceCards are displayed.
+        :return: String
+        """
         return f"====== {self._address.company_name.upper()} CARD ======\n" \
                f"Barcode: {self._card_no}\n" \
                f"{'${:,.2f}'.format(self._balance)} credit left\n" \
@@ -104,6 +150,7 @@ class IDCard(Card):
     """
     Represent identification card.
     """
+
     def __init__(self, name, card_no, expiry_date, address):
         """
         Initialise IDCard.
@@ -118,6 +165,10 @@ class IDCard(Card):
         self._expiry_date = expiry_date
 
     def __str__(self):
+        """
+        Format how IDCards are displayed to the user.
+        :return: String
+        """
         expiry = ""
         card_no = ""
         if self._expiry_date is not None:
@@ -132,6 +183,12 @@ class IDCard(Card):
 
 
 class AccessCard(Card):
+    """
+    Represent basic membership cards / cards that grant access.
+    Card does not cary cardholder information (e.g. name)
+    AccessCards include library cards, gym membership card, etc.
+    """
+
     def __init__(self, card_no, expiry_date, detail, address):
         """
         Initialise a card that grants access.
@@ -148,6 +205,10 @@ class AccessCard(Card):
         self._detail = detail
 
     def __str__(self):
+        """
+        Format how AccessCards are displayed.
+        :return: String
+        """
         expiry = ""
         if self._expiry_date is not None:
             expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
@@ -160,12 +221,29 @@ class AccessCard(Card):
 
 
 class MoneyCard(IDCard):
+    """
+    Represent credit and debit cards.
+    """
+
     def __init__(self, csv, card_type, name, card_no, expiry_date, address):
+        """
+        Initialises MoneyCard.
+        :param csv: int
+        :param card_type: String
+        :param name: String
+        :param card_no: String
+        :param expiry_date: Datetime
+        :param address: Address
+        """
         super().__init__(name, card_no, expiry_date, address)
         self._csv = csv
         self._card_type = card_type
 
     def __str__(self):
+        """
+        Format how MoneyCards are displayed.
+        :return: String
+        """
         expiry = ""
         if self._expiry_date is not None:
             expiry = f"Expires on {self._expiry_date.strftime('%Y-%m-%d')}\n"
@@ -174,12 +252,29 @@ class MoneyCard(IDCard):
                f"{self._card_no}\n" \
                f"CSV: {self._csv}\n" \
                f"{expiry}" \
-                f"{self._address}"
+               f"{self._address}"
 
 
 class GovernmentIDCard(IDCard):
+    """
+    Represent government ID cards (e.g. driver's license or BC Services Card)
+    """
     def __init__(self, dob, weight, height, sex, eyes, hair, home_address,
                  name, card_no, expiry_date, address):
+        """
+        Initialises GovernmentIDCard.
+        :param dob: Datetime
+        :param weight: float
+        :param height: float
+        :param sex: String
+        :param eyes: String
+        :param hair: String
+        :param home_address: Address
+        :param name: String
+        :param card_no: String
+        :param expiry_date: Datetime
+        :param address: Address
+        """
         super().__init__(name, card_no, expiry_date, address)
         self._dob = dob
         self._weight = weight
@@ -190,6 +285,10 @@ class GovernmentIDCard(IDCard):
         self._home_address = home_address
 
     def __str__(self):
+        """
+        Format how GovernmentIDCards are displayed.
+        :return: String
+        """
         return f"====== {self._address.company_name.upper()} CARD ======\n" \
                f"{self._name}\n" \
                f"ID: {self._card_no}\n" \
@@ -205,7 +304,8 @@ def main():
     address = Address("BCIT", "555 Seymour Street", "V2F 9K1", "Vancouver",
                       "BC", "Canada")
 
-    g_address = Address("Ghibli Museum", "1 Chome-1-83 Shimorenjaku", "181-0013",
+    g_address = Address("Ghibli Museum", "1 Chome-1-83 Shimorenjaku",
+                        "181-0013",
                         "Mitaka", "Tokyo", "Japan")
 
     h_address = Address("Home address", "123 Main Street", "V8K 1P3",
@@ -239,12 +339,14 @@ def main():
 
     # Government ID Card
     card = GovernmentIDCard("10/09/1989", 61.1, 164, "F", "Brown", "Brown",
-                            h_address, ("Ms", "Christy C Yau"), "2847 6951 3241",
+                            h_address, ("Ms", "Christy C Yau"),
+                            "2847 6951 3241",
                             "12/23", i_address)
 
     # print(card.jsonfy())
     # print(card)
     print(card.__class__.__name__)
+
 
 if __name__ == "__main__":
     main()

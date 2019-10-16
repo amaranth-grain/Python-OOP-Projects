@@ -4,14 +4,23 @@ and the ability for users to interact with the system.
 """
 import sys
 from datetime import datetime
+from enum import Enum
 
 from card_creator import CardCreator
 from card import Address, Card, LoyaltyCard, BalanceCard, IDCard, MoneyCard, \
     GovernmentIDCard, AccessCard
+from card_data_handler import DataHandler
 
 
 class CardManager:
+    """
+    Main control for card management app.  Stores and manages list of cards
+    within app.
+    """
     def __init__(self):
+        """
+        Initialise CardManager.
+        """
         self._card_list = []
         self._card_list_json = ""
 
@@ -19,23 +28,47 @@ class CardManager:
     def card_list(self):
         return self._card_list
 
+    @property
+    def card_list_json(self):
+        return self._card_list_json
+
     def start(self):
+        """
+        Start app by welcoming user and offering options menu.
+        :return: None
+        """
         UserInterface.welcome()
         UserInterface.display_start_menu(self)
 
     def view_all_cards(self):
+        """
+        Prints all cards stored in card management app.
+        :return: None
+        """
         output = ""
         for card in self._card_list:
             output += f"{card}\n"
         print(output)
 
     def view_cards_by_type(self):
+        """
+        See cards in app by type (determined by card subclasses).
+        :return: None
+        """
         UserInterface.display_view_cards_by_type(self)
 
     def add_card(self):
+        """
+        Add card to app.
+        :return: None
+        """
         UserInterface.display_add_card(self)
 
     def delete_card(self):
+        """
+        Delete a specific card from the app.
+        :return: None
+        """
         cards = self.search_by_issuer()
         if len(cards) is not 0:
             try:
@@ -53,9 +86,14 @@ class CardManager:
                         self._card_list.remove(card)
                         print("\nYour card was deleted successfully.")
             except ValueError as e:
-                print(f"Invalid input. {str(e).capitalize()}")
+                print(f"Invalid input. Enter the number associated "
+                      f"with the card you would like to delete.")
 
     def search_card(self):
+        """
+        Search through stored cards.
+        :return: None
+        """
         user_input = UserInterface.display_search_menu()
         choices = {
             1: self.search_by_issuer,
@@ -64,6 +102,10 @@ class CardManager:
         choices.get(user_input)()
 
     def search_by_issuer(self):
+        """
+        Prompts user to search for card by specifying card issuer.
+        :return: None
+        """
         issuer = input("Enter card issuer name: ")
         cards = []
         for card in self._card_list:
@@ -82,6 +124,10 @@ class CardManager:
         return cards
 
     def backup_data(self):
+        """
+        Back up cards in JSON format.
+        :return: None
+        """
         json_list = []
         json = "{\n\t"
         for card in self._card_list:
@@ -90,26 +136,33 @@ class CardManager:
         json += "\n}"
         self._card_list_json = json
 
-        with open("./backup.txt", mode="w", encoding="utf-8") as backup:
-            backup.write(self._card_list_json)
-        print("Backed up data successfully.")
+        DataHandler.backup_data(self)
 
 
 class UserInterface:
+    """
+    UserInterface allows user to interact with the program and provide inputs.
+    """
 
     @staticmethod
     def welcome():
+        """
+        Welcome message displayed when program is first started.
+        :return:
+        """
         msg = "\n\n==== One-der Card ====\n" \
               "One-der Card is your one-stop solution for managing a\n" \
               "wallet full of gift cards, credit cards, business cards,\n" \
               "points cards,and more.\n"
-        return msg
+        print(msg)
 
     @staticmethod
     def display_start_menu(manager):
-        # output = UserInterface.welcome()
-        # user_input = 0
-        # while user_input > 6 or user_input < 1:
+        """
+        Displays the options in the app.
+        :param manager: CardManager
+        :return: None
+        """
         while True:
             output = Catalogue.get_menu(Catalogue.start_menu)
             print(output)
@@ -136,6 +189,11 @@ class UserInterface:
 
     @staticmethod
     def display_view_cards_by_type(manager):
+        """
+        Prompts the user to select which type they would like to view.
+        :param manager: CardManager
+        :return: None
+        """
         print("\nWhich type of card would you like to view?")
         print(Catalogue.get_menu(Catalogue.card_type_menu))
         user_input = 0
@@ -151,19 +209,30 @@ class UserInterface:
                       "action.")
             else:
                 count = 0
-                ctype = Catalogue.card_types.get(user_input)
-                user_card_type = Catalogue.user_card_types.get(user_input)
+                card_type = CardType(user_input).name
                 for card in manager.card_list:
-                    if card.__class__.__name__ is ctype:
+                    if card.__class__.__name__.upper() == card_type:
                         print(card)
                         count += 1
+                user_card_type = Catalogue.user_card_types.get(user_input)
 
                 if count == 0:
                     print(f"No {user_card_type} cards are stored in One-der "
                           f"Card currently.")
+                elif count == 1:
+                    print(f"There is {count} card that matches your search "
+                          f"criteria.")
+                else:
+                    print(f"There are {count} cards that match your search "
+                          f"criteria.")
 
     @staticmethod
     def display_add_card(manager):
+        """
+        Prompts user with inputs on which card type they would like to add.
+        :param manager: CardManager
+        :return: None
+        """
         print("\nWhich type of card would you like to add?\n")
         print(Catalogue.get_menu(Catalogue.card_type_menu))
         val = True
@@ -177,13 +246,15 @@ class UserInterface:
                       "action.")
             else:
                 val = False
-                # choice = Catalogue.card_types.get(user_input)
                 card = Catalogue.create_menu.get(user_input)()
-                manager._card_list.append(card)
-                # UserInterface.display_start_menu(self)
+                manager.card_list.append(card)
 
     @staticmethod
     def display_search_menu():
+        """
+        Prompts the user on how they would like to search for a card.
+        :return: None
+        """
         print("\nHow would you like to search for a card?\n")
         print(Catalogue.get_menu(Catalogue.search_menu))
         val = True
@@ -201,6 +272,10 @@ class UserInterface:
 
 
 class Catalogue:
+    """
+    Represent a catalogue of items / data that is used in the app.
+    """
+
     start_menu = {
         1: "View all cards",
         2: "View cards by type",
@@ -230,6 +305,7 @@ class Catalogue:
     #     5: "GovernmentIDCard",
     #     6: "AccessCard"
     # }
+
     card_types = {}
     card_type_list = []
     for child in Card.__subclasses__():
@@ -267,10 +343,27 @@ class Catalogue:
 
     @classmethod
     def get_menu(cls, menu):
+        """
+        Return a formatted output for menu.
+        :param menu: {int: String} dictionary
+        :return: String
+        """
         output = "\n==== Menu ====\n"
         for k, v in menu.items():
             output += f"{k}. {v}\n"
         return output
+
+
+class CardType(Enum):
+    """
+    Specifies accepted Card types.
+    """
+    LOYALTYCARD = 1
+    BALANCECARD = 2
+    IDCARD = 3
+    MONEYCARD = 4
+    GOVERNMENTIDCARD = 5
+    ACCESSCARD = 6
 
 
 def main():
@@ -328,18 +421,6 @@ def main():
     manager.card_list.append(credit_card)
     manager.card_list.append(driver_card)
     # CAN BE DELETED IF YOU WOULD PREFER TO ADD ALL CARDS YOURSELF
-
-    print("*" * 40)
-    # print([cls.__name__ for cls in Card.__subclasses__()])
-
-    output = []
-    for child in Card.__subclasses__():
-        output.append(child.__name__)
-        for grandchild in child.__subclasses__():
-            output.append(grandchild.__name__)
-
-    for subclass in output:
-        print(subclass)
 
     manager.start()
 

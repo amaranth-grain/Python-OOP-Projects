@@ -1,0 +1,119 @@
+{
+	{
+    "_address": {
+        "company_name": "BCIT",
+        "street": "555 Seymour Street",
+        "postal_code": "V2F 9K1",
+        "city": "Vancouver",
+        "province": "BC",
+        "country": "Canada"
+    },
+    "_id": 1,
+    "_points": 9,
+    "_rewards": {
+        "Bubble Waffles": 5,
+        "Brown Sugar BBT": 10
+    }
+},
+{
+    "_address": {
+        "company_name": "BCIT",
+        "street": "555 Seymour Street",
+        "postal_code": "V2F 9K1",
+        "city": "Vancouver",
+        "province": "BC",
+        "country": "Canada"
+    },
+    "_id": 2,
+    "_card_no": "123456789",
+    "_balance": 438.2
+},
+{
+    "_address": {
+        "company_name": "BCIT",
+        "street": "555 Seymour Street",
+        "postal_code": "V2F 9K1",
+        "city": "Vancouver",
+        "province": "BC",
+        "country": "Canada"
+    },
+    "_id": 3,
+    "_name": "Amy Acker",
+    "_card_no": "3492 9384 2342",
+    "_expiry_date": {
+        "year": 2025,
+        "month": 1,
+        "day": 1
+    }
+},
+{
+    "_address": {
+        "company_name": "Ghibli Museum",
+        "street": "1 Chome-1-83 Shimorenjaku",
+        "postal_code": "181-0013",
+        "city": "Mitaka",
+        "province": "Tokyo",
+        "country": "Japan"
+    },
+    "_id": 4,
+    "_card_no": "3428 2398 3021",
+    "_expiry_date": null,
+    "_detail": "Ghibili Museum Ticket"
+},
+{
+    "_address": {
+        "company_name": "BCIT",
+        "street": "555 Seymour Street",
+        "postal_code": "V2F 9K1",
+        "city": "Vancouver",
+        "province": "BC",
+        "country": "Canada"
+    },
+    "_id": 5,
+    "_name": "Xena Warrior Princess",
+    "_card_no": "8673 1214 6563",
+    "_expiry_date": {
+        "year": 2025,
+        "month": 1,
+        "day": 1
+    },
+    "_csv": "564",
+    "_card_type": "Credit"
+},
+{
+    "_address": {
+        "company_name": "ICBC",
+        "street": "999 Robson Street",
+        "postal_code": "V2B 2N9",
+        "city": "Vancouver",
+        "province": "BC",
+        "country": "Canada"
+    },
+    "_id": 6,
+    "_name": "Delle Seyah",
+    "_card_no": "2847 6951 3241",
+    "_expiry_date": {
+        "year": 2025,
+        "month": 1,
+        "day": 1
+    },
+    "_dob": {
+        "year": 1900,
+        "month": 5,
+        "day": 6
+    },
+    "_weight": 61.1,
+    "_height": 184,
+    "_sex": "F",
+    "_eyes": "Brown",
+    "_hair": "Brown",
+    "_home_address": {
+        "company_name": "Home address",
+        "street": "123 Main Street",
+        "postal_code": "V8K 1P3",
+        "city": "Vancouver",
+        "province": "BC",
+        "country": "Canada"
+    }
+}
+}

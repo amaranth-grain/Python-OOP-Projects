@@ -1,7 +1,6 @@
 """
-This module is responsible for holding a badly written (but not so bad
-that you won't find this in the workplace) BookAnalyzer class that needs
-to be profiled and optimized.
+This module is responsible for holding a BookAnalyzer class that has been
+reworked and optimised.
 """
 from collections import Counter
 import string

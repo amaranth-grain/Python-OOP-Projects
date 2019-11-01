@@ -16,6 +16,9 @@ class BookAnalyzer:
     COMMON_PUNCTUATION = [",", "*", ";", ".", ":", "(", "[", "]", ")"]
 
     def __init__(self):
+        """
+        Initialise BookAnalyzer object.
+        """
         self.text = None
 
     def read_data(self, src="House of Usher.txt"):

@@ -14,6 +14,9 @@ class BookAnalyzer:
     """
 
     def __init__(self):
+        """
+        Initialise BookAnalyzer object.
+        """
         self.text = None
         self.text_lower = None
         self.unique_words = None
@@ -23,11 +26,16 @@ class BookAnalyzer:
         Reads through a text file and loads in all the words. This
         function also processes the words such that all whitespace and
         common punctuation is removed.
+        For case insensitivity, a copy of the stripped text is stored
+        entirely in lower case.
         :param src: the name of the file, a string
         """
         # read lines
         with open(src, mode='r', encoding='utf-8') as book_file:
+            # Removes the special character \ufeff at the beginning of a file
             data = book_file.read().replace("\ufeff", "")
+            # Create translator object to strip text of string module's
+            # defined punctuation
             translator = str.maketrans('', '', string.punctuation)
             # Strip data of punctuation and create word list
             stripped_text = data.translate(translator).split()

@@ -17,6 +17,9 @@ class BookAnalyzer:
     COMMON_PUNCTUATION = [",", "*", ";", ".", ":", "(", "[", "]", ")"]
 
     def __init__(self):
+        """
+        Initialise BookAnalyzer object.
+        """
         self.text = None
         self.text_lower = []
 

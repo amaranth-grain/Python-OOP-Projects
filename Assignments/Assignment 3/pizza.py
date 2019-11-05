@@ -29,6 +29,7 @@ class Pizza(ABC):
     """
     Interface for Pizza and PizzaDecorator objects.
     """
+
     @abstractmethod
     def increase_price(self, ingredient):
         pass

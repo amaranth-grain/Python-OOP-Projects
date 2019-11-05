@@ -35,3 +35,11 @@ These inputs are validated in several ways:
 The user can quit the program at any point.
 
 The user is free to add cheese and toppings in any order.
+
+The user cannot checkout their pizza unless it has at least one cheese topping.
+
+
+
+#### Limitations
+
+I didn't implement the bonus mark, so the program has low scalability.  Values are hard-coded instead of being generated programmatically. 

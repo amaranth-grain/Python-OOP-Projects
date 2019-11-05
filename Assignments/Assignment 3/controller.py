@@ -48,16 +48,12 @@ class Controller:
             1: PlainPizza,
             2: exit
         }
+        # Create base concrete pizza
+        self.pizza = choices.get(user_input)()
+        print(self.get_pending_order())
 
-        try:
-            # Create base concrete pizza
-            self.pizza = choices.get(user_input)()
-            print(self.get_pending_order())
-        except TypeError as e:
-            print("Exception: Only integers are accepted.")
-        else:
-            # Select cheese toppings
-            self.cheese_menu()
+        # Select cheese toppings
+        self.cheese_menu()
 
     def add_topping(self, menu, dec_menu):
         user_input = Controller.get_user_choice(menu)
@@ -104,14 +100,25 @@ class Controller:
             if user_input in range(4, 7):
                 render_menu = False
 
+            if not self.has_cheese():
+                render_menu = True
+
             if user_input is 4:
                 self.toppings_menu()
-            elif user_input is 5:
+            elif user_input is 5 and self.has_cheese():
                 self.check_out()
+            elif user_input is 5 and not self.has_cheese():
+                print("Pizzas must have at least one cheese topping.")
             elif user_input is 6:
                 exit()
 
-
+    def has_cheese(self):
+        order = self.pending_order
+        cheeses = ["Parmigiano Reggiano", "Fresh Mozzarella", "Vegan Cheese"]
+        for cheese in cheeses:
+            if cheese in order:
+                return True
+        return False
 
     def toppings_menu(self):
         user_input = None
@@ -121,7 +128,7 @@ class Controller:
 
             if user_input is 8:
                 self.cheese_menu()
-            elif user_input is 9:
+            elif user_input is 9 and self.has_cheese():
                 self.check_out()
             elif user_input is 10:
                 exit()

@@ -1,6 +1,7 @@
 from menu import Menu
 from pizza import PlainPizza
 from sys import exit
+import texttable as tt
 
 
 class Controller:
@@ -66,7 +67,28 @@ class Controller:
         print("\nCHECKING OUT...\n")
         print("Please confirm your order below.\n")
         self.pizza.assemble()
-        return self.pizza
+
+        tab = tt.Texttable()
+        headings = ['Ingredient', 'Unit Price']
+        tab.header(headings)
+
+        ingredients = [i.name for i in self.pizza.get_ingredients()][::-1]
+
+        prices = [i.price for i in self.pizza.get_ingredients()][::-1]
+        prices = ['${:,.2f}'.format(price) for price in prices]
+
+        for row in zip(ingredients, prices):
+            tab.add_row(row)
+
+        # Grab total price of pizza
+        total_price = self.pizza.get_total_price()
+        # Format total price
+        total_price = '${:,.2f}'.format(total_price)
+        # Add total price to texttable
+        tab.add_row(["Total", total_price])
+
+        s = tab.draw()
+        print(s)
 
     def cheese_menu(self):
         render_menu = True
@@ -79,7 +101,7 @@ class Controller:
             if user_input is 4:
                 self.toppings_menu()
             elif user_input is 5:
-                print(self.check_out())
+                self.check_out()
             elif user_input is 6:
                 exit()
 
@@ -92,8 +114,7 @@ class Controller:
             if user_input is 8:
                 self.cheese_menu()
             elif user_input is 9:
-                result = self.check_out()
-                print(result)
+                self.check_out()
             elif user_input is 10:
                 exit()
 

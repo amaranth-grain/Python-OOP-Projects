@@ -42,6 +42,10 @@ class Pizza(ABC):
         pass
 
     @abstractmethod
+    def get_ingredients(self):
+        pass
+
+    @abstractmethod
     def assemble(self):
         """
         Assemble pizza.
@@ -87,6 +91,9 @@ class PlainPizza(Pizza):
     def add_ingredient(self, ingredient):
         self.ingredients.append(ingredient)
 
+    def get_ingredients(self):
+        return self.ingredients
+
     def assemble(self):
         """
         Add an ingredient to the pizza.
@@ -117,11 +124,13 @@ class BasePizzaDecorator(Pizza):
         Get total price of pizza.
         :return: float
         """
-        print(self.pizza.total_price)
-        return self.pizza.total_price
+        return self.pizza.get_total_price()
 
     def add_ingredient(self, ingredient):
         self.pizza.add_ingredient(ingredient)
+
+    def get_ingredients(self):
+        return self.pizza.get_ingredients()
 
     def assemble(self):
         """

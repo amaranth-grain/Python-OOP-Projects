@@ -44,7 +44,7 @@ class Menu:
     }
 
     toppings_dec = {
-        1: pizza.PeppersPizzaDecorator,
+        1: pizza.PepperPizzaDecorator,
         2: pizza.PineapplePizzaDecorator,
         3: pizza.MushroomPizzaDecorator,
         4: pizza.BasilPizzaDecorator,
@@ -55,7 +55,7 @@ class Menu:
 
     @staticmethod
     def print(menu):
-        output = ""
+        output = "\n"
         for num, item in menu.items():
             output += f"{num}. {item}\n"
         print(output)

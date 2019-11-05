@@ -186,6 +186,123 @@ class VeganPizzaDecorator(BasePizzaDecorator):
         return super().__str__()
 
 
+class PepperPizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Peppers", 1.5)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
+
+
+class PineapplePizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Pineapple", 2)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
+
+
+class MushroomPizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Mushrooms", 1.5)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
+
+
+class BasilPizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Fresh Basil", 2)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
+
+
+class SpinachPizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Spinach", 1)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
+
+
+class PepperoniPizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Pepperoni", 3)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
+
+
+class BeyondPizzaDecorator(BasePizzaDecorator):
+
+    def assemble(self):
+        """
+        Add an ingredient to the pizza.
+        :param ingredient: Ingredient
+        :return: None
+        """
+        ingredient = Ingredient("Beyond Meat", 4)
+        super().add_ingredient(ingredient)
+        super().increase_price(ingredient)
+        super().assemble()
+
+    def __str__(self):
+        return super().__str__()
 
 
 def main():

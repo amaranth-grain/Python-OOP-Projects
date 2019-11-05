@@ -31,11 +31,11 @@ class Controller:
         try:
             user_input = int(input("Enter menu number: "))
             if user_input not in range(1, len(menu) + 1):
-                raise ValueError("Enter valid integer.")
-        except ValueError as e:
-            print(f"\nException: {e}\n")
+                raise ValueError
         except TypeError as e:
             print("\nException: Only integers are accepted.\n")
+        except ValueError as e:
+            print(f"\nException: Enter valid integer.")
         else:
             return user_input
 
@@ -43,14 +43,19 @@ class Controller:
         user_input = None
         while user_input is None:
             user_input = Controller.get_user_choice(Menu.start_menu)
-            choices = {
-                1: PlainPizza,
-                2: exit
-            }
+
+        choices = {
+            1: PlainPizza,
+            2: exit
+        }
+
+        try:
             # Create base concrete pizza
             self.pizza = choices.get(user_input)()
             print(self.get_pending_order())
-
+        except TypeError as e:
+            print("Exception: Only integers are accepted.")
+        else:
             # Select cheese toppings
             self.cheese_menu()
 
@@ -92,6 +97,7 @@ class Controller:
 
     def cheese_menu(self):
         render_menu = True
+        num_cheese = len(Menu.cheese_dec)
         while render_menu:
             user_input = self.add_topping(Menu.cheese_menu, Menu.cheese_dec)
 
@@ -104,6 +110,8 @@ class Controller:
                 self.check_out()
             elif user_input is 6:
                 exit()
+
+
 
     def toppings_menu(self):
         user_input = None

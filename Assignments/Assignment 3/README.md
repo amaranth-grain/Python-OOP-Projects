@@ -42,4 +42,17 @@ The user cannot checkout their pizza unless it has at least one cheese topping.
 
 #### Limitations
 
-I didn't implement the bonus mark, so the program has low scalability.  Values are hard-coded instead of being generated programmatically. 
+I didn't implement the bonus mark, so the program has low scalability.  
+Values are hard-coded instead of being generated programmatically. 
+
+I didn't have enough time to refactor the code.  I've implemented a
+ RamenShop partially where the wrappers work correctly.  The RamenShop is
+  missing the GUI for the user to interface with it.
+  
+  To see how I would have implemented a more concise solution, see menu.py
+   module for the RamenShop, where I create a dictionary of Ingredients.
+   In this dictionary,
+   key = string value that end user sees
+   value = Ingredient object
+   This allows me to pass in a string to the BrothDecorator and / or
+    ToppingDecorator to customise my ramen.

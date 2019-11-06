@@ -1,19 +1,18 @@
+"""
+Stores Menu items for Pizza shop UI.
+"""
+
 import pizza
 
 class Menu:
+    """
+    Stores items for menu creation.
+    """
+
     start_menu = {
         1: "Build your own pizza",
         2: "Quit"
     }
-
-    # cheese_menu = {
-    #     1: "Parmigiano Reggiano",
-    #     2: "Fresh Mozzarella",
-    #     3: "Daiya Cheese",
-    #     4: "Add other toppings",
-    #     5: "Check out",
-    #     6: "Quit"
-    # }
 
     cheese_menu = {
         1: pizza.Ingredient("Parmigiano Reggiano", 4.99),
@@ -55,6 +54,11 @@ class Menu:
 
     @staticmethod
     def print(menu):
+        """
+        Prints menu items in a nicely formatted manner.
+        :param menu: Menu dictionary
+        :return: None
+        """
         output = "\n"
         for num, item in menu.items():
             output += f"{num}. {item}\n"

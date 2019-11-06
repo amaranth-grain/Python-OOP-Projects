@@ -1,3 +1,7 @@
+"""
+Controls the flow of logic in Pizza shop order form.
+"""
+
 from menu import Menu
 from pizza import PlainPizza
 from sys import exit
@@ -5,18 +9,41 @@ import texttable as tt
 
 
 class Controller:
+    """
+    Controls the flow of logic for Pizza shop.
+    """
 
     def __init__(self):
+        """
+        Initialises Controller object.
+        """
         self.pizza = None
         self.pending_order = "Signature Crust"
 
     def get_pending_order(self):
+        """
+        Gets the pending order for ingredients in Pizza,
+        as the Pizza is only assembled at the end.
+        :return:  String
+        """
         return f"\nPending Order: {self.pending_order}"
 
     def add_to_pending_order(self, ingredient):
+        """
+        Adds an ingredient to the pending order.
+        :param ingredient: String
+        :return: String
+        """
         self.pending_order += f", {ingredient}"
 
     def update_pending_order(self, ingredient):
+        """
+        Update the pending order by
+        a. Adding an ingredient to the pending order
+        b. Printing the order out.
+        :param ingredient: String
+        :return: None
+        """
         self.add_to_pending_order(ingredient)
         print(self.get_pending_order())
 
@@ -40,6 +67,10 @@ class Controller:
             return user_input
 
     def start(self):
+        """
+        Begins the Pizza shop program.
+        :return: None
+        """
         user_input = None
         while user_input is None:
             user_input = Controller.get_user_choice(Menu.start_menu)
@@ -56,15 +87,26 @@ class Controller:
         self.cheese_menu()
 
     def add_topping(self, menu, dec_menu):
+        """
+        Wraps the pizza in a pizza decorator.
+        :param menu:
+        :param dec_menu:
+        :return: int
+        """
         user_input = Controller.get_user_choice(menu)
 
         if user_input in range(1, len(dec_menu) + 1):
             topping = menu.get(user_input)
             self.pizza = dec_menu.get(user_input)(self.pizza)
             self.update_pending_order(topping.name)
+
         return user_input
 
     def check_out(self):
+        """
+        Assemble and check out pizza.
+        :return: None
+        """
         print("\nCHECKING OUT...\n")
         print("Please confirm your order below.\n")
         self.pizza.assemble()
@@ -92,8 +134,12 @@ class Controller:
         print(s)
 
     def cheese_menu(self):
+        """
+        Control the cheese menu logic.
+        :return: None
+        """
         render_menu = True
-        num_cheese = len(Menu.cheese_dec)
+
         while render_menu:
             user_input = self.add_topping(Menu.cheese_menu, Menu.cheese_dec)
 
@@ -113,6 +159,10 @@ class Controller:
                 exit()
 
     def has_cheese(self):
+        """
+        Check to see if a Cheese ingredient is in the pending order.
+        :return: boolean
+        """
         order = self.pending_order
         cheeses = ["Parmigiano Reggiano", "Fresh Mozzarella", "Vegan Cheese"]
         for cheese in cheeses:
@@ -121,6 +171,10 @@ class Controller:
         return False
 
     def toppings_menu(self):
+        """
+        Controll the non-cheese topping menu logic.
+        :return: None
+        """
         user_input = None
         while user_input is not 9:
             user_input = self.add_topping(Menu.toppings_menu,

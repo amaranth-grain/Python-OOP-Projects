@@ -1,3 +1,7 @@
+"""
+Interface, concrete object, and decorators for Pizzas.
+"""
+
 from abc import ABC, abstractmethod
 
 
@@ -29,7 +33,6 @@ class Pizza(ABC):
     """
     Interface for Pizza and PizzaDecorator objects.
     """
-
     @abstractmethod
     def increase_price(self, ingredient):
         pass
@@ -64,6 +67,9 @@ class Pizza(ABC):
 
 
 class PlainPizza(Pizza):
+    """
+    Concrete Pizza with Signature Crust.
+    """
 
     def __init__(self):
         """
@@ -90,9 +96,18 @@ class PlainPizza(Pizza):
         return self.total_price
 
     def add_ingredient(self, ingredient):
+        """
+        Add ingredient to pizza's ingredient list.
+        :param ingredient:
+        :return: None
+        """
         self.ingredients.append(ingredient)
 
     def get_ingredients(self):
+        """
+        Get ingredients from pizza.
+        :return: Ingredient list
+        """
         return self.ingredients
 
     def assemble(self):
@@ -106,6 +121,10 @@ class PlainPizza(Pizza):
         self.increase_price(ingredient)
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         price = '${:,.2f}'.format(self.total_price)
         i_list = [i.name for i in self.ingredients][::-1]
         return f"Ingredient List: {', '.join(i_list)}\n" \
@@ -114,10 +133,24 @@ class PlainPizza(Pizza):
 
 class BasePizzaDecorator(Pizza):
 
+    """
+    Base pizza decorator that all decorators inherit from;
+    Creates the interface through which decorators access
+    wrapee functionality.
+    """
+
     def __init__(self, pizza):
+        """
+        Initialises BasePizzaDecorator with pizza object.
+        :param pizza: object that implements Pizza interface
+        """
         self.pizza = pizza
 
     def increase_price(self, ingredient):
+        """
+        Get total price of pizza.
+        :return: float
+        """
         self.pizza.increase_price(ingredient)
 
     def get_total_price(self):
@@ -128,9 +161,18 @@ class BasePizzaDecorator(Pizza):
         return self.pizza.get_total_price()
 
     def add_ingredient(self, ingredient):
+        """
+        Add ingredient to pizza's ingredient list.
+        :param ingredient:
+        :return: None
+        """
         self.pizza.add_ingredient(ingredient)
 
     def get_ingredients(self):
+        """
+        Get ingredients from pizza.
+        :return: Ingredient list
+        """
         return self.pizza.get_ingredients()
 
     def assemble(self):
@@ -142,6 +184,10 @@ class BasePizzaDecorator(Pizza):
         self.pizza.assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return self.pizza.__str__()
 
 
@@ -159,10 +205,18 @@ class ParmigianoPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class MozzarellaPizzaDecorator(BasePizzaDecorator):
+
+    """
+    Adds the Fresh Mozzarella ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -176,10 +230,17 @@ class MozzarellaPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class VeganPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Vegan Cheese ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -193,10 +254,17 @@ class VeganPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class PepperPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Peppers ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -210,10 +278,17 @@ class PepperPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class PineapplePizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Pineapple ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -227,10 +302,17 @@ class PineapplePizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class MushroomPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Mushroom ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -244,10 +326,17 @@ class MushroomPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class BasilPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Basil ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -261,10 +350,17 @@ class BasilPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class SpinachPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Spinach ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -278,10 +374,17 @@ class SpinachPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class PepperoniPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Pepperoni ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -295,10 +398,17 @@ class PepperoniPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
 class BeyondPizzaDecorator(BasePizzaDecorator):
+    """
+    Adds the Beyond Meat ingredient to the pizza.
+    """
 
     def assemble(self):
         """
@@ -312,6 +422,10 @@ class BeyondPizzaDecorator(BasePizzaDecorator):
         super().assemble()
 
     def __str__(self):
+        """
+        String representation of pizza.
+        :return: String
+        """
         return super().__str__()
 
 
@@ -326,24 +440,6 @@ def main():
 
     pizza.assemble()
     print(pizza)
-
-    # has_parm = input("Has parm? Y/N ")
-    # if has_parm.lower() == 'y':
-    #     has_parm = True
-    # else:
-    #     has_parm = False
-    #
-    # has_mozz = input("Has mozz? Y/N ")
-    # if has_mozz.lower() == 'y':
-    #     has_mozz = True
-    # else:
-    #     has_mozz = False
-    #
-    # if has_parm:
-    #     pizza = ParmigianoPizzaDecorator(pizza)
-    # if has_mozz:
-    #     pizza = MozzarellaPizzaDecorator(pizza)
-
 
 
 if __name__ == "__main__":

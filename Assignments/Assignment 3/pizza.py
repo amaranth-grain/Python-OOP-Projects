@@ -204,13 +204,6 @@ class ParmigianoPizzaDecorator(BasePizzaDecorator):
         super().increase_price(ingredient)
         super().assemble()
 
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
-
 
 class MozzarellaPizzaDecorator(BasePizzaDecorator):
 
@@ -229,13 +222,6 @@ class MozzarellaPizzaDecorator(BasePizzaDecorator):
         super().increase_price(ingredient)
         super().assemble()
 
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
-
 
 class VeganPizzaDecorator(BasePizzaDecorator):
     """
@@ -252,13 +238,6 @@ class VeganPizzaDecorator(BasePizzaDecorator):
         super().add_ingredient(ingredient)
         super().increase_price(ingredient)
         super().assemble()
-
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
 
 
 class PepperPizzaDecorator(BasePizzaDecorator):
@@ -277,13 +256,6 @@ class PepperPizzaDecorator(BasePizzaDecorator):
         super().increase_price(ingredient)
         super().assemble()
 
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
-
 
 class PineapplePizzaDecorator(BasePizzaDecorator):
     """
@@ -300,13 +272,6 @@ class PineapplePizzaDecorator(BasePizzaDecorator):
         super().add_ingredient(ingredient)
         super().increase_price(ingredient)
         super().assemble()
-
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
 
 
 class MushroomPizzaDecorator(BasePizzaDecorator):
@@ -325,13 +290,6 @@ class MushroomPizzaDecorator(BasePizzaDecorator):
         super().increase_price(ingredient)
         super().assemble()
 
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
-
 
 class BasilPizzaDecorator(BasePizzaDecorator):
     """
@@ -348,13 +306,6 @@ class BasilPizzaDecorator(BasePizzaDecorator):
         super().add_ingredient(ingredient)
         super().increase_price(ingredient)
         super().assemble()
-
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
 
 
 class SpinachPizzaDecorator(BasePizzaDecorator):
@@ -373,13 +324,6 @@ class SpinachPizzaDecorator(BasePizzaDecorator):
         super().increase_price(ingredient)
         super().assemble()
 
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
-
 
 class PepperoniPizzaDecorator(BasePizzaDecorator):
     """
@@ -397,13 +341,6 @@ class PepperoniPizzaDecorator(BasePizzaDecorator):
         super().increase_price(ingredient)
         super().assemble()
 
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
-
 
 class BeyondPizzaDecorator(BasePizzaDecorator):
     """
@@ -420,13 +357,6 @@ class BeyondPizzaDecorator(BasePizzaDecorator):
         super().add_ingredient(ingredient)
         super().increase_price(ingredient)
         super().assemble()
-
-    def __str__(self):
-        """
-        String representation of pizza.
-        :return: String
-        """
-        return super().__str__()
 
 
 def main():

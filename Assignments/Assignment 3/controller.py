@@ -107,8 +107,8 @@ class Controller:
         Assemble and check out pizza.
         :return: None
         """
-        print("\nCHECKING OUT...\n")
-        print("Please confirm your order below.\n")
+        print("\nCALCULATING BILL...\n")
+        print("\nYour pizza order total breaks down as follows:\n")
         self.pizza.assemble()
 
         tab = tt.Texttable()
@@ -184,6 +184,8 @@ class Controller:
                 self.cheese_menu()
             elif user_input is 9 and self.has_cheese():
                 self.check_out()
+            elif user_input is 9 and not self.has_cheese():
+                print("Pizzas must have at least one cheese topping.")
             elif user_input is 10:
                 exit()
 

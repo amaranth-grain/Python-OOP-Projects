@@ -6,6 +6,16 @@ class Menu:
         3: "Journal"
     }
 
+    start_menu = {
+        1: "Find book by title",
+        2: "Add book to collection",
+        3: "Remove book from collection",
+        4: "Check out a copy",
+        5: "Return your copy",
+        6: "Display all available books",
+        7: "Quit Menu"
+    }
+
     @staticmethod
     def print(menu) -> None:
         """

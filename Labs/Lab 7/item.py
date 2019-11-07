@@ -13,7 +13,7 @@ class Item(ABC):
     """
     default_item_data = {
         'title': 'Title Not Available',
-        'call_no': '000',
+        'call_no': 'Call Number Not Assigned',
         'author': 'Author Not Available',
         'num_copies': 0,
         'journal_name': "Journal Name Not Available",
@@ -31,6 +31,8 @@ class Item(ABC):
         self._item = Item.default_item_data
         for k, v in kwargs.items():
             self._item[k] = v
+
+
 
     # def __init__(self, title: str, call_no: str,
     #              author: str, num_copies: int) -> None:
@@ -138,3 +140,28 @@ class DVD(Item):
                f"Release Date: {self._item.get('dvd_release')}\n" \
                f"Region: {self._item.get('dvd_region')}\n\n"
 
+
+def main():
+    dvd = DVD(title="Mad Max Fury Road", call_no="329.A",
+              author="George Miller", num_copies=10,
+              dvd_release="5/15/2015", dvd_region=1)
+
+    book = Book(title="Ancillary Justice", call_no="653.2",
+                author="Ann Leckie", num_copies=15)
+
+    journal = Journal(title="Sleep Deprivation and False Memories",
+                      call_no="451.2",
+                      author="Lawrence Patihis, Elizabeth F. Loftus, "
+                             "Holly C. Lewis, Kimberly M. Fenn",
+                      num_copies=1,
+                      journal_name="Psychology Journal",
+                      journal_issue="Q2 2019",
+                      journal_publisher="AP Publishing House")
+
+    print(f"{dvd}\n"
+          f"{book}\n"
+          f"{journal}")
+
+
+if __name__ == "__main__":
+    main()

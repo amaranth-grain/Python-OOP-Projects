@@ -7,6 +7,10 @@ from item import Item, Book, Journal, DVD
 
 
 class NegativeNumberError(Exception):
+    """
+    Error when an attribute or input should not be a negative value (e.g.
+    counting the number of objects.)
+    """
     def __init__(self, num):
         super().__init__(f"The number of copies must be a positive integer. "
                          f"You entered {num}")
@@ -46,13 +50,9 @@ class BookFactory(ItemFactory):
     """
     Create Book objects.
     """
-
     def create_item(self) -> Item:
         info_dict = self.get_basic_item_dict(self)
-        return Book(title=info_dict["title"],
-                    call_no=info_dict["call_no"],
-                    author=info_dict["author"],
-                    num_copies=info_dict["num_copies"])
+        return Book(**info_dict)
 
 
 class JournalFactory(ItemFactory):
@@ -65,10 +65,7 @@ class JournalFactory(ItemFactory):
         journal_name = input("Enter journal name: ").title()
         journal_issue = input("Enter journal issue: ").title()
         journal_publisher = input("Enter journal publishing house: ").title()
-        return Journal(title=info_dict["title"],
-                       call_no=info_dict["call_no"],
-                       author=info_dict["author"],
-                       num_copies=info_dict["num_copies"],
+        return Journal(**info_dict,
                        journal_name=journal_name,
                        journal_issue=journal_issue,
                        journal_publisher=journal_publisher)
@@ -89,13 +86,27 @@ class DVDFactory(ItemFactory):
         except ValueError as e:
             print("DVD Region must be a positive integer.")
         else:
-            return DVD(title=info_dict["title"],
-                       call_no=info_dict["call_no"],
-                       author=info_dict["author"],
-                       num_copies=info_dict["num_copies"],
+            return DVD(**info_dict,
                        dvd_release=dvd_release,
                        dvd_region=dvd_region)
-        
+
+
+class LibraryItemGenerator:
+    factory_type = {
+        1: BookFactory,
+        2: DVDFactory,
+        3: JournalFactory
+    }
+
+    @staticmethod
+    def pick_item_creation_type(choice):
+        """
+        Return the specified Factory based on user choice.
+        :param choice: int
+        :return: ItemFactory
+        """
+        return LibraryItemGenerator.factory_type.get(choice)()
+
 
 def main():
     # book_factory = BookFactory()

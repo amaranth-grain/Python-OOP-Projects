@@ -1,6 +1,17 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 import os
+from enum import Enum
+
+
+class CryptoMode(Enum):
+    """
+    Enum that lists the various modes that the Crypto application can run in.
+    """
+    # Encryption mode
+    EN = "en"
+    # Decryption Mode
+    DE = "de"
 
 
 class KeyLengthError(Exception):
@@ -37,6 +48,14 @@ class FileExtensionError(Exception):
         super().__init__(f"Your file path '{path}' does not end with the "
                          f".txt file extension.")
         self.path = path
+
+
+class InvalidModeError(Exception):
+
+    def __init__(self, mode):
+        super().__init__(f"The mode you entered '{mode}' is not a valid "
+                         f"CryptoMode.")
+        self.mode = mode
 
 
 class BaseCryptographyHandler(ABC):
@@ -79,6 +98,9 @@ class BaseCryptographyHandler(ABC):
 
 
 class KeyCryptographyValidator(BaseCryptographyHandler):
+    """
+    Check the key used for DES cryptography is a valid length (8, 16, or 24).
+    """
 
     def handle_request(self, request) -> bool:
         """
@@ -96,20 +118,36 @@ class KeyCryptographyValidator(BaseCryptographyHandler):
             raise KeyLengthError(len(request.key))
 
 
-# class ModeCryptographyValidator(BaseCryptographyHandler):
-#
-#     def handle_request(self, request) -> bool:
+class ModeCryptographyValidator(BaseCryptographyHandler):
+
+    """
+    Check the cryptography mode is a CryptoMode Enum.
+    """
+
+    def handle_request(self, request) -> bool:
+        """
+        Ensures that the mode is a valid input.
+        :param request: Request
+        :return: bool
+        """
+        if not isinstance(request.encryption_state, CryptoMode):
+            raise InvalidModeError(request.encryption_state)
 
 
 class InputCryptographyValidator(BaseCryptographyHandler):
+
+    """
+    Check for the right number of inputs, and that the input can be used
+    for encryption / decryption.
+    """
 
     def handle_request(self, request) -> bool:
         """
         Ensures there is only one input (either a string directly from
         command line or an input file, but not both).
         Ensures that file input is a text file and that it can be read.
-        :param request:
-        :return:
+        :param request: Request
+        :return: bool
         """
         print("Input validator running...")
 
@@ -140,8 +178,10 @@ class InputCryptographyValidator(BaseCryptographyHandler):
             # Check if extension is correct
             elif not request.input_file.endswith(".txt"):
                 raise FileExtensionError(request.input_file)
+            # Check if the file is empty
             elif os.stat(request.input_file).st_size == 0:
                 raise EmptyStringError
+            # If there are no errors
             else:
                 if not self.next_handler:
                     return True

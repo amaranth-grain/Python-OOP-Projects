@@ -1,6 +1,6 @@
 from des import DesKey
 import argparse
-from handlers import KeyCryptographyValidator, StringCryptographyValidator
+from handlers import KeyCryptographyValidator, InputCryptographyValidator
 from enum import Enum
 
 
@@ -98,19 +98,20 @@ class Crypto:
     def __init__(self):
         # Chain for encrypting data
         en_key = KeyCryptographyValidator()
-        en_str = StringCryptographyValidator()
-        en_key.next_handler = en_str
+        en_input = InputCryptographyValidator()
+        # en_str = StringCryptographyValidator()
+        en_key.next_handler = en_input
+        # en_input.next_handler = en_str
 
         # Chain for decrptying data
         de_key = KeyCryptographyValidator
-        de_str = StringCryptographyValidator()
-        de_key.next_handler = de_str
+        de_input = InputCryptographyValidator()
+        # de_str = StringCryptographyValidator()
+        de_key.next_handler = de_input
+        # de_input.next_handler = de_str
 
         self.encryption_start_handler = en_key
         self.decryption_start_handler = de_key
-
-        # if request.encryption_state == CryptoMode.EN then
-        # self.en_start.start()
 
     def execute_request(self, request: Request):
         print("Hello there I am a request")

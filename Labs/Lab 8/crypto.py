@@ -7,6 +7,7 @@ from enum import Enum
 from des import DesKey
 import argparse
 import os
+import ast
 
 
 class CryptoMode(Enum):
@@ -41,6 +42,9 @@ class Request:
     """
 
     def __init__(self):
+        """
+        Initialises Request.
+        """
         self.encryption_state = None
         self.data_input = None
         self.input_file = None
@@ -49,6 +53,10 @@ class Request:
         self.result = None
 
     def __str__(self):
+        """
+        String representation of Request
+        :return: String
+        """
         return f"Request: State: {self.encryption_state}\n " \
                f"Data: {self.data_input}\n" \
                f"Input file: {self.input_file}\n" \
@@ -100,7 +108,9 @@ def setup_request_commandline() -> Request:
 
 
 class KeyLengthError(Exception):
-
+    """
+    Error thrown when the DES key is not 8, 16, or 24 in length.
+    """
     def __init__(self, length):
         super().__init__(f"Keys must be 8, 16, or 24 characters long."
                          f"Your key is {length} characters long.")
@@ -108,13 +118,17 @@ class KeyLengthError(Exception):
 
 
 class EmptyStringError(Exception):
-
+    """
+    Error thrown when user uses empty string literal.
+    """
     def __init__(self):
         super().__init__(f"You cannot use cryptography on an empty string.")
 
 
 class MultipleInputSourceError(Exception):
-
+    """
+    Error thrown when there are multiple input sources.
+    """
     def __init__(self, string, file):
         super().__init__(f"You have multiple sources of input. String '"
                          f"{string}' and file path '{file}' were detected.")
@@ -123,24 +137,21 @@ class MultipleInputSourceError(Exception):
 
 
 class NoInputSourceError(Exception):
+    """
+    Error thrown when there are no input sources.
+    """
     def __init__(self):
         super().__init__(f"No input source detected.")
 
 
 class FileExtensionError(Exception):
-
+    """
+    Error thrown when the file extension is incorrect.
+    """
     def __init__(self, path):
         super().__init__(f"Your file path '{path}' does not end with the "
                          f".txt file extension.")
         self.path = path
-
-
-class InvalidModeError(Exception):
-
-    def __init__(self, mode):
-        super().__init__(f"The mode you entered '{mode}' is not a valid "
-                         f"CryptoMode.")
-        self.mode = mode
 
 
 class BaseCryptographyHandler(ABC):
@@ -201,26 +212,6 @@ class KeyCryptographyValidator(BaseCryptographyHandler):
             return self.next_handler.handle_request(request)
         else:
             raise KeyLengthError(len(request.key))
-
-
-class ModeCryptographyValidator(BaseCryptographyHandler):
-    """
-    Check the cryptography mode is a CryptoMode Enum.
-    """
-
-    def handle_request(self, request) -> bool:
-        """
-        Ensures that the mode is a valid input.
-        :param request: Request
-        :return: bool
-        """
-        print("Mode validator running...")
-        if not isinstance(request.encryption_state, CryptoMode):
-            raise InvalidModeError(request.encryption_state)
-        else:
-            if not self.next_handler:
-                return True
-            return self.next_handler.handle_request(request)
 
 
 class InputCryptographyValidator(BaseCryptographyHandler):
@@ -336,14 +327,13 @@ class DecryptionCryptographyHandler(BaseCryptographyHandler):
 
         if request.data_input:
             print("Decrypting request from direct string... ...")
-            # The length of the message should be divisible by 8
-            coded_msg = request.data_input.encode()
+            coded_msg = ast.literal_eval(r"{0}".format(request.data_input))
         else:
             with open(request.input_file, "rb+") as input_file:
                 coded_msg = input_file.read()
 
         decrypted_output = key0.decrypt(coded_msg, padding=True)
-        print(f"decrypted output: {decrypted_output}")
+        print(f"=== DECRPYTED MESSAGE===\n{decrypted_output}")
 
 
 class Crypto:
@@ -351,23 +341,21 @@ class Crypto:
     def __init__(self):
         # Chain for encrypting data
         en_key = KeyCryptographyValidator()
-        en_mode = ModeCryptographyValidator()
+        # en_mode = ModeCryptographyValidator()
         en_input = InputCryptographyValidator()
         en_output = OutputCryptographyValidator()
         en_handler = EncryptionCryptographyHandler()
-        en_key.next_handler = en_mode
-        en_mode.next_handler = en_input
+        en_key.next_handler = en_input
         en_input.next_handler = en_output
         en_output.next_handler = en_handler
 
         # Chain for decrypting data
         de_key = KeyCryptographyValidator()
-        de_mode = ModeCryptographyValidator()
+        # de_mode = ModeCryptographyValidator()
         de_input = InputCryptographyValidator()
         de_output = OutputCryptographyValidator()
         de_handler = DecryptionCryptographyHandler()
-        de_key.next_handler = de_mode
-        de_mode.next_handler = de_input
+        de_key.next_handler = de_input
         de_input.next_handler = de_output
         de_output.next_handler = de_handler
 

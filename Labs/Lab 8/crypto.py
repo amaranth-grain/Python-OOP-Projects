@@ -9,7 +9,6 @@ import argparse
 import os
 
 
-
 class CryptoMode(Enum):
     """
     Enum that lists the various modes that the Crypto application can run in.
@@ -40,6 +39,7 @@ class Request:
         decryption. This does not usually come in with the request.
 
     """
+
     def __init__(self):
         self.encryption_state = None
         self.data_input = None
@@ -71,7 +71,7 @@ def setup_request_commandline() -> Request:
                                     "decrypting. This needs to be of "
                                     "length 8, 16 or 24")
     parser.add_argument("-s", "--string", help="The string that needs to "
-                                                  "be "
+                                               "be "
                                                "encrypted or decrypted")
     parser.add_argument("-f", "--file", help="The text file that needs to be"
                                              "encrypted or decrypted")
@@ -204,7 +204,6 @@ class KeyCryptographyValidator(BaseCryptographyHandler):
 
 
 class ModeCryptographyValidator(BaseCryptographyHandler):
-
     """
     Check the cryptography mode is a CryptoMode Enum.
     """
@@ -225,7 +224,6 @@ class ModeCryptographyValidator(BaseCryptographyHandler):
 
 
 class InputCryptographyValidator(BaseCryptographyHandler):
-
     """
     Check for the right number of inputs, and that the input can be used
     for encryption / decryption.
@@ -278,27 +276,74 @@ class InputCryptographyValidator(BaseCryptographyHandler):
                 return self.next_handler.handle_request(request)
 
 
-# class OutputCryptographyValidator(BaseCryptographyHandler):
-#
-#     def handle_request(self, request) -> bool:
-#         """
-#         Check whether output value is valid or not.
-#         :param request:
-#         :return:
-#         """
-#         print("Output validator running...")
-#         if request.output.lower() == "print":
-#             if not self.next_handler:
-#                 return True
-#             return self.next_handler.handle_request(request)
-#
-#         # Check if output path is valid
-#         if not request.output.endswith(".txt"):
-#             raise FileExtensionError(request.output)
-#         else:
-#             if not self.next_handler:
-#                 return True
-#             return self.next_handler.handle_request(request)
+class OutputCryptographyValidator(BaseCryptographyHandler):
+
+    def handle_request(self, request) -> bool:
+        """
+        Check whether output value is valid or not.
+        :param request:
+        :return:
+        """
+        print("Output validator running...")
+        if request.output.lower() == "print":
+            if not self.next_handler:
+                return True
+            return self.next_handler.handle_request(request)
+
+        # Check if output path is valid
+        if not request.output.endswith(".txt"):
+            raise FileExtensionError(request.output)
+        else:
+            if not self.next_handler:
+                return True
+            return self.next_handler.handle_request(request)
+
+
+class EncryptionCryptographyHandler(BaseCryptographyHandler):
+
+    def handle_request(self, request) -> bool:
+        print("Encryption handler running")
+        # Set up encryption key
+        bytes_key = request.key.encode()
+        key0 = DesKey(bytes_key)
+
+        # Encrypting from direct string
+        if request.data_input:
+            print("Encrypting request from direct string... ...")
+            bytes_str = request.data_input.encode()
+            output = key0.encrypt(bytes_str, padding=True)
+        else:
+            print("Encrypting from input file... ...")
+            bytes_str = request.data_input.encode()
+            output = key0.encrypt(bytes_str, padding=True)
+
+        # Whether it's direct or from input file, output results:
+        if request.output.lower() == "print":
+            print(f"=== ENCRYPTED OUTPUT ===\n{output}")
+        else:
+            with open(request.output, "wb+") as output_file:
+                output_file.write(output)
+                # output_file.write("Write text by encoding\n".encode('utf8'))
+                # output_file.write(b'\xDE\xAD\xBE\xEF')
+
+
+class DecryptionCryptographyHandler(BaseCryptographyHandler):
+
+    def handle_request(self, request) -> bool:
+        # Set up decryption key
+        bytes_key = request.key.encode()
+        key0 = DesKey(bytes_key)
+
+        if request.data_input:
+            print("Decrypting request from direct string... ...")
+            # The length of the message should be divisible by 8
+            coded_msg = request.data_input.encode()
+        else:
+            with open(request.input_file, "rb+") as input_file:
+                coded_msg = input_file.read()
+
+        decrypted_output = key0.decrypt(coded_msg, padding=True)
+        print(f"decrypted output: {decrypted_output}")
 
 
 class Crypto:
@@ -308,19 +353,23 @@ class Crypto:
         en_key = KeyCryptographyValidator()
         en_mode = ModeCryptographyValidator()
         en_input = InputCryptographyValidator()
-        # en_output = OutputCryptographyValidator()
+        en_output = OutputCryptographyValidator()
+        en_handler = EncryptionCryptographyHandler()
         en_key.next_handler = en_mode
         en_mode.next_handler = en_input
-        # en_input.next_handler = en_output
+        en_input.next_handler = en_output
+        en_output.next_handler = en_handler
 
         # Chain for decrypting data
         de_key = KeyCryptographyValidator()
         de_mode = ModeCryptographyValidator()
         de_input = InputCryptographyValidator()
-        # de_output = OutputCryptographyValidator()
+        de_output = OutputCryptographyValidator()
+        de_handler = DecryptionCryptographyHandler()
         de_key.next_handler = de_mode
         de_mode.next_handler = de_input
-        # de_input.next_handler = de_output
+        de_input.next_handler = de_output
+        de_output.next_handler = de_handler
 
         self.encryption_start_handler = en_key
         self.decryption_start_handler = de_key
@@ -334,15 +383,48 @@ class Crypto:
 
 def main(request: Request):
     driver = Crypto()
-    result = driver.execute_request(request)
+    # execute_request() will throw an error if it doesn't pass validation
+    driver.execute_request(request)
 
-    # If validation is successful
-    if result:
-        bytes_key = request.key.encode()
-        key0 = DesKey(bytes_key)
-        bytes_str = request.data_input.encode()
-        output = key0.encrypt(bytes_str, padding=True)
-        print(f"output: {output}")
+    # # Encryption
+    # if request.encryption_state == CryptoMode.EN:
+    #     # Set up encryption key
+    #     bytes_key = request.key.encode()
+    #     key0 = DesKey(bytes_key)
+    #
+    #     # Encrypting from direct string
+    #     if request.data_input:
+    #         print("Encrypting request from direct string... ...")
+    #         bytes_str = request.data_input.encode()
+    #         output = key0.encrypt(bytes_str, padding=True)
+    #     else:
+    #         print("Encrypting from input file... ...")
+    #         bytes_str = request.data_input.encode()
+    #         output = key0.encrypt(bytes_str, padding=True)
+    #
+    #     # Whether it's direct or from input file, output results:
+    #     if request.output.lower() == "print":
+    #         print(f"=== ENCRYPTED OUTPUT ===\n{output}")
+    #     else:
+    #         with open(request.output, "wb+") as output_file:
+    #             output_file.write(output)
+    #             # output_file.write("Write text by encoding\n".encode('utf8'))
+    #             # output_file.write(b'\xDE\xAD\xBE\xEF')
+    # else:
+    #     # Set up decryption key
+    #     bytes_key = request.key.encode()
+    #     key0 = DesKey(bytes_key)
+    #
+    #     if request.data_input:
+    #         print("Decrypting request from direct string... ...")
+    #         # The lenth of the message should be divisible by 8
+    #         coded_msg = request.data_input.encode()
+    #     else:
+    #         with open(request.input_file, "rb+") as input_file:
+    #             coded_msg = input_file.read()
+    #
+    #     decrypted_output = key0.decrypt(coded_msg, padding=True)
+    #     print(f"decrypted output: {decrypted_output}")
 
 
 if __name__ == '__main__':

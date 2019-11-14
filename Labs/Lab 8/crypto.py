@@ -250,12 +250,8 @@ class InputCryptographyValidator(BaseCryptographyHandler):
                 raise EmptyStringError
         # If there is a file path
         else:
-            # Check if path exists
-            if not Path(request.input_file).exists():
-                raise FileNotFoundError(f"The file '{request.input_file}' "
-                                        f"was not found.")
             # Check if extension is correct
-            elif not request.input_file.endswith(".txt"):
+            if not request.input_file.endswith(".txt"):
                 raise FileExtensionError(request.input_file)
             # Check if the file is empty
             elif os.stat(request.input_file).st_size == 0:
@@ -337,8 +333,14 @@ class DecryptionCryptographyHandler(BaseCryptographyHandler):
 
 
 class Crypto:
-
+    """
+    Driver class that performs cryptography.
+    """
     def __init__(self):
+        """
+        Initialises and sets up Crypto class's chain of responsibility for
+        encrypting and decrypting data.
+        """
         # Chain for encrypting data
         en_key = KeyCryptographyValidator()
         # en_mode = ModeCryptographyValidator()
@@ -363,6 +365,12 @@ class Crypto:
         self.decryption_start_handler = de_key
 
     def execute_request(self, request: Request):
+        """
+        Handles request by validating and performing encryption and
+        validation when all tests are successful.
+        :param request: Request
+        :return: bool
+        """
         if request.encryption_state is CryptoMode.EN:
             return self.encryption_start_handler.handle_request(request)
         elif request.encryption_state is CryptoMode.DE:
@@ -371,48 +379,10 @@ class Crypto:
 
 def main(request: Request):
     driver = Crypto()
-    # execute_request() will throw an error if it doesn't pass validation
-    driver.execute_request(request)
-
-    # # Encryption
-    # if request.encryption_state == CryptoMode.EN:
-    #     # Set up encryption key
-    #     bytes_key = request.key.encode()
-    #     key0 = DesKey(bytes_key)
-    #
-    #     # Encrypting from direct string
-    #     if request.data_input:
-    #         print("Encrypting request from direct string... ...")
-    #         bytes_str = request.data_input.encode()
-    #         output = key0.encrypt(bytes_str, padding=True)
-    #     else:
-    #         print("Encrypting from input file... ...")
-    #         bytes_str = request.data_input.encode()
-    #         output = key0.encrypt(bytes_str, padding=True)
-    #
-    #     # Whether it's direct or from input file, output results:
-    #     if request.output.lower() == "print":
-    #         print(f"=== ENCRYPTED OUTPUT ===\n{output}")
-    #     else:
-    #         with open(request.output, "wb+") as output_file:
-    #             output_file.write(output)
-    #             # output_file.write("Write text by encoding\n".encode('utf8'))
-    #             # output_file.write(b'\xDE\xAD\xBE\xEF')
-    # else:
-    #     # Set up decryption key
-    #     bytes_key = request.key.encode()
-    #     key0 = DesKey(bytes_key)
-    #
-    #     if request.data_input:
-    #         print("Decrypting request from direct string... ...")
-    #         # The lenth of the message should be divisible by 8
-    #         coded_msg = request.data_input.encode()
-    #     else:
-    #         with open(request.input_file, "rb+") as input_file:
-    #             coded_msg = input_file.read()
-    #
-    #     decrypted_output = key0.decrypt(coded_msg, padding=True)
-    #     print(f"decrypted output: {decrypted_output}")
+    try:
+        driver.execute_request(request)
+    except FileNotFoundError as e:
+        print(e)
 
 
 if __name__ == '__main__':

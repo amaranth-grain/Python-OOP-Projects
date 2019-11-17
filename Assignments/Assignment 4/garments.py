@@ -179,7 +179,8 @@ class ShirtMenLuluLime(ShirtMen):
         if isinstance(num_zip_pockets, int):
             self._num_zip_pockets = num_zip_pockets
         else:
-            raise ValueError(f"Only integer values accepted.")
+            raise ValueError(f"Only integer values accepted for the number "
+                             f"of zippered pockets.")
 
     def __str__(self):
         return f"=== Lululime Men's Shirts ===\n" \
@@ -197,11 +198,13 @@ class ShirtMenPineappleRepublic(ShirtMen):
         if isinstance(needs_ironing, bool):
             self._needs_ironing = needs_ironing
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether the "
+                            "shirt requires ironing or not.")
         if isinstance(num_buttons, int):
             self._num_buttons = num_buttons
         else:
-            raise TypeError("Only integer values accepted.")
+            raise TypeError("Only integer values accepted for the number of "
+                            "buttons on the shirt.")
 
     def __str__(self):
         return f"=== Pineapple Republic Men's Shirts ===\n" \
@@ -218,7 +221,8 @@ class ShirtMenNika(ShirtMen):
         if isinstance(is_indoor, bool):
             self._is_indoor = is_indoor
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether the "
+                            "shirt is designed for indoors or not.")
 
     def __str__(self):
         return f"=== Nika Men's Shirts ===\n" \
@@ -241,7 +245,8 @@ class ShirtWomenLululime(ShirtWomen):
         if isinstance(num_zip_pockets, int):
             self._num_zip_pockets = num_zip_pockets
         else:
-            raise ValueError(f"Only integer values accepted.")
+            raise ValueError(f"Only integer values accepted for the number "
+                             f"of zippered pockets.")
 
     def __str__(self):
         return f"=== Lululime Women's Shirts ===\n" \
@@ -259,11 +264,13 @@ class ShirtWomenPineappleRepublic(ShirtWomen):
         if isinstance(needs_ironing, bool):
             self._needs_ironing = needs_ironing
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether the "
+                            "shirt requires ironing or not.")
         if isinstance(num_buttons, int):
             self._num_buttons = num_buttons
         else:
-            raise TypeError("Only integer values accepted.")
+            raise TypeError("Only integer values accepted for the number of "
+                            "buttons.")
 
     def __str__(self):
         return f"=== Pineapple Republic Women's Shirts ===\n" \
@@ -280,7 +287,8 @@ class ShirtWomenNika(ShirtWomen):
         if isinstance(is_indoor, bool):
             self._is_indoor = is_indoor
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether the "
+                            "shirts are designed for indoors or not.")
 
     def __str__(self):
         return f"=== Nika Women's Shirts ===\n" \
@@ -296,7 +304,8 @@ class SockPairUnisexLululime(SockPairUnisex):
         if isinstance(has_silver, bool):
             self._has_silver = has_silver
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether socks "
+                            "have silver to control odour.")
 
     def __str__(self):
         return f"=== Lululime Socks ===\n" \
@@ -312,7 +321,8 @@ class SockPairUnisexPineappleRepublic(SockPairUnisex):
         if isinstance(needs_drycleaning, bool):
             self._needs_drycleaning = needs_drycleaning
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether socks "
+                            "require drycleaning or not.")
 
     def __str__(self):
         return f"=== Pineapple Republic Socks ===\n" \
@@ -329,7 +339,8 @@ class SockPairUnisexNika(SockPairUnisex):
         if isinstance(is_articulated, bool):
             self._is_articulated = is_articulated
         else:
-            raise TypeError("Only boolean values accepted.")
+            raise TypeError("Only boolean values accepted for whether socks "
+                            "are articulated or not.")
         sock_length = sock_length.upper()
         if sock_length in SockLength.__members__:
             self._sock_length = sock_length
@@ -342,20 +353,14 @@ class SockPairUnisexNika(SockPairUnisex):
 
 
 def main():
-    print('s'.upper() in SizeW.__members__)
-    # try:
-    #     socks = ShirtMen("Style A", "S", "Blue", "Cotton")
-    #     socks.size = "m"
-    #     print(socks)
-    # except ValueError as e:
-    #     print(e)
-
-    # def __str__(self):
-    #     return f"Socks\n" \
-    #            f"Style: {self.style}\n" \
-    #            f"Size: {self.size}\n" \
-    #            f"Colour: {self.colour}\n" \
-    #            f"Textile: {self.textile}\n"
+    # print('s'.upper() in SizeW.__members__)
+    try:
+        l_socks = SockPairUnisexLululime(123, "blue", "Cotton", "m",
+                                         True)
+        l_socks.size = "m"
+        print(l_socks)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":

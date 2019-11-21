@@ -2,6 +2,7 @@ import city_processor as cp
 import threading
 import time
 
+
 class CityOverheadTimeQueue:
     def __init__(self):
         self.data_queue = []
@@ -59,15 +60,41 @@ class ProducerThread(threading.Thread):
                 time.sleep(1)
 
 
+class ConsumerThread(threading.Thread):
+
+    def __init__(self, queue: CityOverheadTimeQueue):
+        """
+        Initialises with the same queue that the ProducerThread has.
+        :param queue: CityOverheadQueue
+        """
+        super().__init__()
+        self.data_incoming = True
+        self.queue = queue
+
+    def run(self) -> None:
+        while self.data_incoming:
+            if len(self.queue) > 0:
+                print(f"======================\n"
+                      f"{self.queue.data_queue.pop(0)}\n"
+                      f"======================\n")
+                time.sleep(0.5)
+            else:
+                time.sleep(0.75)
 
 
 def main():
+    q = CityOverheadTimeQueue()
     db = cp.CityDatabase("city_locations_test.xlsx")
-    p_thread = ProducerThread(db.city_db, CityOverheadTimeQueue())
+    p_thread = ProducerThread(db.city_db, q)
+    c_thread = ConsumerThread(q)
     p_thread.start()
+    c_thread.start()
     p_thread.join()
-
-    print([city.city_name for city in p_thread.cities])
+    c_thread.join()
+    # change consumer attribute data_incoming to false after producer
+    # thread joins main
+    #
+    # print([city.city_name for city in p_thread.cities])
     # print([item for item in p_thread.queue.data_queue])
     # q = CityOverheadTimeQueue()
     # db = cp.CityDatabase("city_locations_test.xlsx")

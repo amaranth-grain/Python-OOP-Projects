@@ -6,6 +6,7 @@ import time
 class CityOverheadTimeQueue:
     def __init__(self):
         self.data_queue = []
+        self.access_queue_lock = threading.Lock()
 
     def put(self, overhead_time: cp.CityOverheadTimes) -> None:
         """
@@ -13,7 +14,8 @@ class CityOverheadTimeQueue:
         :param overhead_time: CityOverheadTimes
         :return: None
         """
-        self.data_queue.append(overhead_time)
+        with self.access_queue_lock:
+            self.data_queue.append(overhead_time)
 
     def get(self) -> cp.CityOverheadTimes:
         """
@@ -21,9 +23,10 @@ class CityOverheadTimeQueue:
         off as queues are FIFO.
         :return:
         """
-        item = self.data_queue[0]
-        del self.data_queue[0]
-        return item
+        with self.access_queue_lock:
+            item = self.data_queue[0]
+            del self.data_queue[0]
+            return item
 
     def __len__(self) -> int:
         """
@@ -34,6 +37,33 @@ class CityOverheadTimeQueue:
 
 
 class ProducerThread(threading.Thread):
+    def __init__(self, cities: list, queue: CityOverheadTimeQueue):
+        """
+        Initialise the thread with a list of City objects and
+        CityOverheadTimeQueue.
+        :param cities:
+        :param queue:
+        """
+        super().__init__()
+        self.cities = cities
+        self.queue = queue
+
+    def run(self) -> None:
+        """
+        Executes when thread starts.  Loops over each city and passes it
+        to ISSDataRequest, and adds each city to the queue.
+        :return:
+        """
+        count = 0
+        for city in self.cities:
+            json = cp.ISSDataRequest.get_overhead_pass(city)
+            self.queue.put(cp.CityOverheadTimes(city, json["response"]))
+            count += 1
+            if count % 5 == 0:
+                time.sleep(1)
+
+
+class ProducerThread2(threading.Thread):
     def __init__(self, cities: list, queue: CityOverheadTimeQueue):
         """
         Initialise the thread with a list of City objects and
@@ -72,7 +102,7 @@ class ConsumerThread(threading.Thread):
         self.queue = queue
 
     def run(self) -> None:
-        while self.data_incoming:
+        while self.data_incoming or len(self.queue) > 0:
             if len(self.queue) > 0:
                 print(f"======================\n"
                       f"{self.queue.data_queue.pop(0)}\n"
@@ -90,10 +120,12 @@ def main():
     p_thread.start()
     c_thread.start()
     p_thread.join()
+    c_thread.data_incoming = False
     c_thread.join()
     # change consumer attribute data_incoming to false after producer
     # thread joins main
-    #
+
+
     # print([city.city_name for city in p_thread.cities])
     # print([item for item in p_thread.queue.data_queue])
     # q = CityOverheadTimeQueue()

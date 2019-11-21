@@ -123,11 +123,8 @@ class CityOverheadTimes:
         """
         self.city = city
         self.passes = []
-        # for arg in args:
-        #     self.passes.append(OverheadPassEvent(**arg))
         for arg in args:
-            for a in arg:
-                self.passes.append(OverheadPassEvent(**a))
+            self.passes.append(OverheadPassEvent(**arg))
 
     def __str__(self):
         times = []
@@ -159,12 +156,15 @@ class ISSDataRequest:
     def get_overhead_pass(cls, city: City) -> CityOverheadTimes:
         url = ISSDataRequest.create_url(city.lat, city.lng)
         response = requests.get(url)
-        return response.json()
+        # print(f"JSON:")
         # jprint(response.json())
+        return CityOverheadTimes(city, *response.json()["response"])
+
 
 
 def main():
-    db = CityDatabase("city_locations_test.xlsx")
+    # db = CityDatabase("city_locations_test.xlsx")
+    db = CityDatabase("city_locations.xlsx")
     for city in db.city_db:
         json = ISSDataRequest.get_overhead_pass(city)
         CityOverheadTimes(city, json)

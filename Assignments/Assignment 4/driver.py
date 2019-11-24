@@ -18,11 +18,12 @@ class GarmentType(Enum):
 class GarmentMaker:
 
     def __init__(self):
-        self.shirts_men = []
-        self.shirts_women = []
-        self.socks_unisex = []
+        self.inventory = []
+        # self.shirts_men = []
+        # self.shirts_women = []
+        # self.socks_unisex = []
         self.processor = OrderProcessor()
-        self.garment_dict = {
+        self.garment_maker_dict = {
             "SHIRT_MEN": self.shirt_men_maker,
             "SHIRT_WOMEN": self.shirt_women_maker,
             "SOCK_PAIR_UNISEX": self.socks_unisex_maker
@@ -33,20 +34,28 @@ class GarmentMaker:
         self.processor.import_data(path)
         self.processor.format_data()
         self.processor.create_orders()
+
         orders = self.processor.process_next_order()
+
+        # For every order, call the appropriate garment maker method
         for o in orders:
-            self.garment_dict[o.garment.name](o)
+            self.garment_maker_dict[o.garment.name](o)
 
-    # invokes the correct method on the brandfactory passed to it
-    # to create the correct number of the correct type of clothing
-    def shirt_men_maker(self, shirt_men_order):
-        shirt_men_order.factory.create_shirt_men()
+        print(f"This is what the inventory looks like:\n")
+        for garment in self.inventory:
+            print(garment)
 
-    def shirt_women_maker(self, shirt_women_order):
-        print("I'm shirt women maker")
+    def shirt_men_maker(self, order):
+        shirt_m = order.factory.create_shirt_men(order.details)
+        self.inventory.append(shirt_m)
 
-    def socks_unisex_maker(self, socks_unisex_order):
-        print("I'm socks unisex maker")
+    def shirt_women_maker(self, order):
+        shirt_w = order.factory.create_shirt_women(order.details)
+        self.inventory.append(shirt_w)
+
+    def socks_unisex_maker(self, order):
+        socks = order.factory.create_socks_unisex(order.details)
+        self.inventory.append(socks)
 
     def write_report(self):
         pass
@@ -87,6 +96,7 @@ class OrderProcessor:
         self.df.columns = map(str.lower, self.df.columns)
         self.df.columns = self.df.columns.str.replace(' ', '_')
         self.df.columns = self.df.columns.str.replace('/', '_or_')
+        self.df = self.df.where((pd.notnull(self.df)), "n")
         self.df = self.df.to_dict("records")
 
     def create_orders(self):

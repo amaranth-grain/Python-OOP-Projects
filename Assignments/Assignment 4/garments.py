@@ -141,7 +141,7 @@ class SockPairUnisex(Garment):
                f"Size: {self._size.name}\n"
 
 
-class ShirtMenLuluLime(ShirtMen):
+class ShirtMenLululime(ShirtMen):
     """
     Lululime Men's Shirt.  Concrete product in abstract factory pattern.
     """
@@ -218,7 +218,7 @@ class ShirtMenNika(ShirtMen):
                f"Indoor: {self._indoor_or_outdoor}\n"
 
 
-class ShirtWomenLuluLime(ShirtWomen):
+class ShirtWomenLululime(ShirtWomen):
     """
     Lululime Women's Shirt.  Concrete product in abstract factory pattern.
     """
@@ -365,46 +365,15 @@ class SockPairUnisexNika(SockPairUnisex):
 
 def main():
     try:
-        d_l = {"style_name": "modern",
-               "sport": "yoga",
-               "hidden_zipper_pockets": 1.0,
-               "colour": "red",
-               "textile": "silk",
-               "size": "m"}
-        d_pr = {"style_name": "modern",
-                "requires_ironing": "Y",
-                "buttons": 2,
-                "colour": "red",
-                "textile": "silk",
-                "size": "xs"}
-        d_n = {"style_name": "modern",
-               "indoor_or_outdoor": "indoor",
-               "colour": "red",
-               "textile": "silk",
-               "size": "m"}
-        d_sock_n = {"style_name": "modern",
-                    "colour": "grey",
-                    "articulated": "y",
-                    "length": "calf",
-                    "textile": "silk",
-                    "size": "m"}
-        d_sock_pr = {"style_name": "modern",
-                    "colour": "grey",
-                    "dry_cleaning": "y",
-                    "textile": "silk",
-                    "size": "m"}
-        sock = SockPairUnisexPineappleRepublic(**d_sock_pr)
-        print(sock)
-        # s = ShirtMenLuluLime(**d)
-        # s_m = ShirtMenPineappleRepublic(**d_pr)
-        # s_w = ShirtWomenPineappleRepublic(**d_pr)
-        # print(s_m)
-        # print(s_w)
-        # s = SockPairUnisex(**d)
-        # s = ShirtMenNika(**d_n)
-        # print(s)
-        # g = Garment(**d)
-        # print(g)
+        d = {'date': 'Friday November 16 2019', 'order_number': 1,
+             'count': 300, 'style_name': 'Bowen', 'size': 'M',
+             'colour': 'Grey', 'textile': 'Merino wool',
+             'sport': 'Yoga', 'hidden_zipper_pockets': 1.0,
+             'dry_cleaning': 'n', 'indoor_or_outdoor': 'n',
+             'requires_ironing': 'n', 'buttons': 'n', 'articulated': 'n',
+             'length': 'n', 'silver': 'n', 'stripe': 'n'}
+        shirt_men = ShirtMenLululime(**d)
+        print(shirt_men)
     except Exception as e:
         print(e)
 

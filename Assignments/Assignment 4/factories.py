@@ -1,3 +1,7 @@
+"""
+Factories in Abtract Factory Pattern.
+"""
+
 from abc import ABC, abstractmethod
 import garments
 
@@ -22,29 +26,35 @@ class LululimeFactory(BrandFactory):
     Creates a family of Lululime products.
     """
 
-    def create_shirt_men(self, order) -> garments.ShirtMen:
+    def create_shirt_men(self, details) -> garments.ShirtMen:
         """
         Create a Lululime Men's Shirt.
         :return: ShirtMen
         """
-        print("I'm a Lululime shirt men")
-        return garments.ShirtMenLululime(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.ShirtMenLululime(**details))
+        return temp
 
-    def create_shirt_women(self, order) -> garments.ShirtWomen:
+    def create_shirt_women(self, details) -> garments.ShirtWomen:
         """
         Create a Lululime Women's Shirt.
         :return: ShirtWomen
         """
-        print("I'm a Lululime shirt women")
-        return garments.ShirtWomenLululime(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.ShirtWomenLululime(**details))
+        return temp
 
-    def create_socks_unisex(self, order) -> garments.SockPairUnisex:
+    def create_socks_unisex(self, details) -> garments.SockPairUnisex:
         """
         Create a pair of Lululime unisex socks.
         :return: SockPairUnisex
         """
-        print("I'm a Lululime sock pair")
-        return garments.SockPairUnisexLululime(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.SockPairUnisexLululime(**details))
+        return temp
 
 
 class PineappleRepublicFactory(BrandFactory):
@@ -52,29 +62,35 @@ class PineappleRepublicFactory(BrandFactory):
     Creates a family of Pineapple Republic products.
     """
 
-    def create_shirt_men(self, order) -> garments.ShirtMen:
+    def create_shirt_men(self, details) -> garments.ShirtMen:
         """
         Create a Pineapple Republic Men's Shirt.
         :return: ShirtMen
         """
-        print("I'm a PR shirt men")
-        return garments.ShirtMenPineappleRepublic(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.ShirtMenPineappleRepublic(**details))
+        return temp
 
-    def create_shirt_women(self, order) -> garments.ShirtWomen:
+    def create_shirt_women(self, details) -> garments.ShirtWomen:
         """
         Create a Pineapple Republic Women's Shirt.
         :return: ShirtWomen
         """
-        print("I'm a PR shirt women")
-        return garments.ShirtWomenPineappleRepublic(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.ShirtWomenPineappleRepublic(**details))
+        return temp
 
-    def create_socks_unisex(self, order) -> garments.SockPairUnisex:
+    def create_socks_unisex(self, details) -> garments.SockPairUnisex:
         """
         Create a pair of Pineapple Republic unisex socks.
         :return: SockPairUnisex
         """
-        print("I'm a PR sock pair")
-        return garments.SockPairUnisexPineappleRepublic(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.SockPairUnisexPineappleRepublic(**details))
+        return temp
 
 
 class NikaFactory(BrandFactory):
@@ -82,26 +98,32 @@ class NikaFactory(BrandFactory):
     Creates a family of Pineapple Republic products.
     """
 
-    def create_shirt_men(self, order) -> garments.ShirtMen:
+    def create_shirt_men(self, details) -> garments.ShirtMen:
         """
         Create a Nika Men's Shirt.
         :return: ShirtMen
         """
-        print("I'm a Nika shirt men")
-        return garments.ShirtMenNika(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.ShirtMenNika(**details))
+        return temp
 
-    def create_shirt_women(self, order) -> garments.ShirtWomen:
+    def create_shirt_women(self, details) -> garments.ShirtWomen:
         """
         Create a Nika Women's Shirt.
         :return: ShirtWomen
         """
-        print("I'm a Nika shirt women")
-        return garments.ShirtWomenNika(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.ShirtWomenNika(**details))
+        return temp
 
-    def create_socks_unisex(self, order) -> garments.SockPairUnisex:
+    def create_socks_unisex(self, details) -> garments.SockPairUnisex:
         """
         Create a pair of Nika unisex socks.
         :return: SockPairUnisex
         """
-        print("I'm a Nika sock pair")
-        return garments.SockPairUnisexNika(**order)
+        temp = []
+        for _ in range(details["count"]):
+            temp.append(garments.SockPairUnisexNika(**details))
+        return temp

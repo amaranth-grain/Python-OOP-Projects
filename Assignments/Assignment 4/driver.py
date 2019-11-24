@@ -1,27 +1,27 @@
 import pandas as pd
-import numpy as np
 from enum import Enum
+from garments import GarmentType
 from factories import NikaFactory, LululimeFactory, PineappleRepublicFactory
 
 
 class FileExtensionError(Exception):
+    """
+    Error raised when Pandas attempts to read a non-xlsx file.
+    """
     def __init__(self):
         super().__init__("File must end with .xlsx extension.")
 
 
-class GarmentType(Enum):
-    SHIRT_MEN = "shirtmen"
-    SHIRT_WOMEN = "shirtwomen"
-    SOCK_PAIR_UNISEX = "sockpairunisex"
-
-
 class GarmentMaker:
-
+    """
+    Produce garments based on order quanity and attributes.
+    Decoupled from concrete garments that Garment Maker makes.
+    """
     def __init__(self):
+        """
+        Initialise garment maker to process orders.
+        """
         self.inventory = []
-        # self.shirts_men = []
-        # self.shirts_women = []
-        # self.socks_unisex = []
         self.processor = OrderProcessor()
         self.garment_maker_dict = {
             "SHIRT_MEN": self.shirt_men_maker,
@@ -30,6 +30,11 @@ class GarmentMaker:
         }
 
     def start(self):
+        """
+        Start the Garment Maker by asking the user to load data from Excel.
+        Which then processes and formats orders and prints a summary report.
+        :return: None
+        """
         path = input("Enter the file path of the Excel file: ")
         self.processor.import_data(path)
         self.processor.format_data()
@@ -41,27 +46,53 @@ class GarmentMaker:
         for o in orders:
             self.garment_maker_dict[o.garment.name](o)
 
-        print(f"This is what the inventory looks like:\n")
-        for garment in self.inventory:
-            print(garment)
+        self.write_report()
 
     def shirt_men_maker(self, order):
-        shirt_m = order.factory.create_shirt_men(order.details)
-        self.inventory.append(shirt_m)
+        """
+        Make an order of men's shirts based on given order.
+        :param order: Order
+        :return: None
+        """
+        shirt_m_order = order.factory.create_shirt_men(order.details)
+        self.inventory.append(shirt_m_order)
 
     def shirt_women_maker(self, order):
-        shirt_w = order.factory.create_shirt_women(order.details)
-        self.inventory.append(shirt_w)
+        """
+        Make an order of women's shirts based on given order.
+        :param order: Order
+        :return: None
+        """
+        shirt_w_order = order.factory.create_shirt_women(order.details)
+        self.inventory.append(shirt_w_order)
 
     def socks_unisex_maker(self, order):
-        socks = order.factory.create_socks_unisex(order.details)
-        self.inventory.append(socks)
+        """
+        Make an order of socks based on given order.
+        :param order: Order
+        :return: None
+        """
+        socks_order = order.factory.create_socks_unisex(order.details)
+        self.inventory.append(socks_order)
 
     def write_report(self):
-        pass
+        """
+        Prints a summary of the order report.
+        :return: None
+        """
+        for order in self.inventory:
+            print(f"Order #{order[0].order_number} {order[0].brand}"
+                  f" {order[0].garment}")
+            for garment in order:
+                print(garment)
+            print()
 
 
 class OrderProcessor:
+    """
+    Process orders from Excel sheet by formatting the data to work with
+    Garment classes.
+    """
 
     brand_dict = {
         "lululime": LululimeFactory(),
@@ -70,6 +101,10 @@ class OrderProcessor:
     }
 
     def __init__(self):
+        """
+        Initialises Order Processor object by loading dataframe and setting
+        basic pandas options.
+        """
         pd.set_option("display.max_rows", 200)
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.width', 1000)
@@ -100,9 +135,13 @@ class OrderProcessor:
         self.df = self.df.to_dict("records")
 
     def create_orders(self):
+        """
+        Based on the data frame, create orders and store in self.order_list.
+        :return: None
+        """
         for details in self.df:
-            brand = details.pop('brand').lower()
-            g_type = details.pop('garment').lower()
+            brand = details.get('brand').lower()
+            g_type = details.get('garment').lower()
             # Determine Factory based on Order brand name
             factory = OrderProcessor.brand_dict[brand]
             # Determine type of Garment based on garment attribute
@@ -119,19 +158,34 @@ class OrderProcessor:
 
 
 class Order:
+    """
+    Represent an individual garment order.
+    """
 
     def __init__(self, details, factory, garment):
+        """
+        Initialises an Order
+        :param details: dict
+        :param factory: Factory
+        :param garment: GarmentType
+        """
         self.details = details
         self.factory = factory
         self.garment = garment
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        Formatted string for Order object
+        :return: str
+        """
         return f"Details: {self.details}\n" \
                f"Factory: {self.factory}\n" \
                f"Garment: {self.garment.name}\n"
 
 
 def main():
+    # COMP_3522_A4_orders.xlsx for full order
+    # orders.xlsx for test order
     gm = GarmentMaker()
     gm.start()
 

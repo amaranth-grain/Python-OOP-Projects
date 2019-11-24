@@ -7,9 +7,6 @@ from enum import Enum
 from abc import ABC, abstractmethod
 
 
-def convert(self, a):
-    return int(a)
-
 class Size(Enum):
     """
     Valid sizes for all garments.
@@ -39,20 +36,53 @@ class SockLength(Enum):
     KNEE = "KNEE"
 
 
+class GarmentType(Enum):
+    SHIRT_MEN = "shirtmen"
+    SHIRT_WOMEN = "shirtwomen"
+    SOCK_PAIR_UNISEX = "sockpairunisex"
+
+
 class Garment(ABC):
     """
     Abstract Garment class.
     """
 
-    def __init__(self, style_name="", colour="", textile="", **kwargs):
+    def __init__(self, style_name="", colour="", textile="",
+                 order_number=None, brand="", garment="", **kwargs) -> None:
         """
         Initialises abstract garment.
         :param kwargs: dictionary of garment values
         """
-        # self.__dict__.update(kwargs)
         self._style_name = style_name
         self._colour = colour
         self._textile = textile
+        self._order_number = order_number
+        self._brand = brand
+        self._garment = garment
+
+    @property
+    def order_number(self):
+        """
+        Order number that garment belongs to.
+        :return: str
+        """
+        return self._order_number
+
+    @property
+    def brand(self):
+        """
+        Brand of garment.
+        :return: str
+        """
+        return self._brand
+
+    @property
+    def garment(self):
+        """
+        Garment type.
+        :return: str
+        """
+        return GarmentType(self._garment.lower())
 
     @abstractmethod
     def __str__(self):
@@ -60,13 +90,9 @@ class Garment(ABC):
         Formatted string for Garment.
         :return: str
         """
-        return f"Style: {self._style_name.upper()}\n" \
-               f"Colour: {self._colour.upper()}\n" \
-               f"Textile: {self._textile.upper()}\n"
-        # output = ""
-        # for k, v in self.__dict__.items():
-        #     output += f"{k.title()}: {v.upper()}\n"
-        # return output
+        return f"Style: {self._style_name.upper()}, " \
+               f"Colour: {self._colour.upper()}, " \
+               f"Textile: {self._textile.upper()}, "
 
 
 class ShirtMen(Garment):
@@ -74,7 +100,12 @@ class ShirtMen(Garment):
     Abstract men's shirt class. Member in product family.
     """
 
-    def __init__(self, size=None, **kwargs):
+    def __init__(self, size=None, **kwargs) -> None:
+        """
+        Initialises abstract men's shirt.
+        :param size: Size enum
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         self._accepted_sizes = ["S", "M", "L", "XL", "XXL"]
         size = size.upper()
@@ -85,13 +116,13 @@ class ShirtMen(Garment):
                              f"shirts.")
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for Men's Shirt
         :return: str
         """
         return f"{super().__str__()}" \
-               f"Size: {self._size.name}\n"
+               f"Size: {self._size.name}, "
 
 
 class ShirtWomen(Garment):
@@ -99,7 +130,12 @@ class ShirtWomen(Garment):
     Abstract women's shirt class. Member in product family.
     """
 
-    def __init__(self, size=None, **kwargs):
+    def __init__(self, size=None, **kwargs) -> None:
+        """
+        Initialises abstract women's shirt.
+        :param size: Size enum
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         size = size.upper()
         try:
@@ -108,13 +144,13 @@ class ShirtWomen(Garment):
             print(f"The size {size} is not accepted for women's shirts.")
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for Women's Shirt
         :return: str
         """
         return f"{super().__str__()}" \
-               f"Size: {self._size.name}\n"
+               f"Size: {self._size.name}, "
 
 
 class SockPairUnisex(Garment):
@@ -122,7 +158,12 @@ class SockPairUnisex(Garment):
     Abstract unisex socks class. Member in product family.
     """
 
-    def __init__(self, size=None, **kwargs):
+    def __init__(self, size=None, **kwargs) -> None:
+        """
+        Initialises abstract sock pair.
+        :param size: Size enum
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         self._accepted_sizes = ["S", "M", "L"]
         size = size.upper()
@@ -132,13 +173,13 @@ class SockPairUnisex(Garment):
             raise ValueError(f"The size {size} is not valid for Socks.")
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for Women's Shirt
         :return: str
         """
         return f"{super().__str__()}" \
-               f"Size: {self._size.name}\n"
+               f"Size: {self._size.name}, "
 
 
 class ShirtMenLululime(ShirtMen):
@@ -146,21 +187,27 @@ class ShirtMenLululime(ShirtMen):
     Lululime Men's Shirt.  Concrete product in abstract factory pattern.
     """
 
-    def __init__(self, sport, hidden_zipper_pockets, **kwargs):
+    def __init__(self, sport, hidden_zipper_pockets, **kwargs) -> None:
+        """
+        Initialises concrete Lululime men's shirt.
+        :param sport: SportType enum
+        :param hidden_zipper_pockets: number
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         sport = sport.upper()
         self._sport = SportType(sport)
         self._hidden_zipper_pockets = int(hidden_zipper_pockets)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for ShirtMenLuluLime
         :return: str
         """
-        return f"=== Lululime Men's Shirts ===\n" \
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Sport Type: {self._sport.name}\n" \
-               f"Number of Zippered Pockets: {self._hidden_zipper_pockets}\n"
+               f"Sport Type: {self._sport.name}, " \
+               f"Number of Zippered Pockets: {self._hidden_zipper_pockets}"
 
 
 class ShirtMenPineappleRepublic(ShirtMen):
@@ -169,7 +216,13 @@ class ShirtMenPineappleRepublic(ShirtMen):
     pattern.
     """
 
-    def __init__(self, requires_ironing, buttons, **kwargs):
+    def __init__(self, requires_ironing, buttons, **kwargs) -> None:
+        """
+        Initialises concrete Pineapple Republic men's shirt.
+        :param requires_ironing: str (Y or N)
+        :param buttons: number
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         requires_ironing = requires_ironing.lower()
         self._buttons = int(buttons)
@@ -181,15 +234,15 @@ class ShirtMenPineappleRepublic(ShirtMen):
             raise ValueError(f"The requires_ironing field must either be Y"
                              f" or N. You provided '{requires_ironing}'.")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for ShirtMenPineappleRepublic
         :return: str
         """
-        return f"=== Pineapple Republic Men's Shirts ===\n" \
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Requires Ironing: {self._requires_ironing}\n" \
-               f"Number of Buttons: {self._buttons}\n"
+               f"Requires Ironing: {self._requires_ironing}, " \
+               f"Number of Buttons: {self._buttons}"
 
 
 class ShirtMenNika(ShirtMen):
@@ -198,7 +251,12 @@ class ShirtMenNika(ShirtMen):
     pattern.
     """
 
-    def __init__(self, indoor_or_outdoor, **kwargs):
+    def __init__(self, indoor_or_outdoor, **kwargs) -> None:
+        """
+        Initialises concrete Nika men's shirt.
+        :param indoor_or_outdoor: str (INDOOR or OUTDOOR)
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         indoor_or_outdoor = indoor_or_outdoor.upper()
         if indoor_or_outdoor == "INDOOR" or indoor_or_outdoor == "OUTDOOR":
@@ -213,9 +271,9 @@ class ShirtMenNika(ShirtMen):
         Formatted string for ShirtMenNika
         :return: str
         """
-        return f"=== Nika Men's Shirts ===\n" \
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Indoor: {self._indoor_or_outdoor}\n"
+               f"Indoor: {self._indoor_or_outdoor}"
 
 
 class ShirtWomenLululime(ShirtWomen):
@@ -223,21 +281,27 @@ class ShirtWomenLululime(ShirtWomen):
     Lululime Women's Shirt.  Concrete product in abstract factory pattern.
     """
 
-    def __init__(self, sport, hidden_zipper_pockets, **kwargs):
+    def __init__(self, sport, hidden_zipper_pockets, **kwargs) -> None:
+        """
+        Initialises concrete Lululime women's shirt.
+        :param sport: SportType enum
+        :param hidden_zipper_pockets: number
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         sport = sport.upper()
         self._sport = SportType(sport)
         self._hidden_zipper_pockets = int(hidden_zipper_pockets)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for ShirtWomenLuluLime
         :return: str
         """
-        return f"=== Lululime Women's Shirts ===\n" \
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Sport Type: {self._sport.name}\n" \
-               f"Number of Zippered Pockets: {self._hidden_zipper_pockets}\n"
+               f"Sport Type: {self._sport.name}, " \
+               f"Number of Zippered Pockets: {self._hidden_zipper_pockets}"
 
 
 class ShirtWomenPineappleRepublic(ShirtWomen):
@@ -246,7 +310,13 @@ class ShirtWomenPineappleRepublic(ShirtWomen):
     pattern.
     """
 
-    def __init__(self, requires_ironing, buttons, **kwargs):
+    def __init__(self, requires_ironing, buttons, **kwargs) -> None:
+        """
+        Initialises concrete Pineapple Republic women's shirt.
+        :param requires_ironing: str (Y or N)
+        :param buttons: number
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         self._buttons = int(buttons)
         requires_ironing = requires_ironing.lower()
@@ -258,15 +328,15 @@ class ShirtWomenPineappleRepublic(ShirtWomen):
             raise ValueError(f"The requires_ironing field must either be Y"
                              f" or N. You provided '{requires_ironing}'.")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for ShirtWomenPineappleRepublic
         :return: str
         """
-        return f"=== Pineapple Republic Women's Shirts ===\n" \
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Requires Ironing: {self._requires_ironing}\n" \
-               f"Number of Buttons: {self._buttons}\n"
+               f"Requires Ironing: {self._requires_ironing}, " \
+               f"Number of Buttons: {self._buttons}"
 
 
 class ShirtWomenNika(ShirtWomen):
@@ -275,7 +345,12 @@ class ShirtWomenNika(ShirtWomen):
     pattern.
     """
 
-    def __init__(self, indoor_or_outdoor, **kwargs):
+    def __init__(self, indoor_or_outdoor, **kwargs) -> None:
+        """
+        Initialises concrete Nika women's shirt.
+        :param indoor_or_outdoor: str (INDOOR or OUTDOOR)
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         indoor_or_outdoor = indoor_or_outdoor.upper()
         if indoor_or_outdoor == "INDOOR" or indoor_or_outdoor == "OUTDOOR":
@@ -285,14 +360,14 @@ class ShirtWomenNika(ShirtWomen):
                              f"'INDOOR' or 'OUTDOOR'.  You provided "
                              f"{indoor_or_outdoor}.")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Formatted string for ShirtWomenNika
         :return: str
         """
-        return f"=== Nika Men's Shirts ===\n" \
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Indoor: {self._indoor_or_outdoor}\n"
+               f"Indoor: {self._indoor_or_outdoor}"
 
 
 class SockPairUnisexLululime(SockPairUnisex):
@@ -300,7 +375,12 @@ class SockPairUnisexLululime(SockPairUnisex):
     Lululime unisex socks. Concrete product in abstract factory pattern.
     """
 
-    def __init__(self, silver, **kwargs):
+    def __init__(self, silver, **kwargs) -> None:
+        """
+        Initialises concrete Lululime socks.
+        :param silver: str (Y or N)
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         silver = silver.lower()
         if silver == "y":
@@ -311,18 +391,24 @@ class SockPairUnisexLululime(SockPairUnisex):
             raise ValueError(f"The silver field must either be Y"
                              f" or N. You provided '{silver}'.")
 
-    def __str__(self):
-        return f"=== Lululime Socks ===\n" \
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__} " \
                f"{super().__str__()}" \
-               f"Has Silver: {self._silver}\n"
+               f"Has Silver: {self._silver}"
 
 
 class SockPairUnisexPineappleRepublic(SockPairUnisex):
     """
-    Lululime unisex socks. Concrete product in abstract factory pattern.
+    Pineapple Republic unisex socks. Concrete product in abstract factory
+    pattern.
     """
 
-    def __init__(self, dry_cleaning, **kwargs):
+    def __init__(self, dry_cleaning, **kwargs) -> None:
+        """
+        Initialises concrete Pineapple Republic socks.
+        :param dry_cleaning: str (Y or N)
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         dry_cleaning = dry_cleaning.lower()
         if dry_cleaning == "y":
@@ -333,18 +419,24 @@ class SockPairUnisexPineappleRepublic(SockPairUnisex):
             raise ValueError(f"The dry_cleaning field must either be Y"
                              f" or N. You provided '{dry_cleaning}'.")
 
-    def __str__(self):
-        return f"=== Pineapple Republic Socks ===\n" \
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__:} " \
                f"{super().__str__()}" \
-               f"Requires Drycleaning: {self._dry_cleaning}\n"
+               f"Requires Drycleaning: {self._dry_cleaning}"
 
 
 class SockPairUnisexNika(SockPairUnisex):
     """
-    Lululime unisex socks. Concrete product in abstract factory pattern.
+    Nika unisex socks. Concrete product in abstract factory pattern.
     """
 
-    def __init__(self, articulated, length, **kwargs):
+    def __init__(self, articulated, length, **kwargs) -> None:
+        """
+        Initialises concreteNika socks.
+        :param articulated: str (Y or N)
+        :param length: SockLength enum
+        :param kwargs: dict
+        """
         super().__init__(**kwargs)
         articulated = articulated.lower()
         if articulated == "y":
@@ -356,11 +448,11 @@ class SockPairUnisexNika(SockPairUnisex):
                              f" or N. You provided '{articulated}'.")
         self._length = SockLength(length.upper())
 
-    def __str__(self):
-        return f"=== Nika Socks ===\n" \
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__:} " \
                f"{super().__str__()}" \
-               f"Articulated: {self._articulated}\n" \
-               f"Sock Length: {self._length.name}\n"
+               f"Articulated: {self._articulated}, " \
+               f"Sock Length: {self._length.name}"
 
 
 def main():

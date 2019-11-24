@@ -1,5 +1,8 @@
+"""
+Client side of the abstract factory pattern.
+"""
+
 import pandas as pd
-from enum import Enum
 from garments import GarmentType
 from factories import NikaFactory, LululimeFactory, PineappleRepublicFactory
 
@@ -8,8 +11,19 @@ class FileExtensionError(Exception):
     """
     Error raised when Pandas attempts to read a non-xlsx file.
     """
+
     def __init__(self):
         super().__init__("File must end with .xlsx extension.")
+
+
+class CorruptedFileError(Exception):
+    """
+    Error raised when the correct headings could not be read.
+    """
+
+    def __init__(self):
+        super().__init__("File is corrupted. Make sure column headings "
+                         "match the template.")
 
 
 class GarmentMaker:
@@ -17,6 +31,7 @@ class GarmentMaker:
     Produce garments based on order quanity and attributes.
     Decoupled from concrete garments that Garment Maker makes.
     """
+
     def __init__(self):
         """
         Initialise garment maker to process orders.
@@ -38,6 +53,7 @@ class GarmentMaker:
         path = input("Enter the file path of the Excel file: ")
         self.processor.import_data(path)
         self.processor.format_data()
+        self.processor.check_data_integrity()
         self.processor.create_orders()
 
         orders = self.processor.process_next_order()
@@ -108,6 +124,12 @@ class OrderProcessor:
         pd.set_option("display.max_rows", 200)
         pd.set_option('display.max_columns', 200)
         pd.set_option('display.width', 1000)
+        self.valid_headings = {"date", "order_number", "brand", "garment",
+                               "count", "style_name", "size", "colour",
+                               "textile", "sport", "hidden_zipper_pockets",
+                               "dry_cleaning", "indoor_or_outdoor",
+                               "requires_ironing", "buttons", "articulated",
+                               "length", "silver", "stripe"}
         self.df = None
         self.order_list = []
 
@@ -156,6 +178,16 @@ class OrderProcessor:
         """
         yield from (order for order in self.order_list)
 
+    def check_data_integrity(self):
+        """
+        Check if column headings in Excel file are corrupted.
+        Select the first dict (representing Order details) in self.df and
+        compare its keys with the list of valid headings.
+        :return: None
+        """
+        if not self.df[0].keys() >= self.valid_headings:
+            raise CorruptedFileError
+
 
 class Order:
     """
@@ -186,8 +218,15 @@ class Order:
 def main():
     # COMP_3522_A4_orders.xlsx for full order
     # orders.xlsx for test order
-    gm = GarmentMaker()
-    gm.start()
+    file_imported = False
+    while not file_imported:
+        try:
+            gm = GarmentMaker()
+            gm.start()
+        except Exception as e:
+            print(e)
+        else:
+            file_imported = True
 
 
 if __name__ == "__main__":

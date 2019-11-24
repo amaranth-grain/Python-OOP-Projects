@@ -27,6 +27,7 @@ class LululimeFactory(BrandFactory):
         Create a Lululime Men's Shirt.
         :return: ShirtMen
         """
+        print("I'm a Lululime shirt men")
         return garments.ShirtMenLululime
 
     def create_shirt_women(self) -> garments.ShirtWomen:
@@ -34,6 +35,7 @@ class LululimeFactory(BrandFactory):
         Create a Lululime Women's Shirt.
         :return: ShirtWomen
         """
+        print("I'm a Lululime shirt women")
         return garments.ShirtWomenLululime
 
     def create_socks_unisex(self) -> garments.SockPairUnisex:
@@ -41,6 +43,7 @@ class LululimeFactory(BrandFactory):
         Create a pair of Lululime unisex socks.
         :return: SockPairUnisex
         """
+        print("I'm a Lululime sock pair")
         return garments.SockPairUnisexLululime
 
 
@@ -54,6 +57,7 @@ class PineappleRepublicFactory(BrandFactory):
         Create a Pineapple Republic Men's Shirt.
         :return: ShirtMen
         """
+        print("I'm a PR shirt men")
         return garments.ShirtMenPineappleRepublic
 
     def create_shirt_women(self) -> garments.ShirtWomen:
@@ -61,6 +65,7 @@ class PineappleRepublicFactory(BrandFactory):
         Create a Pineapple Republic Women's Shirt.
         :return: ShirtWomen
         """
+        print("I'm a PR shirt women")
         return garments.ShirtWomenPineappleRepublic
 
     def create_socks_unisex(self) -> garments.SockPairUnisex:
@@ -68,6 +73,7 @@ class PineappleRepublicFactory(BrandFactory):
         Create a pair of Pineapple Republic unisex socks.
         :return: SockPairUnisex
         """
+        print("I'm a PR sock pair")
         return garments.SockPairUnisexPineappleRepublic
 
 
@@ -81,6 +87,7 @@ class NikaFactory(BrandFactory):
         Create a Nika Men's Shirt.
         :return: ShirtMen
         """
+        print("I'm a Nika shirt men")
         return garments.ShirtMenNika
 
     def create_shirt_women(self) -> garments.ShirtWomen:
@@ -88,6 +95,7 @@ class NikaFactory(BrandFactory):
         Create a Nika Women's Shirt.
         :return: ShirtWomen
         """
+        print("I'm a Nika shirt women")
         return garments.ShirtWomenNika
 
     def create_socks_unisex(self) -> garments.SockPairUnisex:
@@ -95,4 +103,5 @@ class NikaFactory(BrandFactory):
         Create a pair of Nika unisex socks.
         :return: SockPairUnisex
         """
+        print("I'm a Nika sock pair")
         return garments.SockPairUnisexNika

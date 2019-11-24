@@ -1,112 +1,130 @@
-"""
-Client side of abstract factory pattern.
-"""
 import pandas as pd
+import numpy as np
+from enum import Enum
+from factories import NikaFactory, LululimeFactory, PineappleRepublicFactory
 
 
 class FileExtensionError(Exception):
     def __init__(self):
-        super().__init__("\nIncorrect file extension. Only .xlsx accepted.\n")
+        super().__init__("File must end with .xlsx extension.")
 
 
-class Order:
-    """
-    Represent the garment Order, which is read in from Excel row.
-    """
-    def __init__(self, brand, garment, details):
-        self._brand = brand.capitalize()
-        self._garment = garment.capitalize()
-        self._details = details
-
-    def __str__(self):
-        output = ""
-        for detail in [f"{k.capitalize()}: {v.capitalize()}"
-                       for k, v in self._details.items()]:
-            output += f"{detail}\n"
-        return f"Brand: {self._brand}\n" \
-               f"Garment: {self._garment}\n" \
-               f"{output}\n"
-
-
-class OrderProcessor:
-    def __init__(self):
-        self._data_frame = None
-
-    def open_excel_file(self, path):
-        if not path.endswith(".xlsx"):
-            raise FileExtensionError
-        else:
-            self._data_frame = pd.read_excel(path)
-            # for index, row in df.iterrows():
-            #     print(f"Index: {index}\nRow: {row}\n******************")
-
-    def process_next_order(self):
-        # TODO debug the generator
-        yield from [row for index, row in self._data_frame.iterrows()]
+class GarmentType(Enum):
+    SHIRT_MEN = "shirtmen"
+    SHIRT_WOMEN = "shirtwomen"
+    SOCK_PAIR_UNISEX = "sockpairunisex"
 
 
 class GarmentMaker:
+
     def __init__(self):
-        self._shirts_men = []
-        self._shirts_women = []
-        self._socks_unisex = []
-        self._processor = OrderProcessor()
+        self.shirts_men = []
+        self.shirts_women = []
+        self.socks_unisex = []
+        self.processor = OrderProcessor()
+        self.garment_dict = {
+            "SHIRT_MEN": self.shirt_men_maker,
+            "SHIRT_WOMEN": self.shirt_women_maker,
+            "SOCK_PAIR_UNISEX": self.socks_unisex_maker
+        }
 
     def start(self):
+        path = input("Enter the file path of the Excel file: ")
+        self.processor.import_data(path)
+        self.processor.format_data()
+        self.processor.create_orders()
+        orders = self.processor.process_next_order()
+        for o in orders:
+            self.garment_dict[o.garment.name](o)
+
+    # invokes the correct method on the brandfactory passed to it
+    # to create the correct number of the correct type of clothing
+    def shirt_men_maker(self, shirt_men_order):
+        shirt_men_order.factory.create_shirt_men()
+
+    def shirt_women_maker(self, shirt_women_order):
+        print("I'm shirt women maker")
+
+    def socks_unisex_maker(self, socks_unisex_order):
+        print("I'm socks unisex maker")
+
+    def write_report(self):
+        pass
+
+
+class OrderProcessor:
+
+    brand_dict = {
+        "lululime": LululimeFactory(),
+        "pineapplerepublic": PineappleRepublicFactory(),
+        "nika": NikaFactory()
+    }
+
+    def __init__(self):
+        pd.set_option("display.max_rows", 200)
+        pd.set_option('display.max_columns', 200)
+        pd.set_option('display.width', 1000)
+        self.df = None
+        self.order_list = []
+
+    def import_data(self, path):
         """
-        Starts the garment making program.
+        Import data from the specified path as a dataframe.
+        :param path: str
         :return: None
         """
-        print("=== Christy's Garment-Making Factory ===\n")
-        path = input("Enter excel file path: ")
-        self._processor.open_excel_file(path)
-        test = self._processor.process_next_order()
+        if not path.endswith(".xlsx"):
+            raise FileExtensionError
+        else:
+            self.df = pd.read_excel(path)
+
+    def format_data(self):
+        """
+        Format data such that Order details can be passed to Garments
+        easily.  Data is stored as a list of dictionary Order objects.
+        :return: None
+        """
+        self.df.columns = map(str.lower, self.df.columns)
+        self.df.columns = self.df.columns.str.replace(' ', '_')
+        self.df.columns = self.df.columns.str.replace('/', '_or_')
+        self.df = self.df.to_dict("records")
+
+    def create_orders(self):
+        for details in self.df:
+            brand = details.pop('brand').lower()
+            g_type = details.pop('garment').lower()
+            # Determine Factory based on Order brand name
+            factory = OrderProcessor.brand_dict[brand]
+            # Determine type of Garment based on garment attribute
+            garment = GarmentType(g_type)
+            # Add order to order list
+            self.order_list.append(Order(details, factory, garment))
+
+    def process_next_order(self):
+        """
+        Yield an Order object
+        :return: Order
+        """
+        yield from (order for order in self.order_list)
+
+
+class Order:
+
+    def __init__(self, details, factory, garment):
+        self.details = details
+        self.factory = factory
+        self.garment = garment
+
+    def __str__(self):
+        return f"Details: {self.details}\n" \
+               f"Factory: {self.factory}\n" \
+               f"Garment: {self.garment.name}\n"
 
 
 def main():
-    file_opened = False
-    while not file_opened:
-        try:
-            maker = GarmentMaker()
-            maker.start()
-        except ValueError as e:
-            print(f"\n{e}\n")
-        else:
-            file_opened = True
+    gm = GarmentMaker()
+    gm.start()
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-# df = pd.read_excel('orders.xlsx')
-
-# for index, row in df.iterrows():
-#     print(f"Index: {index}\nRow: {row}\n******************")
-
-# for index, row in df.iterrows():
-#     if row["Garment"] == "ShirtMen":
-#         print(f"Row: {row}\n******************")
-
-# print("Column headings:")
-# print(df.columns)
-# print(df['Date'])
-# print([item for item in df[0:1]])
-# print(df[0:2]['Brand'])
-
-# print(df.loc[2])
-# print("*" * 100)
-# print(df.loc[2]["Brand"])
-
-# for item in df.items():
-#     print(item)

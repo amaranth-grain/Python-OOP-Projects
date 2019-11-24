@@ -457,29 +457,10 @@ class SockPairUnisexNika(SockPairUnisex):
 
 def main():
     try:
-        d = {'date': 'Friday November 16 2019', 'order_number': 1,
-             'count': 300, 'style_name': 'Bowen', 'size': 'M',
-             'colour': 'Grey', 'textile': 'Merino wool',
-             'sport': 'Yoga', 'hidden_zipper_pockets': 1.0,
-             'dry_cleaning': 'n', 'indoor_or_outdoor': 'n',
-             'requires_ironing': 'n', 'buttons': 'n', 'articulated': 'n',
-             'length': 'n', 'silver': 'n', 'stripe': 'n'}
-        shirt_men = ShirtMenLululime(**d)
-        print(shirt_men)
-    except Exception as e:
+        size = Size("abc")
+        print(size)
+    except ValueError as e:
         print(e)
-
-
-# def main():
-#     # print('s'.upper() in SizeW.__members__)
-#     # try:
-#     #     n_socks = SockPairUnisexPineappleRepublic("style b", "Grey", "Merino",
-#     #                                               "M", True)
-#     #     print(n_socks)
-#     # except Exception as e:
-#     #     print(f"Invalid input: {e}")
-#     pass
-
 
 if __name__ == "__main__":
     main()

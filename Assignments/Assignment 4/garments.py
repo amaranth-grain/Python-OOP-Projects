@@ -48,7 +48,7 @@ class Garment(ABC):
     """
 
     def __init__(self, style_name="", colour="", textile="",
-                 order_number=None, brand="", garment="", **kwargs) -> None:
+                 order_number=-1, brand="", garment="", **kwargs) -> None:
         """
         Initialises abstract garment.
         :param kwargs: dictionary of garment values

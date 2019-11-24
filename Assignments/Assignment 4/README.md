@@ -24,9 +24,18 @@ For example, the GarmentMaker only cares about fulfilling orders, and does not c
 - Excel data read with pandas
 - Validation is performed to ensure Excel column headings are not corrupted, as they are used to pass attributes to Garments through kwargs
 - Validation is performed on values passed to garment classes
-- As it's Easier To Ask for Forgiveness, I catch all errors in main()
+- Numbers, where appropriate (e.g. number of buttons) have been cast to int, and errors are caught in main
 
 
+
+#### How to Use
+
+- Run program by starting **driver.py** and entering **orders.xlsx** for the test file with fewer entries.
+- Enter **COMP_3522_A4_orders.xlsx** to run entire file with several hundred garments.
+- Test FileExtensionError by entering any file with an extension other than **.xlsx**
+- Test CorruptedFileError by running **corrupted.xlsx**
+
+#### 
 
 #### Questions
 

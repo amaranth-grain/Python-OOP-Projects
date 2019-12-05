@@ -25,6 +25,17 @@ class FileExtensionError(Exception):
         self.path = path
 
 
+class ZeroResultsError(Exception):
+    """
+    Error thrown when zero API calls were made successfully.
+    """
+
+    def __init__(self):
+        super().__init__(f"No API calls were made successfully. Check your "
+                         f"input and/or Pokedex mode.")
+
+
+
 class Request:
     """
     Represent a user request for querying PokeAPI.
@@ -201,6 +212,9 @@ class JsonHandler(BasePokedexHandler):
         """
         print("JsonHandler running...")
         self._mode_dict.get(request_.mode)(request_)
+        if self.next_handler is None:
+            return
+        return self.next_handler.handle_request(request_)
 
     def get_pokemon(self, request_: Request) -> None:
         """
@@ -238,9 +252,6 @@ class JsonHandler(BasePokedexHandler):
                                 abilities, json["moves"])
             request_.results.append(pokemon)
 
-        for result in request_.results:
-            print(result)
-
     def get_ability(self, request_: Request) -> None:
         """
         Convert JSON to Ability object
@@ -254,9 +265,6 @@ class JsonHandler(BasePokedexHandler):
                                 json["pokemon"])
             request_.results.append(ability)
 
-        for result in request_.results:
-            print(result)
-
     def get_move(self, request_: Request) -> None:
         """
         Convert JSON to Move object
@@ -269,8 +277,30 @@ class JsonHandler(BasePokedexHandler):
                           json["effect_entries"][0]["short_effect"])
             request_.results.append(move)
 
-        for result in request_.results:
-            print(result)
+
+class OutputHandler(BasePokedexHandler):
+
+    # TODO handle output file
+
+    def handle_request(self, request_: Request) -> None:
+        """
+        Print request.results.
+        :param request_: Request
+        :return: None
+        """
+        print("PrintHandler running...")
+        if request_.output_path.lower() == "print":
+            for result in request_.results:
+                print(result)
+
+            if not request_.results:
+                raise ZeroResultsError
+        elif request_.output_path.endswith(".txt"):
+            with open(request_.output_path, "w+") as file:
+                for result in request_.results:
+                    file.write(result.__str__())
+        else:
+            raise FileExtensionError(request_.output_path)
 
 
 def main(request: Request):

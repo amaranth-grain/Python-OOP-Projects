@@ -53,9 +53,4 @@ class APIManager:
             # Strip empty dictionaries for 404 API calls
             results = [result for result in results if result is not {}]
 
-            print("*" * 150)
-            # for result in results:
-            #     for ability in result["abilities"]:
-            #         print(ability["ability"])
-
             return results

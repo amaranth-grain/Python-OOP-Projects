@@ -32,8 +32,12 @@ class APIManager:
         :return: dict
         """
         response = await session.request(method="GET", url=url)
-        json_dict = await response.json()
-        return json_dict
+        if response.status == 200:
+            try:
+                return await response.json()
+            except ValueError as e:
+                print(e)
+        return None
 
     async def open_session(self, request):
         tasks = []
@@ -45,6 +49,9 @@ class APIManager:
                 tasks.append(asyncio.create_task(self.api_call(url, session)))
             # Results = JSON for original queries
             results += await asyncio.gather(*tasks)
+
+            # Strip empty dictionaries for 404 API calls
+            results = [result for result in results if result is not {}]
 
             print("*" * 150)
             # for result in results:

@@ -175,6 +175,8 @@ class HttpHandler(BasePokedexHandler):
         api_manager = api.APIManager()
         request_.json = await api_manager.open_session(request_)
 
+        request_.json = [json for json in request_.json if json is not None]
+
         if self.next_handler is None:
             return
         return self.next_handler.handle_request(request_)
@@ -206,9 +208,34 @@ class JsonHandler(BasePokedexHandler):
         :return: Pokemon
         """
         for json in request_.json:
+            # Create stats object
+            stats = p.Stats(json["stats"][0],
+                            json["stats"][1],
+                            json["stats"][2],
+                            json["stats"][3],
+                            json["stats"][4],
+                            json["stats"][5])
+
+            # Create list of Abilities
+            abilities = []
+            for i in range(len(json["abilities"])):
+                name = json["abilities"][i]["ability"]["name"]
+                url = json["abilities"][i]["ability"]["url"]
+                abilities.append(p.Ability(name=name, url=url))
+
+            # Create list of Moves
+            moves = []
+            for i in range(len(json["moves"])):
+                name = json["moves"][i]["move"]["name"]
+                level = json["moves"][i]["version_group_details"][0][
+                    "level_learned_at"]
+                move_url = json["moves"][i]["move"]["url"]
+                moves.append(p.Move(name=name, level=level, move_url=move_url))
+
+            # Create Pokemon
             pokemon = p.Pokemon(json["name"], json["id"], json["height"],
-                                json["weight"], json["stats"], json["types"],
-                                json["abilities"], json["moves"])
+                                json["weight"], stats, json["types"],
+                                abilities, json["moves"])
             request_.results.append(pokemon)
 
         for result in request_.results:
@@ -220,7 +247,8 @@ class JsonHandler(BasePokedexHandler):
         :return: Ability
         """
         for json in request_.json:
-            ability = p.Ability(json["name"], json["id"], json["generation"],
+            ability = p.Ability(json["name"], json["id"],
+                                json["generation"],
                                 json["effect_entries"][0]["effect"],
                                 json["effect_entries"][0]["short_effect"],
                                 json["pokemon"])

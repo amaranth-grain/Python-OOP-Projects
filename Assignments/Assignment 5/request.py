@@ -35,7 +35,6 @@ class ZeroResultsError(Exception):
                          f"input and/or Pokedex mode.")
 
 
-
 class Request:
     """
     Represent a user request for querying PokeAPI.
@@ -54,6 +53,8 @@ class Request:
         self.search_terms = []
         # Where JSON from queries are stored
         self.json = []
+        # Where subquery urls are stored
+        self.subquery_urls = []
         # Pokemon, Ability, and Move objects
         self.results = []
 
@@ -67,7 +68,6 @@ class Request:
                f"Is Expanded: {self.is_expanded}\n" \
                f"Output Path: {self.output_path}\n" \
                f"Search terms: {self.search_terms}\n" \
-               f"URLs: {self.urls}\n" \
                f"Results: {self.results}\n"
 
 
@@ -154,8 +154,6 @@ class FileExtensionHandler(BasePokedexHandler):
         :return: None
         """
         print("FileExtensionHandler running...")
-
-        # Open file and parse multiple search terms
         if request_.string.endswith(".txt"):
             with open(request_.string, 'r') as file:
                 request_.search_terms = list(file)
@@ -163,11 +161,7 @@ class FileExtensionHandler(BasePokedexHandler):
                     term.strip('\n ').lower().replace(' ', '-')
                     for term in request_.search_terms]
         else:
-            # Store the string input into request.search_terms
             request_.search_terms.append(request_.string)
-
-        print(f"File Extension, request_.search_terms:\n"
-              f"{request_.search_terms}")
 
         if self.next_handler is None:
             return
@@ -175,7 +169,6 @@ class FileExtensionHandler(BasePokedexHandler):
 
 
 class HttpHandler(BasePokedexHandler):
-
     async def handle_request(self, request_: Request) -> None:
         """
         Create the URLs associated with the original query/queries.
@@ -205,8 +198,7 @@ class JsonHandler(BasePokedexHandler):
 
     def handle_request(self, request_: Request) -> None:
         """
-        Convert list of JSON into specific objects and append to
-        request.results.
+        Convert list of JSON into specific objects and append to results.
         :param request_: Request
         :return: None
         """
@@ -223,12 +215,19 @@ class JsonHandler(BasePokedexHandler):
         """
         for json in request_.json:
             # Create stats object
-            stats = p.Stats(json["stats"][0],
-                            json["stats"][1],
-                            json["stats"][2],
-                            json["stats"][3],
-                            json["stats"][4],
-                            json["stats"][5])
+            if request_.is_expanded:
+                stats = p.Stats(json["stats"][0], json["stats"][1],
+                                json["stats"][2], json["stats"][3],
+                                json["stats"][4], json["stats"][5])
+            else:
+                base_list = []
+                for stat in json["stats"]:
+                    name = stat["stat"]["name"]
+                    base_stats = stat["base_stat"]
+                    url = stat["stat"]["url"]
+                    base_list.append(p.BaseStats(name, base_stats, url))
+                stats = p.Stats(base_list[0], base_list[1], base_list[2],
+                                base_list[3], base_list[4], base_list[5])
 
             # Create list of Abilities
             abilities = []
@@ -244,12 +243,13 @@ class JsonHandler(BasePokedexHandler):
                 level = json["moves"][i]["version_group_details"][0][
                     "level_learned_at"]
                 move_url = json["moves"][i]["move"]["url"]
-                moves.append(p.Move(name=name, level=level, move_url=move_url))
+                moves.append(p.Move(name=name, level=level, url=move_url))
+                # setattr(key, value)
 
             # Create Pokemon
             pokemon = p.Pokemon(json["name"], json["id"], json["height"],
                                 json["weight"], stats, json["types"],
-                                abilities, json["moves"])
+                                abilities, moves)
             request_.results.append(pokemon)
 
     def get_ability(self, request_: Request) -> None:
@@ -278,9 +278,70 @@ class JsonHandler(BasePokedexHandler):
             request_.results.append(move)
 
 
-class OutputHandler(BasePokedexHandler):
+class SubqueryHandler(BasePokedexHandler):
 
-    # TODO handle output file
+    def handle_request(self, request_: Request) -> None:
+        """
+        For expanded queries, grab subquery URLs.
+        :param request_: Request
+        :return: None
+        """
+        print("SubqueryHandler running...")
+        all_urls = self.get_all_subquery_urls(request_)
+        request_.subquery_urls = all_urls
+        if self.next_handler is None:
+            return
+        return self.next_handler.handle_request(request_)
+
+    def get_all_subquery_urls(self, request_):
+        num_results = len(request_.results)
+        # [ stats[], ability[], move[] ]
+        one_pokemon_urls = []
+        # [ [ stats[], ability[], move[] ], [ stats[], ability[], move[] ] ]
+        all_pokemon_urls = []
+        for i in range(num_results):
+            one_pokemon_urls.clear()
+            one_pokemon_urls.append(self.get_stat_urls(i, request_))
+            one_pokemon_urls.append(self.get_ability_urls(i, request_))
+            one_pokemon_urls.append(self.get_move_urls(i, request_))
+            all_pokemon_urls.append(one_pokemon_urls)
+        return all_pokemon_urls
+
+    def get_stat_urls(self, i, request_):
+        """
+        Get Stats URLs for one expanded Pokemon.
+        :param i: index int
+        :param request_: Request
+        :return: list of stat urls
+        """
+        return request_.results[i].stats.get_stats_urls()
+
+    def get_ability_urls(self, i, request_):
+        """
+        Get Ability URLs for one expanded Pokemon.
+        :param i: index int
+        :param request_: Request
+        :return: list of Ability urls
+        """
+        abilities_url = []
+        for ability in request_.results[i].abilities:
+            abilities_url.append(ability.url)
+        return abilities_url
+
+    def get_move_urls(self, i, request_):
+        """
+        Get Move URLs for one expanded Pokemon
+        :param i: index int
+        :param request_: Request
+        :return: list of Move urls
+        """
+        move_urls = []
+        for move in request_.results[i].moves:
+            move_urls.append(move.url)
+        return move_urls
+
+
+class OutputHandler(BasePokedexHandler):
 
     def handle_request(self, request_: Request) -> None:
         """
@@ -288,11 +349,10 @@ class OutputHandler(BasePokedexHandler):
         :param request_: Request
         :return: None
         """
-        print("PrintHandler running...")
+        print("OutputHandler running...")
         if request_.output_path.lower() == "print":
             for result in request_.results:
                 print(result)
-
             if not request_.results:
                 raise ZeroResultsError
         elif request_.output_path.endswith(".txt"):

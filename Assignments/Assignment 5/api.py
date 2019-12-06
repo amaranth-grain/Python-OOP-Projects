@@ -1,6 +1,31 @@
 from aiohttp import ClientSession
-import request as r
 import asyncio
+
+
+class UrlGatherer:
+
+    # TODO Fix Url gatherer and implement expanded/.;
+    @classmethod
+    def gather_urls(cls, json_list) -> list:
+        stat_urls = []
+        move_urls = []
+        ability_urls = []
+        pokemon_subqueries = []
+
+        for json in json_list:
+            for stat in json["stats"]:
+                stat_urls.append(stat["stat"]["url"])
+
+            for move in json["moves"]:
+                move_urls.append(move["move"]["url"])
+
+            for ability in json["abilities"]:
+                ability_urls.append(ability["ability"]["url"])
+
+            pokemon_subqueries.append(["***", stat_urls, move_urls,
+                                       ability_urls])
+
+        return pokemon_subqueries
 
 
 class APIManager:
@@ -46,11 +71,36 @@ class APIManager:
             urls = self.create_urls(request)
             # Original queries in request
             for url in urls:
-                tasks.append(asyncio.create_task(self.api_call(url, session)))
+                tasks.append(
+                    asyncio.create_task(self.api_call(url, session)))
             # Results = JSON for original queries
             results += await asyncio.gather(*tasks)
 
             # Strip empty dictionaries for 404 API calls
             results = [result for result in results if result is not {}]
 
+            # if len(request.subquery_urls) < 1:
+            #     urls = self.create_urls(request)
+            #     # Original queries in request
+            #     for url in urls:
+            #         tasks.append(asyncio.create_task(self.api_call(url, session)))
+            #     # Results = JSON for original queries
+            #     results += await asyncio.gather(*tasks)
+            #
+            #     # Strip empty dictionaries for 404 API calls
+            #     results = [result for result in results if result is not {}]
+            # else:
+            #     print("extend http handler")
+            #     urls = self.create_urls(request)
+            #     # Original queries in request
+            #     for url in urls:
+            #         tasks.append(
+            #             asyncio.create_task(self.api_call(url, session)))
+            #     # Results = JSON for original queries
+            #     results += await asyncio.gather(*tasks)
+            #
+            #     # Strip empty dictionaries for 404 API calls
+            #     results = [result for result in results if result is not {}]
             return results
+
+

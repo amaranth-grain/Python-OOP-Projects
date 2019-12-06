@@ -5,6 +5,17 @@ class Pokemon:
 
     def __init__(self, name=None, id_=None, height=None, weight=None,
                  stats=None, types=None, abilities=None, moves=None):
+        """
+        Initialise a Pokemon (expanded or concise).
+        :param name: str
+        :param id_: int
+        :param height: float
+        :param weight: float
+        :param stats: Stats
+        :param types: str
+        :param abilities: Ability []
+        :param moves: Move []
+        """
         self._name = name
         self._id = id_
         self._height = height
@@ -14,26 +25,34 @@ class Pokemon:
         self._abilities = abilities
         self._moves = moves
 
+    @property
+    def stats(self):
+        return self._stats
+
+    @property
+    def abilities(self):
+        return self._abilities
+
+    @property
+    def moves(self):
+        return self._moves
+
     def __str__(self):
         """
         Formatted string for Pokemon object.
         :return: str
         """
         newline = '\n'
-        # base_stats = [(stat["stat"]["name"], stat["base_stat"]) for stat in
-        #               self._stats]
+
         types = [type["type"]["name"].upper() for type in self._types]
-        # abilities = [ability["ability"]["name"].upper()
-        #              for ability in self._abilities]
 
-        moves = [f"\n=== {move['move']['name'].upper().replace('-', ' ')} "
-                 f"===\nLEARNABLE AT LEVEL "
-                 f"{move['version_group_details'][0]['level_learned_at']}" for
-                 move in self._moves]
-
-        # base_stats_str = ""
-        # for stat in base_stats:
-        #     base_stats_str += f"{stat[0].upper()} : {stat[1]}\n"
+        # moves = [f"\n=== {move['move']['name'].upper().replace('-', ' ')} "
+        #          f"===\nLEARNABLE AT LEVEL "
+        #          f"{move['version_group_details'][0]['level_learned_at']}" for
+        #          move in self._moves]
+        moves = ""
+        for move in self._moves:
+            moves += f"{move}"
 
         abilities = ""
         for ability in self._abilities:
@@ -47,46 +66,98 @@ class Pokemon:
                f"*** STATS ***\n{self._stats}\n" \
                f"*** TYPES ***\n{'/'.join(types)}\n\n" \
                f"*** ABILITIES ***\n{abilities}\n\n" \
-               f"*** MOVES ***\n{newline.join(moves)}\n" \
+               f"*** MOVES ***\n{moves}\n" \
                f"{'*' * 150}\n"
+
+
+# class Stats:
+#     def __init__(self, speed=None, sp_def=None, sp_atk=None, defense=None,
+#                  attack=None, hp=None, id_=None, is_battle_only=None):
+#         # (name, base_stat, url)
+#         self._speed = speed
+#         self._sp_def = sp_def
+#         self._sp_atk = sp_atk
+#         self._defense = defense
+#         self._attack = attack
+#         self._hp = hp
+#         self._id = id_
+#         self._is_battle_only = is_battle_only
+#
+#     def __str__(self):
+#         # Non expanded stats
+#         if self._id is None:
+#             return f"{self._speed['stat']['name'].upper()} : " \
+#                    f"{self._speed['base_stat']} " \
+#                    f"({self._speed['stat']['url']})\n" \
+#                    f"{self._sp_def['stat']['name'].upper()} : " \
+#                    f"{self._sp_def['base_stat']} " \
+#                    f"({self._sp_def['stat']['url']})\n" \
+#                    f"{self._sp_atk['stat']['name'].upper()} : " \
+#                    f"{self._sp_atk['base_stat']} " \
+#                    f"({self._sp_atk['stat']['url']})\n" \
+#                    f"{self._defense['stat']['name'].upper()} : " \
+#                    f"{self._defense['base_stat']} " \
+#                    f"({self._defense['stat']['url']})\n" \
+#                    f"{self._attack['stat']['name'].upper()} : " \
+#                    f"{self._attack['base_stat']} " \
+#                    f"({self._attack['stat']['url']})\n" \
+#                    f"{self._hp['stat']['name'].upper()} : " \
+#                    f"{self._hp['base_stat']} " \
+#                    f"({self._hp['stat']['url']})\n"
+#         else:
+#             return f"Undefined expanded stats"
 
 
 class Stats:
     def __init__(self, speed=None, sp_def=None, sp_atk=None, defense=None,
-                 attack=None, hp=None, id_=None, is_battle_only=None):
-        # (name, base_stat, url)
+                 attack=None, hp=None):
         self._speed = speed
         self._sp_def = sp_def
         self._sp_atk = sp_atk
         self._defense = defense
         self._attack = attack
         self._hp = hp
+
+    def get_stats_urls(self):
+        stat_urls = []
+        for v in self.__dict__.values():
+            stat_urls.append(v['stat']['url'])
+        return stat_urls
+
+    def __str__(self):
+        return f"{self._speed}\n" \
+               f"{self._sp_def}\n" \
+               f"{self._sp_atk}\n" \
+               f"{self._defense}\n" \
+               f"{self._attack}\n" \
+               f"{self._hp}\n"
+
+
+class BaseStats:
+
+    def __init__(self, name=None, base_stat=None, url=None,
+                 id_=None, is_battle_only=None):
+        self._name = name
+        self._base_stat = base_stat
+        self._url = url
         self._id = id_
         self._is_battle_only = is_battle_only
 
+    @property
+    def url(self):
+        return self._url
+
     def __str__(self):
-        # Non expanded stats
-        if self._id is None:
-            return f"{self._speed['stat']['name'].upper()} : " \
-                   f"{self._speed['base_stat']} " \
-                   f"({self._speed['stat']['url']})\n" \
-                   f"{self._sp_def['stat']['name'].upper()} : " \
-                   f"{self._sp_def['base_stat']} " \
-                   f"({self._sp_def['stat']['url']})\n" \
-                   f"{self._sp_atk['stat']['name'].upper()} : " \
-                   f"{self._sp_atk['base_stat']} " \
-                   f"({self._sp_atk['stat']['url']})\n" \
-                   f"{self._defense['stat']['name'].upper()} : " \
-                   f"{self._defense['base_stat']} " \
-                   f"({self._defense['stat']['url']})\n" \
-                   f"{self._attack['stat']['name'].upper()} : " \
-                   f"{self._attack['base_stat']} " \
-                   f"({self._attack['stat']['url']})\n" \
-                   f"{self._hp['stat']['name'].upper()} : " \
-                   f"{self._hp['base_stat']} " \
-                   f"({self._hp['stat']['url']})\n"
+
+        if self._id is not None:
+            return f"{self._name.upper()} : " \
+                   f"{self._base_stat}\n" \
+                   f"ID: {self._id}\n" \
+                   f"IS BATTLE ONLY: {self._is_battle_only}\n"
         else:
-            return f"Undefined expanded stats"
+            return f"{self._name.upper()} : " \
+                   f"{self._base_stat} " \
+                   f"({self._url})"
 
 
 class Move:
@@ -96,7 +167,7 @@ class Move:
 
     def __init__(self, name=None, id_=None, generation=None, accuracy=None,
                  pp=None, power=None, type_=None, damage_class=None,
-                 effect_short=None, move_url=None, level=None):
+                 effect_short=None, url=None, level=None):
         self._name = name
         self._id = id_
         self._generation = generation
@@ -106,15 +177,19 @@ class Move:
         self._type = type_
         self._damage_class = damage_class
         self._effect_short = effect_short
-        self._move_url = move_url
+        self._url = url
         self._level = level
+
+    @property
+    def url(self):
+        return self._url
 
     def __str__(self):
         """
         Formatted string for Move object.
         :return: str
         """
-        if self._move_url is None:
+        if self.url is None:
             return f"{'*' * 150}\n" \
                    f"*** MOVE NAME ***\n{self._name.title()}\t" \
                    f"(ID: {self._id})\n\n" \
@@ -132,9 +207,9 @@ class Move:
                    f"{'*' * 150}\n"
         else:
             return f"{'*' * 150}\n" \
-                   f"*** MOVE NAME ***\n{self._name.title()}" \
+                   f"*** MOVE NAME ***\n{self._name.title()}\n" \
                    f"*** LEVEL LEARNED AT ***\n{self._level}\n" \
-                   f"*** URL ***\n{self._move_url}\n" \
+                   f"*** URL ***\n{self._url}\n" \
                    f"{'*' * 150}\n"
 
 
@@ -152,6 +227,10 @@ class Ability:
         self._effect = effect
         self._effect_short = effect_short
         self._pokemon = pokemon
+
+    @property
+    def url(self):
+        return self._url
 
     def __str__(self):
         """
@@ -176,3 +255,4 @@ class Ability:
                    f"*** POKEMON WITH THIS ABILITY***" \
                    f"\n{', '.join(pokemon_list)}\n\n" \
                    f"{'*' * 150}\n"
+

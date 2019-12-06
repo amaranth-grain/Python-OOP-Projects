@@ -11,10 +11,12 @@ class Pokedex:
     def __init__(self):
         ex_file = r.FileExtensionHandler()
         ex_http = r.HttpHandler()
-        ex_json = r.JsonHandler()
-        ex_subquery = r.SubqueryHandler()
+        ex_subquery = r.SubqueryUrlHandler()
+        ex_http_sub = r.HttpHandler()
+        # ex_json = r.JsonHandler()
+        # ex_subquery = r.SubqueryHandler()
         # ex_http_sub = r.HttpHandler()
-        ex_print = r.OutputHandler()
+        # ex_print = r.OutputHandler()
 
         con_file = r.FileExtensionHandler()
         con_http = r.HttpHandler()
@@ -23,9 +25,11 @@ class Pokedex:
 
         self._expand_start_handler = ex_file
         ex_file.next_handler = ex_http
-        ex_http.next_handler = ex_json
-        ex_json.next_handler = ex_subquery
-        ex_subquery.next_handler = ex_print
+        ex_http.next_handler = ex_subquery
+        ex_subquery.next_handler = ex_http_sub
+        # ex_http.next_handler = ex_json
+        # ex_json.next_handler = ex_subquery
+        # ex_subquery.next_handler = ex_print
         # ex_http_sub.next_handler = ex_print
 
         self._concise_start_handler = con_file

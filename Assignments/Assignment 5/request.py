@@ -172,6 +172,7 @@ class HttpHandler(BasePokedexHandler):
     async def handle_request(self, request_: Request) -> None:
         """
         Create the URLs associated with the original query/queries.
+        Make API calls based on these URLs, and store in request_.json
         :param request_: Request
         :return: None
         """
@@ -180,6 +181,48 @@ class HttpHandler(BasePokedexHandler):
         request_.json = await api_manager.open_session(request_)
 
         request_.json = [json for json in request_.json if json is not None]
+
+        if self.next_handler is None:
+            return
+        return self.next_handler.handle_request(request_)
+
+
+class SubqueryUrlHandler(BasePokedexHandler):
+
+    def handle_request(self, request_: Request) -> None:
+        """
+        Grab the subquery urls and store in request_.subquery_urls
+        :param request_: Request
+        :return: None
+        """
+        stat = []
+        ability = []
+        move = []
+        # [ stat[], ability[], move[] ]
+        one_pokemon_urls = []
+
+        print("request json stats")
+        for pokemon_json in request_.json:
+            for i in range(len(pokemon_json['stats'])):
+                stat.append(pokemon_json['stats'][i]['stat'][
+                                           'url'])
+
+            for a in pokemon_json['abilities']:
+                ability.append(a['ability']['url'])
+
+            for i in range(len(pokemon_json['moves'])):
+                move.append(pokemon_json['moves'][i]['move']['url'])
+
+            one_pokemon_urls.append(stat)
+            one_pokemon_urls.append(ability)
+            one_pokemon_urls.append(move)
+            request_.subquery_urls.append(one_pokemon_urls)
+
+            # Reset for the next Pokemon
+            stat = []
+            move = []
+            ability = []
+            one_pokemon_urls = []
 
         if self.next_handler is None:
             return
@@ -278,67 +321,67 @@ class JsonHandler(BasePokedexHandler):
             request_.results.append(move)
 
 
-class SubqueryHandler(BasePokedexHandler):
-
-    def handle_request(self, request_: Request) -> None:
-        """
-        For expanded queries, grab subquery URLs.
-        :param request_: Request
-        :return: None
-        """
-        print("SubqueryHandler running...")
-        all_urls = self.get_all_subquery_urls(request_)
-        request_.subquery_urls = all_urls
-        if self.next_handler is None:
-            return
-        return self.next_handler.handle_request(request_)
-
-    def get_all_subquery_urls(self, request_):
-        num_results = len(request_.results)
-        # [ stats[], ability[], move[] ]
-        one_pokemon_urls = []
-        # [ [ stats[], ability[], move[] ], [ stats[], ability[], move[] ] ]
-        all_pokemon_urls = []
-        for i in range(num_results):
-            one_pokemon_urls.clear()
-            one_pokemon_urls.append(self.get_stat_urls(i, request_))
-            one_pokemon_urls.append(self.get_ability_urls(i, request_))
-            one_pokemon_urls.append(self.get_move_urls(i, request_))
-            all_pokemon_urls.append(one_pokemon_urls)
-        return all_pokemon_urls
-
-    def get_stat_urls(self, i, request_):
-        """
-        Get Stats URLs for one expanded Pokemon.
-        :param i: index int
-        :param request_: Request
-        :return: list of stat urls
-        """
-        return request_.results[i].stats.get_stats_urls()
-
-    def get_ability_urls(self, i, request_):
-        """
-        Get Ability URLs for one expanded Pokemon.
-        :param i: index int
-        :param request_: Request
-        :return: list of Ability urls
-        """
-        abilities_url = []
-        for ability in request_.results[i].abilities:
-            abilities_url.append(ability.url)
-        return abilities_url
-
-    def get_move_urls(self, i, request_):
-        """
-        Get Move URLs for one expanded Pokemon
-        :param i: index int
-        :param request_: Request
-        :return: list of Move urls
-        """
-        move_urls = []
-        for move in request_.results[i].moves:
-            move_urls.append(move.url)
-        return move_urls
+# class SubqueryHandler(BasePokedexHandler):
+#
+#     def handle_request(self, request_: Request) -> None:
+#         """
+#         For expanded queries, grab subquery URLs.
+#         :param request_: Request
+#         :return: None
+#         """
+#         print("SubqueryHandler running...")
+#         all_urls = self.get_all_subquery_urls(request_)
+#         request_.subquery_urls = all_urls
+#         if self.next_handler is None:
+#             return
+#         return self.next_handler.handle_request(request_)
+#
+#     def get_all_subquery_urls(self, request_):
+#         num_results = len(request_.results)
+#         # [ stats[], ability[], move[] ]
+#         one_pokemon_urls = []
+#         # [ [ stats[], ability[], move[] ], [ stats[], ability[], move[] ] ]
+#         all_pokemon_urls = []
+#         for i in range(num_results):
+#             one_pokemon_urls.clear()
+#             one_pokemon_urls.append(self.get_stat_urls(i, request_))
+#             one_pokemon_urls.append(self.get_ability_urls(i, request_))
+#             one_pokemon_urls.append(self.get_move_urls(i, request_))
+#             all_pokemon_urls.append(one_pokemon_urls)
+#         return all_pokemon_urls
+#
+#     def get_stat_urls(self, i, request_):
+#         """
+#         Get Stats URLs for one expanded Pokemon.
+#         :param i: index int
+#         :param request_: Request
+#         :return: list of stat urls
+#         """
+#         return request_.results[i].stats.get_stats_urls()
+#
+#     def get_ability_urls(self, i, request_):
+#         """
+#         Get Ability URLs for one expanded Pokemon.
+#         :param i: index int
+#         :param request_: Request
+#         :return: list of Ability urls
+#         """
+#         abilities_url = []
+#         for ability in request_.results[i].abilities:
+#             abilities_url.append(ability.url)
+#         return abilities_url
+#
+#     def get_move_urls(self, i, request_):
+#         """
+#         Get Move URLs for one expanded Pokemon
+#         :param i: index int
+#         :param request_: Request
+#         :return: list of Move urls
+#         """
+#         move_urls = []
+#         for move in request_.results[i].moves:
+#             move_urls.append(move.url)
+#         return move_urls
 
 
 class OutputHandler(BasePokedexHandler):

@@ -64,43 +64,65 @@ class APIManager:
                 print(e)
         return None
 
-    async def open_session(self, request):
+    async def open_session(self, request_):
         tasks = []
         results = []
+        stat_results = []
+        ability_results = []
+        move_results = []
+        json_results = []
+        subquery_results = []
+        all_pokemon_results = []
+        pokemon_results = []
+        attribute_results = []
+        temp = []
+
+        stat_tasks = []
+        ability_tasks = []
+        move_tasks = []
+
         async with ClientSession() as session:
-            urls = self.create_urls(request)
-            # Original queries in request
-            for url in urls:
-                tasks.append(
-                    asyncio.create_task(self.api_call(url, session)))
-            # Results = JSON for original queries
-            results += await asyncio.gather(*tasks)
+            if len(request_.stat_urls) < 1:
+                urls = self.create_urls(request_)
+                # Original queries in request
+                for url in urls:
+                    tasks.append(
+                        asyncio.create_task(self.api_call(url, session)))
+                # Results = JSON for original queries
+                json_results += await asyncio.gather(*tasks)
 
-            # Strip empty dictionaries for 404 API calls
-            results = [result for result in results if result is not {}]
+                # Strip empty dictionaries for 404 API calls
+                json_results = [result for result in json_results if
+                                result is not {}]
+            else:
+                for pokemon_stats in request_.stat_urls:
+                    for url in pokemon_stats:
+                        tasks.append(asyncio.create_task(self.api_call(url,
+                                                                       session)))
+                    results += await asyncio.gather(*tasks)
+                    stat_results.append(results)
+                    tasks = []
+                    results = []
+                all_pokemon_results.append(stat_results)
 
-            # if len(request.subquery_urls) < 1:
-            #     urls = self.create_urls(request)
-            #     # Original queries in request
-            #     for url in urls:
-            #         tasks.append(asyncio.create_task(self.api_call(url, session)))
-            #     # Results = JSON for original queries
-            #     results += await asyncio.gather(*tasks)
-            #
-            #     # Strip empty dictionaries for 404 API calls
-            #     results = [result for result in results if result is not {}]
-            # else:
-            #     print("extend http handler")
-            #     urls = self.create_urls(request)
-            #     # Original queries in request
-            #     for url in urls:
-            #         tasks.append(
-            #             asyncio.create_task(self.api_call(url, session)))
-            #     # Results = JSON for original queries
-            #     results += await asyncio.gather(*tasks)
-            #
-            #     # Strip empty dictionaries for 404 API calls
-            #     results = [result for result in results if result is not {}]
-            return results
+                for pokemon_stats in request_.ability_urls:
+                    for url in pokemon_stats:
+                        tasks.append(asyncio.create_task(self.api_call(url,
+                                                                       session)))
+                    results += await asyncio.gather(*tasks)
+                    ability_results.append(results)
+                    tasks = []
+                    results = []
+                json_results.append(ability_results)
 
+                for pokemon_stats in request_.move_urls:
+                    for url in pokemon_stats:
+                        tasks.append(asyncio.create_task(self.api_call(url,
+                                                                       session)))
+                    results += await asyncio.gather(*tasks)
+                    move_results.append(results)
+                    tasks = []
+                    results = []
+                json_results.append(move_results)
 
+            return json_results

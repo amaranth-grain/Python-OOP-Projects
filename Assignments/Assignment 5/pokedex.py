@@ -13,7 +13,7 @@ class Pokedex:
         ex_http = r.HttpHandler()
         ex_subquery = r.SubqueryUrlHandler()
         ex_http_sub = r.HttpHandler()
-        # ex_json = r.JsonHandler()
+        ex_json_sub = r.JsonSubqueryHandler()
         # ex_subquery = r.SubqueryHandler()
         # ex_http_sub = r.HttpHandler()
         # ex_print = r.OutputHandler()
@@ -27,6 +27,7 @@ class Pokedex:
         ex_file.next_handler = ex_http
         ex_http.next_handler = ex_subquery
         ex_subquery.next_handler = ex_http_sub
+        ex_http_sub.next_handler = ex_json_sub
         # ex_http.next_handler = ex_json
         # ex_json.next_handler = ex_subquery
         # ex_subquery.next_handler = ex_print
@@ -37,16 +38,17 @@ class Pokedex:
         con_http.next_handler = con_json
         con_json.next_handler = con_print
 
-    def execute_request(self, request):
+    async def execute_request(self, request):
         if request.is_expanded:
-            return self._expand_start_handler.handle_request(request)
+            return await self._expand_start_handler.handle_request(request)
         else:
-            return self._concise_start_handler.handle_request(request)
+            return await self._concise_start_handler.handle_request(request)
 
 
 def main():
     request = r.RequestManager.setup_cli_request()
     driver = Pokedex()
+    # asyncio.run(driver.execute_request(request))
     try:
         asyncio.run(driver.execute_request(request))
     except Exception as e:

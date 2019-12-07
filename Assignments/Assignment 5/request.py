@@ -57,6 +57,9 @@ class Request:
         self.subquery_urls = []
         # Pokemon, Ability, and Move objects
         self.results = []
+        self.stat_urls = []
+        self.ability_urls = []
+        self.move_urls = []
 
     def __str__(self):
         """
@@ -147,7 +150,7 @@ class BasePokedexHandler(ABC):
 
 class FileExtensionHandler(BasePokedexHandler):
 
-    def handle_request(self, request_: Request) -> None:
+    async def handle_request(self, request_: Request) -> None:
         """
         Write the search term(s) to request.search_terms.
         :param request_: Request
@@ -165,7 +168,7 @@ class FileExtensionHandler(BasePokedexHandler):
 
         if self.next_handler is None:
             return
-        return self.next_handler.handle_request(request_)
+        return await self.next_handler.handle_request(request_)
 
 
 class HttpHandler(BasePokedexHandler):
@@ -180,28 +183,29 @@ class HttpHandler(BasePokedexHandler):
         api_manager = api.APIManager()
         request_.json = await api_manager.open_session(request_)
 
-        request_.json = [json for json in request_.json if json is not None]
+        request_.json = [json for json in request_.json if
+                         json is not None]
 
         if self.next_handler is None:
             return
-        return self.next_handler.handle_request(request_)
+        return await self.next_handler.handle_request(request_)
 
 
 class SubqueryUrlHandler(BasePokedexHandler):
 
-    def handle_request(self, request_: Request) -> None:
+    async def handle_request(self, request_: Request) -> None:
         """
         Grab the subquery urls and store in request_.subquery_urls
         :param request_: Request
         :return: None
         """
+        print("SubqueryUrlHandler running...")
         stat = []
         ability = []
         move = []
         # [ stat[], ability[], move[] ]
         one_pokemon_urls = []
 
-        print("request json stats")
         for pokemon_json in request_.json:
             for i in range(len(pokemon_json['stats'])):
                 stat.append(pokemon_json['stats'][i]['stat'][
@@ -213,10 +217,13 @@ class SubqueryUrlHandler(BasePokedexHandler):
             for i in range(len(pokemon_json['moves'])):
                 move.append(pokemon_json['moves'][i]['move']['url'])
 
-            one_pokemon_urls.append(stat)
-            one_pokemon_urls.append(ability)
-            one_pokemon_urls.append(move)
-            request_.subquery_urls.append(one_pokemon_urls)
+            request_.stat_urls.append(stat)
+            request_.ability_urls.append(ability)
+            request_.move_urls.append(move)
+            # one_pokemon_urls.append(stat)
+            # one_pokemon_urls.append(ability)
+            # one_pokemon_urls.append(move)
+            # request_.subquery_urls.append(one_pokemon_urls)
 
             # Reset for the next Pokemon
             stat = []
@@ -226,7 +233,7 @@ class SubqueryUrlHandler(BasePokedexHandler):
 
         if self.next_handler is None:
             return
-        return self.next_handler.handle_request(request_)
+        return await self.next_handler.handle_request(request_)
 
 
 class JsonHandler(BasePokedexHandler):
@@ -258,19 +265,14 @@ class JsonHandler(BasePokedexHandler):
         """
         for json in request_.json:
             # Create stats object
-            if request_.is_expanded:
-                stats = p.Stats(json["stats"][0], json["stats"][1],
-                                json["stats"][2], json["stats"][3],
-                                json["stats"][4], json["stats"][5])
-            else:
-                base_list = []
-                for stat in json["stats"]:
-                    name = stat["stat"]["name"]
-                    base_stats = stat["base_stat"]
-                    url = stat["stat"]["url"]
-                    base_list.append(p.BaseStats(name, base_stats, url))
-                stats = p.Stats(base_list[0], base_list[1], base_list[2],
-                                base_list[3], base_list[4], base_list[5])
+            base_list = []
+            for stat in json["stats"]:
+                name = stat["stat"]["name"]
+                base_stats = stat["base_stat"]
+                url = stat["stat"]["url"]
+                base_list.append(p.BaseStats(name, base_stats, url))
+            stats = p.Stats(base_list[0], base_list[1], base_list[2],
+                            base_list[3], base_list[4], base_list[5])
 
             # Create list of Abilities
             abilities = []
@@ -321,6 +323,15 @@ class JsonHandler(BasePokedexHandler):
             request_.results.append(move)
 
 
+class JsonSubqueryHandler(BasePokedexHandler):
+
+    def handle_request(self, request_: Request) -> None:
+        """
+        Convert list of JSON into specific objects and append to results.
+        :param request_: Request
+        :return: None
+        """
+        print("JsonHandler running...")
 # class SubqueryHandler(BasePokedexHandler):
 #
 #     def handle_request(self, request_: Request) -> None:

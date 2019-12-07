@@ -190,8 +190,7 @@ class Move:
         :return: str
         """
         if self.url is None:
-            return f"{'*' * 150}\n" \
-                   f"*** MOVE NAME ***\n{self._name.title()}\t" \
+            return f"*** MOVE NAME ***\n{self._name.title()}\t" \
                    f"(ID: {self._id})\n\n" \
                    f"*** GENERATION ***\n{self._generation.upper()}\n\n" \
                    f"*** MOVE STATS ***\n" \
@@ -204,13 +203,12 @@ class Move:
                    f"{self._damage_class['name'].upper()}\t" \
                    f"{self._damage_class['url']}\n\n" \
                    f"*** EFFECT (SHORT) ***\n{self._effect_short}\n" \
-                   f"{'*' * 150}\n"
+
         else:
-            return f"{'*' * 150}\n" \
-                   f"*** MOVE NAME ***\n{self._name.title()}\n" \
-                   f"*** LEVEL LEARNED AT ***\n{self._level}\n" \
-                   f"*** URL ***\n{self._url}\n" \
-                   f"{'*' * 150}\n"
+            return f"{'*' * 30}\n" \
+                   f"* MOVE NAME : {self._name.upper()}\n" \
+                   f"* LEVEL LEARNED AT : {self._level}\n" \
+                   f"* URL : {self._url}\n\n"
 
 
 class Ability:

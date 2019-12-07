@@ -103,7 +103,7 @@ class APIManager:
                     stat_results.append(results)
                     tasks = []
                     results = []
-                all_pokemon_results.append(stat_results)
+                json_results.append(stat_results)
 
                 for pokemon_stats in request_.ability_urls:
                     for url in pokemon_stats:

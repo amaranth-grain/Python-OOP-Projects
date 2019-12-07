@@ -9,6 +9,9 @@ class Pokedex:
     """
 
     def __init__(self):
+        """
+        Drive the Pokedex program.
+        """
         ex_file = r.FileExtensionHandler()
         ex_http = r.HttpHandler()
         ex_subquery = r.SubqueryUrlHandler()
@@ -38,7 +41,13 @@ class Pokedex:
         con_http.next_handler = con_json
         con_json.next_handler = con_print
 
-    async def execute_request(self, request):
+    async def execute_request(self, request: r.Request) -> None:
+        """
+        Execute the request through a chain of handlers that
+        perform validation and API calls to print results.
+        :param request: Request
+        :return: None
+        """
         if request.is_expanded:
             return await self._expand_start_handler.handle_request(request)
         else:
@@ -48,7 +57,6 @@ class Pokedex:
 def main():
     request = r.RequestManager.setup_cli_request()
     driver = Pokedex()
-    # asyncio.run(driver.execute_request(request))
     try:
         asyncio.run(driver.execute_request(request))
     except Exception as e:

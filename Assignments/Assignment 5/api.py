@@ -2,33 +2,11 @@ from aiohttp import ClientSession
 import asyncio
 
 
-class UrlGatherer:
-
-    # TODO Fix Url gatherer and implement expanded/.;
-    @classmethod
-    def gather_urls(cls, json_list) -> list:
-        stat_urls = []
-        move_urls = []
-        ability_urls = []
-        pokemon_subqueries = []
-
-        for json in json_list:
-            for stat in json["stats"]:
-                stat_urls.append(stat["stat"]["url"])
-
-            for move in json["moves"]:
-                move_urls.append(move["move"]["url"])
-
-            for ability in json["abilities"]:
-                ability_urls.append(ability["ability"]["url"])
-
-            pokemon_subqueries.append(["***", stat_urls, move_urls,
-                                       ability_urls])
-
-        return pokemon_subqueries
-
-
 class APIManager:
+
+    """
+    Responsible for making API calls.
+    """
 
     def __init__(self):
         """
@@ -65,21 +43,17 @@ class APIManager:
         return None
 
     async def open_session(self, request_):
+        """
+        Opens session for single or multiple API calls to be made.
+        :param request_: Request
+        :return: dict
+        """
         tasks = []
         results = []
         stat_results = []
         ability_results = []
         move_results = []
         json_results = []
-        subquery_results = []
-        all_pokemon_results = []
-        pokemon_results = []
-        attribute_results = []
-        temp = []
-
-        stat_tasks = []
-        ability_tasks = []
-        move_tasks = []
 
         async with ClientSession() as session:
             if len(request_.stat_urls) < 1:

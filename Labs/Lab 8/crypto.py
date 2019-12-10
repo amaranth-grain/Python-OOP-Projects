@@ -198,7 +198,7 @@ class KeyCryptographyValidator(BaseCryptographyHandler):
     Check the key used for DES cryptography is a valid length (8, 16, or 24).
     """
 
-    def handle_request(self, request) -> bool:
+    def handle_request(self, request) -> None:
         """
         Handles the Request through args.
         :param request: Request
@@ -207,7 +207,7 @@ class KeyCryptographyValidator(BaseCryptographyHandler):
         print("KeyCryptography running...")
         if len(request.key) in [8, 16, 24]:
             if not self.next_handler:
-                return True
+                return
 
             return self.next_handler.handle_request(request)
         else:
@@ -220,7 +220,7 @@ class InputCryptographyValidator(BaseCryptographyHandler):
     for encryption / decryption.
     """
 
-    def handle_request(self, request) -> bool:
+    def handle_request(self, request) -> None:
         """
         Ensures there is only one input (either a string directly from
         command line or an input file, but not both).
@@ -244,7 +244,7 @@ class InputCryptographyValidator(BaseCryptographyHandler):
             # Check that data has at least 1 character
             if len(request.data_input) > 0:
                 if not self.next_handler:
-                    return True
+                    return
                 return self.next_handler.handle_request(request)
             else:
                 raise EmptyStringError
@@ -259,13 +259,13 @@ class InputCryptographyValidator(BaseCryptographyHandler):
             # If there are no errors
             else:
                 if not self.next_handler:
-                    return True
+                    return
                 return self.next_handler.handle_request(request)
 
 
 class OutputCryptographyValidator(BaseCryptographyHandler):
 
-    def handle_request(self, request) -> bool:
+    def handle_request(self, request) -> None:
         """
         Check whether output value is valid or not.
         :param request:
@@ -274,7 +274,7 @@ class OutputCryptographyValidator(BaseCryptographyHandler):
         print("Output validator running...")
         if request.output.lower() == "print":
             if not self.next_handler:
-                return True
+                return
             return self.next_handler.handle_request(request)
 
         # Check if output path is valid
@@ -282,13 +282,13 @@ class OutputCryptographyValidator(BaseCryptographyHandler):
             raise FileExtensionError(request.output)
         else:
             if not self.next_handler:
-                return True
+                return
             return self.next_handler.handle_request(request)
 
 
 class EncryptionCryptographyHandler(BaseCryptographyHandler):
 
-    def handle_request(self, request) -> bool:
+    def handle_request(self, request) -> None:
         print("Encryption handler running")
         # Set up encryption key
         bytes_key = request.key.encode()
@@ -298,38 +298,58 @@ class EncryptionCryptographyHandler(BaseCryptographyHandler):
         if request.data_input:
             print("Encrypting request from direct string... ...")
             bytes_str = request.data_input.encode()
-            output = key0.encrypt(bytes_str, padding=True)
+            request.result = key0.encrypt(bytes_str, padding=True)
         else:
             print("Encrypting from input file... ...")
-            bytes_str = request.data_input.encode()
-            output = key0.encrypt(bytes_str, padding=True)
+            with open(request.input_file) as file:
+                # bytes_str = request.input_file.encode()
+                bytes_str = file.read().encode()
+                request.result = key0.encrypt(bytes_str, padding=True)
 
-        # Whether it's direct or from input file, output results:
-        if request.output.lower() == "print":
-            print(f"=== ENCRYPTED OUTPUT ===\n{output}")
+        if self.next_handler:
+            self.next_handler.handle_request(request)
         else:
-            with open(request.output, "wb+") as output_file:
-                output_file.write(output)
-                # output_file.write("Write text by encoding\n".encode('utf8'))
-                # output_file.write(b'\xDE\xAD\xBE\xEF')
+            return
 
 
 class DecryptionCryptographyHandler(BaseCryptographyHandler):
 
-    def handle_request(self, request) -> bool:
+    def handle_request(self, request) -> None:
         # Set up decryption key
         bytes_key = request.key.encode()
         key0 = DesKey(bytes_key)
 
         if request.data_input:
             print("Decrypting request from direct string... ...")
-            coded_msg = ast.literal_eval(r"{0}".format(request.data_input))
+            request.result = ast.literal_eval(r"{0}".format(
+                request.data_input))
         else:
             with open(request.input_file, "rb+") as input_file:
-                coded_msg = input_file.read()
+                request.result = input_file.read()
 
-        decrypted_output = key0.decrypt(coded_msg, padding=True)
-        print(f"=== DECRPYTED MESSAGE===\n{decrypted_output}")
+        request.result = key0.decrypt(request.result, padding=True).decode(
+            'utf-8')
+
+        if self.next_handler:
+            self.next_handler.handle_request(request)
+        else:
+            return
+        # request.result = key0.decrypt(coded_msg, padding=True).decode(
+        #     'utf-8')
+        # # .decode(
+        # #             'utf-8')
+        # print(f"=== DECRPYTED MESSAGE===\n{decrypted_output}")
+
+
+class PrintCryptographyHandler(BaseCryptographyHandler):
+
+    def handle_request(self, request) -> None:
+        print("Print handler running...")
+        if request.output.lower() == "print":
+            print(request.result)
+        else:
+            with open(request.output, "w+") as output_file:
+                output_file.write(request.result)
 
 
 class Crypto:
@@ -347,9 +367,11 @@ class Crypto:
         en_input = InputCryptographyValidator()
         en_output = OutputCryptographyValidator()
         en_handler = EncryptionCryptographyHandler()
+        en_print = PrintCryptographyHandler()
         en_key.next_handler = en_input
         en_input.next_handler = en_output
         en_output.next_handler = en_handler
+        en_handler.next_handler = en_print
 
         # Chain for decrypting data
         de_key = KeyCryptographyValidator()
@@ -357,9 +379,11 @@ class Crypto:
         de_input = InputCryptographyValidator()
         de_output = OutputCryptographyValidator()
         de_handler = DecryptionCryptographyHandler()
+        de_print = PrintCryptographyHandler()
         de_key.next_handler = de_input
         de_input.next_handler = de_output
         de_output.next_handler = de_handler
+        de_handler.next_handler = de_print
 
         self.encryption_start_handler = en_key
         self.decryption_start_handler = de_key

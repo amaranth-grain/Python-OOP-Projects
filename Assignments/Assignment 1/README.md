@@ -1,6 +1,6 @@
 
 
-  <h3 align="center">Assignment 1</h3>
+  <h3 align="center">Tamagotchi Simulator with Pokemon Pets</h3>
 
   <p align="center">
     COMP 3522 Assignment 1 - Tamagotchi Simulator

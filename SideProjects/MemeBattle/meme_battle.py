@@ -1,7 +1,6 @@
 """
 Quick 2-hour fun project to see which meme reigns supreme, tournament style.
 """
-
 from random import uniform
 from random import randint
 from random import choice
@@ -18,7 +17,7 @@ class Meme:
              "Surprised Pikachu", "Left Exit 12 Off Ramp", "Taps Forehead",
              "Big Brain", "One Does Not Simply", "You Get a Car", "Why You No"]
 
-    def __init__(self, name="Janet"):
+    def __init__(self, name="wao christy very meme"):
         """
         Represent a Meme that engages in battle
         :param health: float
@@ -157,12 +156,12 @@ class Driver:
         """
         self._participants = []
 
-    def generate_participants(self):
+    def generate_participants(self, num):
         """
         Generate the eight participants in the tournament.
         :return: None
         """
-        for n in range(8):
+        for n in range(num):
             self._participants.append(Meme.generate_rand_character())
 
     def select_participant(self):
@@ -174,15 +173,15 @@ class Driver:
         self._participants.remove(character)
         return character
 
-    def start(self):
+    def start(self, num):
         """
         Start the simulated tournament.
         :return: None
         """
-        self.generate_participants()
+        self.generate_participants(num)
         winner = None
 
-        for i in range(7):
+        for i in range(num - 1):
             c1 = self.select_participant()
             c2 = self.select_participant()
             sim = BattleSimulator(c1, c2)
@@ -198,7 +197,7 @@ class Driver:
 
 def main():
     driver = Driver()
-    driver.start()
+    driver.start(8)
 
 
 if __name__ == "__main__":
